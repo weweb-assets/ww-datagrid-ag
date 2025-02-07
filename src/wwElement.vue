@@ -22,12 +22,12 @@
             @sort-changed="onSortChanged"
         />
     </div> -->
-    <div>
+    <div class="ww-datagrid" :class="{ editing: isEditing }">
         <ag-grid-vue
             :rowData="rowData"
             :columnDefs="columnDefs"
             :defaultColDef="defaultColDef"
-            style="height: 500px"
+            :style="style"
             :rowSelection="rowSelection"
             :theme="theme"
             :getRowId="getRowId"
@@ -58,6 +58,9 @@ export default {
             type: String,
             required: true,
         },
+        /* wwEditor:start */
+        wwEditorState: { type: Object, required: true },
+        /* wwEditor:end */
     },
     emits: ["trigger-event"],
     setup() {
@@ -65,7 +68,6 @@ export default {
 
         return {
             resolveMappingFormula,
-            theme: themeQuartz,
         };
         //     const gridApi = ref(null);
         //     const gridColumnApi = ref(null);
@@ -311,6 +313,36 @@ export default {
                 return null;
             }
         },
+        style() {
+            return {
+                height: this.content.height || "400px",
+            };
+        },
+        theme() {
+            return themeQuartz.withParams({
+                headerBackgroundColor: this.content.headerBackgroundColor,
+                headerTextColor: this.content.headerTextColor,
+                headerFontSize: this.content.headerFontSize,
+                headerFontFamily: this.content.headerFontFamily,
+                headerFontWeight: this.content.headerFontWeight,
+                borderColor: this.content.borderColor,
+                cellTextColor: this.content.cellColor,
+                cellFontFamily: this.content.cellFontFamily,
+                dataFontSize: this.content.cellFontSize,
+                oddRowBackgroundColor: this.content.rowAlternateColor,
+                rowHoverColor: this.content.rowHoverColor,
+                selectedRowBackgroundColor: this.content.selectedRowBackgroundColor,
+                // selectCellBackgroundColor: this.content.selectedCellBackgroundColor,
+                // selectCellBorder: this.content.selectedCellBorder,
+            });
+        },
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
     },
     methods: {
         getRowId(params) {
@@ -319,10 +351,30 @@ export default {
         /* wwEditor:start */
         generateColumns() {
             this.$emit("update:content", {
-                columns: this.rowData?.[0] ? Object.keys(this.rowData[0]).map((key) => ({ field: key })) : [],
+                columns: this.rowData?.[0]
+                    ? Object.keys(this.rowData[0]).map((key) => ({ field: key, sortable: true, filter: true }))
+                    : [],
             });
         },
         /* wwEditor:end */
     },
 };
 </script>
+
+<style scoped>
+.ww-datagrid {
+    position: relative;
+    /* wwEditor:start */
+    &.editing {
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            display: block;
+            pointer-events: initial;
+            z-index: 10;
+        }
+    }
+    /* wwEditor:end */
+}
+</style>

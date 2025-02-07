@@ -4,8 +4,189 @@ export default {
             en: "AG Grid Table",
         },
         icon: "table",
+        customStylePropertiesOrder: [
+            ["height", "borderColor"],
+            ["headerBackgroundColor", "headerTextColor", "headerFontWeight", "headerFontSize", "headerFontFamily"],
+            ["cellColor", "cellFontFamily", "cellFontSize"],
+            ["rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+        ],
     },
+
     properties: {
+        height: {
+            label: { en: "Grid Height" },
+            type: "Length",
+            section: "style",
+            options: {
+                noRange: true,
+            },
+            bindable: true,
+            classes: true,
+            responsive: true,
+            states: true,
+            defaultValue: "400px",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "Height of the grid (e.g., 400px)",
+            },
+            /* wwEditor:end */
+        },
+        headerBackgroundColor: {
+            type: "Color",
+            label: "Header Background Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        headerTextColor: {
+            type: "Color",
+            label: "Header Text Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        headerFontWeight: {
+            label: "Header Font weight",
+            type: "TextSelect",
+            category: "text",
+            options: {
+                options: [
+                    { value: null, label: "Default", default: true },
+                    { value: 100, label: "100 - Thin" },
+                    { value: 200, label: "200 - Extra Light" },
+                    { value: 300, label: "300 - Light" },
+                    { value: 400, label: "400 - Normal" },
+                    { value: 500, label: "500 - Medium" },
+                    { value: 600, label: "600 - Semi Bold" },
+                    { value: 700, label: "700 - Bold" },
+                    { value: 800, label: "800 - Extra Bold" },
+                    { value: 900, label: "900 - Black" },
+                ],
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            bindingValidation: { markdown: "font-weight", type: "string", cssSupports: "font-weight" },
+        },
+        headerFontSize: {
+            label: "Header Font Size",
+            type: "Length",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 1, max: 100, default: true },
+                    { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+                    { value: "rem", label: "rem", min: 0, max: 10, digits: 3, step: 0.1 },
+                ],
+                noRange: true,
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
+        },
+        headerFontFamily: {
+            label: "Header Font family",
+            type: "FontFamily",
+            category: "text",
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            bindingValidation: { markdown: "font-family", type: "string", cssSupports: "font-family" },
+        },
+        borderColor: {
+            type: "Color",
+            label: "Border Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        cellColor: {
+            type: "Color",
+            label: "Cell Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        cellFontFamily: {
+            label: "Cell Font family",
+            type: "FontFamily",
+            category: "text",
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            bindingValidation: { markdown: "font-family", type: "string", cssSupports: "font-family" },
+        },
+        cellFontSize: {
+            type: "Length",
+            label: "Cell Font Size",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 1, max: 100, default: true },
+                    { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+                    { value: "rem", label: "rem", min: 0, max: 10, digits: 3, step: 0.1 },
+                ],
+                noRange: true,
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
+        },
+        rowAlternateColor: {
+            type: "Color",
+            label: "Row Alternate Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        rowHoverColor: {
+            type: "Color",
+            label: "Row Hover Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        selectedRowBackgroundColor: {
+            type: "Color",
+            label: "Selected Row Background Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
         rowsData: {
             label: { en: "Data" },
             type: "Array",
@@ -251,22 +432,6 @@ export default {
         //     },
         //     propertyHelp: {
         //         tooltip: "Set how many rows appear on each page",
-        //     },
-        //     /* wwEditor:end */
-        // },
-        // height: {
-        //     label: { en: "Grid Height" },
-        //     type: "Length",
-        //     section: "style",
-        //     bindable: true,
-        //     defaultValue: "400px",
-        //     /* wwEditor:start */
-        //     bindingValidation: {
-        //         type: "string",
-        //         tooltip: "Height of the grid (e.g., 400px)",
-        //     },
-        //     propertyHelp: {
-        //         tooltip: "Set the height of the grid container",
         //     },
         //     /* wwEditor:end */
         // },
