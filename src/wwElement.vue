@@ -1,5 +1,15 @@
 <template>
-    <!-- <div class="ag-grid-table">
+    <div class="ww-datagrid" :class="{ editing: isEditing }">
+        <ag-grid-vue
+            :rowData="rowData"
+            :columnDefs="columnDefs"
+            :defaultColDef="defaultColDef"
+            :style="style"
+            :rowSelection="rowSelection"
+            :theme="theme"
+            :getRowId="getRowId"
+        >
+            <!-- <div class="ag-grid-table">
         <ag-grid-vue
             :class="gridThemeClass"
             :style="gridStyle"
@@ -22,16 +32,6 @@
             @sort-changed="onSortChanged"
         />
     </div> -->
-    <div class="ww-datagrid" :class="{ editing: isEditing }">
-        <ag-grid-vue
-            :rowData="rowData"
-            :columnDefs="columnDefs"
-            :defaultColDef="defaultColDef"
-            :style="style"
-            :rowSelection="rowSelection"
-            :theme="theme"
-            :getRowId="getRowId"
-        >
         </ag-grid-vue>
     </div>
 </template>
