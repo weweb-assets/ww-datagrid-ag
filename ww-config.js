@@ -303,6 +303,10 @@ export default {
                         },
                     },
                 },
+                defaultValue: {
+                    filter: false,
+                    sortable: false,
+                },
                 movable: true,
                 expandable: true,
                 getItemLabel(item, index) {
