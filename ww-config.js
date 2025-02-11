@@ -7,8 +7,8 @@ export default {
         customStylePropertiesOrder: [
             ["height", "borderColor"],
             ["headerBackgroundColor", "headerTextColor", "headerFontWeight", "headerFontSize", "headerFontFamily"],
-            ["cellColor", "cellFontFamily", "cellFontSize"],
             ["rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+            ["cellColor", "cellFontFamily", "cellFontSize"],
         ],
     },
 
@@ -264,6 +264,21 @@ export default {
                             field: {
                                 label: "Key",
                                 type: "Text",
+                            },
+                            cellDataType: {
+                                label: "Type",
+                                type: "TextSelect",
+                                options: {
+                                    options: [
+                                        { value: undefined, label: "Auto", default: true },
+                                        { value: "text", label: "Text" },
+                                        { value: "number", label: "Number" },
+                                        { value: "boolean", label: "Boolean" },
+                                        { value: "date", label: "Date" },
+                                        { value: "dateString", label: "Date as string" },
+                                        { value: "object", label: "Object" },
+                                    ],
+                                },
                             },
                             filter: {
                                 label: "Filter",
