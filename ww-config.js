@@ -6,13 +6,55 @@ export default {
         icon: "table",
         customStylePropertiesOrder: [
             ["height", "borderColor"],
-            ["headerBackgroundColor", "headerTextColor", "headerFontWeight", "headerFontSize", "headerFontFamily"],
-            ["rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
-            ["cellColor", "cellFontFamily", "cellFontSize"],
+            [
+                "headerTitle",
+                "headerBackgroundColor",
+                "headerTextColor",
+                "headerFontWeight",
+                "headerFontSize",
+                "headerFontFamily",
+            ],
+            ["rowTitle", "rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+            ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
+            [
+                "actionTitle",
+                "action_color",
+                "action_backgroundColor",
+                "action_padding",
+                "action_border",
+                "action_font",
+                "action_fontSize",
+                "action_fontFamily",
+                "action_fontWeight",
+                "action_fontStyle",
+                "action_lineHeight",
+            ],
         ],
     },
-
+    triggerEvents: [
+        {
+            name: "action",
+            label: { en: "On Action" },
+            event: { actionName: "", row: null, id: 0, index: 0, displayIndex: 0 },
+            default: true,
+        },
+    ],
     properties: {
+        headerTitle: {
+            type: "Title",
+            label: "Header",
+            editorOnly: true,
+        },
+        rowTitle: {
+            type: "Title",
+            label: "Row",
+            editorOnly: true,
+        },
+        cellTitle: {
+            type: "Title",
+            label: "Cell",
+            editorOnly: true,
+        },
         height: {
             label: { en: "Grid Height" },
             type: "Length",
@@ -34,7 +76,7 @@ export default {
         },
         headerBackgroundColor: {
             type: "Color",
-            label: "Header Background Color",
+            label: "Background Color",
             options: {
                 nullable: true,
             },
@@ -45,7 +87,7 @@ export default {
         },
         headerTextColor: {
             type: "Color",
-            label: "Header Text Color",
+            label: "Text Color",
             options: {
                 nullable: true,
             },
@@ -55,7 +97,7 @@ export default {
             classes: true,
         },
         headerFontWeight: {
-            label: "Header Font weight",
+            label: "Font weight",
             type: "TextSelect",
             category: "text",
             options: {
@@ -79,7 +121,7 @@ export default {
             bindingValidation: { markdown: "font-weight", type: "string", cssSupports: "font-weight" },
         },
         headerFontSize: {
-            label: "Header Font Size",
+            label: "Font Size",
             type: "Length",
             options: {
                 unitChoices: [
@@ -96,7 +138,7 @@ export default {
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
         headerFontFamily: {
-            label: "Header Font family",
+            label: "Font family",
             type: "FontFamily",
             category: "text",
             responsive: true,
@@ -118,7 +160,7 @@ export default {
         },
         cellColor: {
             type: "Color",
-            label: "Cell Color",
+            label: "Text Color",
             options: {
                 nullable: true,
             },
@@ -128,7 +170,7 @@ export default {
             classes: true,
         },
         cellFontFamily: {
-            label: "Cell Font family",
+            label: "Font family",
             type: "FontFamily",
             category: "text",
             responsive: true,
@@ -139,7 +181,7 @@ export default {
         },
         cellFontSize: {
             type: "Length",
-            label: "Cell Font Size",
+            label: "Font Size",
             options: {
                 unitChoices: [
                     { value: "px", label: "px", min: 1, max: 100, default: true },
@@ -156,7 +198,7 @@ export default {
         },
         rowAlternateColor: {
             type: "Color",
-            label: "Row Alternate Color",
+            label: "Alternate Color",
             options: {
                 nullable: true,
             },
@@ -167,7 +209,7 @@ export default {
         },
         rowHoverColor: {
             type: "Color",
-            label: "Row Hover Color",
+            label: "Hover Color",
             options: {
                 nullable: true,
             },
@@ -178,7 +220,7 @@ export default {
         },
         selectedRowBackgroundColor: {
             type: "Color",
-            label: "Selected Row Background Color",
+            label: "Selected Background Color",
             options: {
                 nullable: true,
             },
@@ -186,6 +228,198 @@ export default {
             bindable: true,
             states: true,
             classes: true,
+        },
+        actionTitle: {
+            type: "Title",
+            label: "Action",
+            editorOnly: true,
+        },
+        action_color: {
+            label: "Text color",
+            type: "Color",
+            category: "text",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+            responsive: true,
+            states: true,
+            classes: true,
+        },
+        action_backgroundColor: {
+            label: "Background color",
+            type: "Color",
+            category: "background",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "background-color", type: "string", cssSupports: "background-color" },
+            responsive: true,
+            states: true,
+            classes: true,
+        },
+        action_padding: {
+            label: "Padding",
+            type: "Spacing",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: {
+                markdown: "padding",
+                type: "string",
+                cssSupports: "padding",
+            },
+        },
+        action_border: {
+            label: "Border",
+            type: "Border",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: {
+                markdown: "border",
+                type: "string",
+                cssSupports: "border",
+            },
+        },
+        action_borderRadius: {
+            label: "Border radius",
+            type: "Spacing",
+            options: {
+                isCorner: true,
+                unitChoices: [
+                    { value: "px", label: "px", min: 0, max: 50, default: true },
+                    { value: "%", label: "%", min: 0, max: 100, digits: 2, step: 1 },
+                ],
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: {
+                markdown: "border-radius",
+                type: "string",
+                cssSupports: "border-radius",
+            },
+        },
+        action_font: {
+            label: "Typography",
+            type: "Typography",
+            category: "text",
+            options: (content, sidepanelContent, boundProperties) => ({
+                initialValue: {
+                    fontSize: content["action_fontSize"],
+                    fontFamily: content["action_fontFamily"],
+                    fontWeight: content["action_fontWeight"],
+                    fontStyle: content["action_fontStyle"],
+                    lineHeight: content["action_lineHeight"],
+                },
+                creationDisabled:
+                    boundProperties["action_fontSize"] ||
+                    boundProperties["action_fontFamily"] ||
+                    boundProperties["action_fontWeight"] ||
+                    boundProperties["action_fontStyle"] ||
+                    boundProperties["action_lineHeight"],
+                creationDisabledMessage: "Cannot create typography from bound properties",
+            }),
+            bindable: true,
+            responsive: true,
+            states: true,
+            classes: true,
+        },
+        action_fontSize: {
+            label: "Size",
+            type: "Length",
+            category: "text",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 1, max: 100, default: true },
+                    { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+                    { value: "rem", label: "rem", min: 0, max: 10, digits: 3, step: 0.1 },
+                ],
+                noRange: true,
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
+        },
+        action_fontFamily: {
+            label: "Font family",
+            type: "FontFamily",
+            category: "text",
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            bindingValidation: { markdown: "font-family", type: "string", cssSupports: "font-family" },
+        },
+        action_fontWeight: {
+            label: "Font weight",
+            type: "TextSelect",
+            category: "text",
+            options: {
+                options: [
+                    { value: null, label: "Default", default: true },
+                    { value: 100, label: "100 - Thin" },
+                    { value: 200, label: "200 - Extra Light" },
+                    { value: 300, label: "300 - Light" },
+                    { value: 400, label: "400 - Normal" },
+                    { value: 500, label: "500 - Medium" },
+                    { value: 600, label: "600 - Semi Bold" },
+                    { value: 700, label: "700 - Bold" },
+                    { value: 800, label: "800 - Extra Bold" },
+                    { value: 900, label: "900 - Black" },
+                ],
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            bindingValidation: { markdown: "font-weight", type: "string", cssSupports: "font-weight" },
+        },
+        action_fontStyle: {
+            label: "Font Style",
+            type: "TextRadioGroup",
+            category: "text",
+            options: {
+                choices: [
+                    { value: null, title: "Default", icon: "typo-default", default: true },
+                    { value: "italic", title: "Italic", icon: "typo-italic" },
+                ],
+            },
+            responsive: true,
+            states: true,
+            bindable: true,
+            classes: true,
+            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            bindingValidation: { markdown: "font-style", type: "string", cssSupports: "font-style" },
+        },
+        action_lineHeight: {
+            label: "Line height",
+            type: "Length",
+            category: "text",
+            options: {
+                unitChoices: [
+                    { value: "normal", label: "auto", default: true },
+                    { value: "px", label: "px", min: 0, max: 100 },
+                    { value: "%", label: "%", min: 0, max: 100 },
+                    { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+                    { value: "rem", label: "rem", min: 0, max: 10, digits: 3, step: 0.1 },
+                    { value: "unset", label: "none" },
+                ],
+                noRange: true,
+            },
+            responsive: true,
+            states: true,
+            classes: true,
+            bindable: true,
+            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            bindingValidation: { markdown: "line-height", type: "string", cssSupports: "line-height" },
         },
         rowsData: {
             label: { en: "Data" },
@@ -255,14 +489,10 @@ export default {
             options: {
                 item: {
                     type: "Object",
-                    options: {
+                    options: (content, sidePanelContent, boundProperties, wwProps, array) => ({
                         item: {
                             headerName: {
                                 label: "Header Name",
-                                type: "Text",
-                            },
-                            field: {
-                                label: "Key",
                                 type: "Text",
                             },
                             cellDataType: {
@@ -276,17 +506,34 @@ export default {
                                         { value: "boolean", label: "Boolean" },
                                         { value: "date", label: "Date" },
                                         { value: "dateString", label: "Date as string" },
-                                        { value: "object", label: "Object" },
+                                        { value: "action", label: "Action" },
                                     ],
                                 },
+                            },
+                            field: {
+                                label: "Key",
+                                type: "Text",
+                                hidden: array?.item?.cellDataType === "action",
                             },
                             filter: {
                                 label: "Filter",
                                 type: "OnOff",
+                                hidden: array?.item?.cellDataType === "action",
                             },
                             sortable: {
                                 label: "Sortable",
                                 type: "OnOff",
+                                hidden: array?.item?.cellDataType === "action",
+                            },
+                            actionName: {
+                                label: "Action Name",
+                                type: "Text",
+                                hidden: array?.item?.cellDataType !== "action",
+                            },
+                            actionLabel: {
+                                label: "Action Label",
+                                type: "Text",
+                                hidden: array?.item?.cellDataType !== "action",
                             },
                             // valueFormula: {
                             //     type: "Formula",
@@ -301,7 +548,7 @@ export default {
                             //     },
                             // },
                         },
-                    },
+                    }),
                 },
                 defaultValue: {
                     filter: false,

@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-datagrid" :class="{ editing: isEditing }">
+    <div class="ww-datagrid" :class="{ editing: isEditing }" :style="cssVars">
         <ag-grid-vue
             :rowData="rowData"
             :columnDefs="columnDefs"
@@ -40,6 +40,7 @@
 import { ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
+import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -48,6 +49,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 export default {
     components: {
         AgGridVue,
+        ActionCellRenderer,
     },
     props: {
         content: {
@@ -302,7 +304,22 @@ export default {
             return wwLib.wwUtils.getDataFromCollection(this.content.rowsData);
         },
         columnDefs() {
-            return this.content.columns;
+            return this.content.columns.map((col) =>
+                col.cellDataType === "action"
+                    ? {
+                          headerName: col.headerName,
+                          cellRenderer: "ActionCellRenderer",
+                          cellRendererParams: {
+                              name: col.actionName,
+                              label: col.actionLabel,
+                              trigger: this.onActionTrigger,
+                              withFont: !!this.content.action_font,
+                          },
+                          sortable: false,
+                          filter: false,
+                      }
+                    : col
+            );
         },
         rowSelection() {
             if (this.content.rowSelection === "multiple") {
@@ -316,6 +333,24 @@ export default {
         style() {
             return {
                 height: this.content.height || "400px",
+            };
+        },
+        cssVars() {
+            return {
+                "--ww-data-grid_action-backgroundColor": this.content.action_backgroundColor,
+                "--ww-data-grid_action-color": this.content.action_color,
+                "--ww-data-grid_action-padding": this.content.action_padding,
+                "--ww-data-grid_action-border": this.content.action_border,
+                "--ww-data-grid_action-borderRadius": this.content.action_borderRadius,
+                ...(this.content.action_font
+                    ? { "--ww-data-grid_action-font": this.content.action_font }
+                    : {
+                          "--ww-data-grid_action-fontSize": this.content.action_fontSize,
+                          "--ww-data-grid_action-fontFamily": this.content.action_fontFamily,
+                          "--ww-data-grid_action-fontWeight": this.content.action_fontWeight,
+                          "--ww-data-grid_action-fontStyle": this.content.action_fontStyle,
+                          "--ww-data-grid_action-lineHeight": this.content.action_lineHeight,
+                      }),
             };
         },
         theme() {
@@ -347,6 +382,12 @@ export default {
     methods: {
         getRowId(params) {
             return this.resolveMappingFormula(this.content.idFormula, params.data);
+        },
+        onActionTrigger(event) {
+            this.$emit("trigger-event", {
+                name: "action",
+                event,
+            });
         },
         /* wwEditor:start */
         generateColumns() {
