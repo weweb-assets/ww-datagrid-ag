@@ -307,6 +307,14 @@ export default {
         },
         columnDefs() {
             return this.content.columns.map((col) => {
+                const minWidth =
+                    !col.minWidth || col.minWidth === "auto"
+                        ? undefined
+                        : wwLib.wwUtils.getLengthUnit(col.minWidth)?.[0];
+                const maxWidth =
+                    !col.maxWidth || col.maxWidth === "auto"
+                        ? undefined
+                        : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
                 switch (col.cellDataType) {
                     case "action": {
                         return {
@@ -320,6 +328,8 @@ export default {
                             },
                             sortable: false,
                             filter: false,
+                            minWidth,
+                            maxWidth,
                         };
                     }
                     case "image": {
@@ -331,6 +341,8 @@ export default {
                                 width: col.imageWidth,
                                 height: col.imageHeight,
                             },
+                            minWidth,
+                            maxWidth,
                         };
                     }
                     default: {
@@ -339,6 +351,8 @@ export default {
                             field: col.field,
                             sortable: col.sortable,
                             filter: col.filter,
+                            minWidth,
+                            maxWidth,
                         };
                     }
                 }

@@ -517,6 +517,28 @@ export default {
                                 type: "Text",
                                 hidden: array?.item?.cellDataType === "action",
                             },
+                            minWidth: {
+                                label: "Min Width",
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                    unitChoices: [
+                                        { value: "px", label: "px", min: 0, max: 1300 },
+                                        { value: "auto", label: "auto" },
+                                    ],
+                                },
+                            },
+                            maxWidth: {
+                                label: "Max Width",
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                    unitChoices: [
+                                        { value: "px", label: "px", min: 0, max: 1300 },
+                                        { value: "auto", label: "auto" },
+                                    ],
+                                },
+                            },
                             filter: {
                                 label: "Filter",
                                 type: "OnOff",
