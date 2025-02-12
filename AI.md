@@ -12,6 +12,8 @@ keywords:
 A highly customizable data grid/table component that supports features like sorting, filtering, pagination, row selection, and custom actions. It's designed to handle large datasets efficiently with various data types and styling options. Its based on the AGGrid framework
 
 2. **Properties:**
+   - `rowsData`: `Array<object>` - Data to display in the grid. Default: `[]`.
+   - `idFormula`: `Formula` - Formula to generate unique IDs for each row. . Always use 'context.mapping...'
    - `height`: `string` - Height of the grid. Default: `"400px"`.
    - `headerBackgroundColor`: `string | null` - Background color of the header cells.
    - `headerTextColor`: `string | null` - Text color of the header cells.
@@ -31,8 +33,6 @@ A highly customizable data grid/table component that supports features like sort
    - `action_border`: `string` - Border style for action buttons.
    - `action_borderRadius`: `string` - Border radius for action buttons.
    - `action_font`: `object` - Typography settings for action buttons.
-   - `rowsData`: `Array<object>` - Data to display in the grid. Default: `[]`.
-   - `idFormula`: `string` - Formula to generate unique IDs for each row.
    - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`.
    - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
    - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
@@ -84,3 +84,8 @@ There is no children.
 7. **Events:**
 
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
+
+8. **Notes:**
+
+- idFormula is 'Formula' type ('type' and 'code' keys) not bindings.
+**CRITICAL** : You have to perfectly style this datagrid according to the page.

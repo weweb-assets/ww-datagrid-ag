@@ -307,7 +307,8 @@ export default {
     },
     computed: {
         rowData() {
-            return wwLib.wwUtils.getDataFromCollection(this.content.rowsData);
+            const data = wwLib.wwUtils.getDataFromCollection(this.content.rowsData);
+            return Array.isArray(data) ? data ?? [] : [];
         },
         columnDefs() {
             return this.content.columns.map((col) => {
