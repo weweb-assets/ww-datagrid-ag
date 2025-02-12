@@ -53,7 +53,7 @@ export default {
         font-family: var(--ww-data-grid_action-fontFamily);
         font-weight: var(--ww-data-grid_action-fontWeight);
         font-style: var(--ww-data-grid_action-fontStyle);
-        line-height: var(--ww-data-grid_action-lineHeight);
+        line-height: var(--ww-data-grid_action-lineHeight, normal);
     }
     border-radius: var(--ww-data-grid_action-borderRadius);
     cursor: pointer;
