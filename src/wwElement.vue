@@ -397,6 +397,11 @@ export default {
                     : [],
             });
         },
+        getTestEvent() {
+            const data = this.rowData;
+            if (!data || !data[0]) throw new Error("No data found");
+            return { actionName: "actionName", row: data[0], id: 0, index: 0, displayIndex: 0 };
+        },
         /* wwEditor:end */
     },
 };

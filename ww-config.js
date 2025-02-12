@@ -36,6 +36,7 @@ export default {
             name: "action",
             label: { en: "On Action" },
             event: { actionName: "", row: null, id: 0, index: 0, displayIndex: 0 },
+            getTestEvent: "getTestEvent",
             default: true,
         },
     ],
