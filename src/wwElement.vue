@@ -8,6 +8,9 @@
             :rowSelection="rowSelection"
             :theme="theme"
             :getRowId="getRowId"
+            :pagination="content.pagination"
+            :paginationPageSize="content.paginationPageSize || 10"
+            :paginationPageSizeSelector="false"
         >
             <!-- <div class="ag-grid-table">
         <ag-grid-vue

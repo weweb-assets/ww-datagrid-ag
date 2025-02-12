@@ -472,6 +472,36 @@ export default {
             },
             /* wwEditor:end */
         },
+        pagination: {
+            label: { en: "Pagination" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            defaultValue: false,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable pagination",
+            },
+            /* wwEditor:end */
+        },
+        paginationPageSize: {
+            label: { en: "Rows Per Page" },
+            type: "Number",
+            section: "settings",
+            bindable: true,
+            defaultValue: 10,
+            options: {
+                noRange: true,
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "number",
+                tooltip: "Number of rows to display per page",
+            },
+            hidden: (content) => !content.pagination,
+            /* wwEditor:end */
+        },
         toggleState: {
             type: "Button",
             options: {
