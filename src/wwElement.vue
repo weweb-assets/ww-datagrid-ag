@@ -11,6 +11,8 @@
             :pagination="content.pagination"
             :paginationPageSize="content.paginationPageSize || 10"
             :paginationPageSizeSelector="false"
+            @grid-ready="onGridReady"
+            @row-selected="onRowSelected"
         >
             <!-- <div class="ag-grid-table">
         <ag-grid-vue
@@ -40,7 +42,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { shallowRef } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
@@ -70,22 +72,36 @@ export default {
         /* wwEditor:end */
     },
     emits: ["trigger-event"],
-    setup() {
+    setup(props) {
         const { resolveMappingFormula } = wwLib.wwFormula.useFormula();
 
-        return {
-            resolveMappingFormula,
-        };
-        //     const gridApi = ref(null);
+        const gridApi = shallowRef(null);
         //     const gridColumnApi = ref(null);
         //     const isRefreshing = ref(false);
         //     // Internal variables setup using wwLib
-        //     const { value: selectedRows, setValue: setSelectedRows } = wwLib.wwVariable.useComponentVariable({
-        //         uid: props.uid,
-        //         name: "selectedRows",
-        //         type: "array",
-        //         defaultValue: [],
-        //     });
+        const { value: selectedRows, setValue: setSelectedRows } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: "selectedRows",
+            type: "array",
+            defaultValue: [],
+            readonly: true,
+        });
+
+        const onGridReady = (params) => {
+            gridApi.value = params.api;
+        };
+        const onRowSelected = (event) => {
+            if (!gridApi.value) return;
+            const selected = gridApi.value.getSelectedRows() || [];
+            setSelectedRows(selected);
+        };
+
+        return {
+            resolveMappingFormula,
+            onGridReady,
+            onRowSelected,
+        };
+
         //     const { value: filterModel, setValue: setFilterModel } = wwLib.wwVariable.useComponentVariable({
         //         uid: props.uid,
         //         name: "filterModel",
@@ -209,25 +225,6 @@ export default {
         //         flex: 1,
         //         minWidth: 100,
         //     }));
-        //     const onGridReady = (params) => {
-        //         gridApi.value = params.api;
-        //         gridColumnApi.value = params.columnApi;
-        //         if (params.api) {
-        //             setTimeout(() => {
-        //                 params.api.setRowData(safeRowData.value);
-        //                 params.api.sizeColumnsToFit();
-        //             }, 0);
-        //         }
-        //     };
-        //     const onRowSelected = (event) => {
-        //         if (!gridApi.value) return;
-        //         const selected = gridApi.value.getSelectedRows() || [];
-        //         setSelectedRows(selected);
-        //         emit("trigger-event", {
-        //             name: "rowSelected",
-        //             event: { value: selected },
-        //         });
-        //     };
         //     const onRowClicked = (event) => {
         //         if (event?.data) {
         //             emit("trigger-event", {
@@ -319,6 +316,11 @@ export default {
                     !col.maxWidth || col.maxWidth === "auto"
                         ? undefined
                         : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
+                const commonProperties = {
+                    minWidth,
+                    maxWidth,
+                    editable: false,
+                };
                 switch (col.cellDataType) {
                     case "action": {
                         return {
@@ -332,8 +334,7 @@ export default {
                             },
                             sortable: false,
                             filter: false,
-                            minWidth,
-                            maxWidth,
+                            ...commonProperties,
                         };
                     }
                     case "image": {
@@ -345,8 +346,7 @@ export default {
                                 width: col.imageWidth,
                                 height: col.imageHeight,
                             },
-                            minWidth,
-                            maxWidth,
+                            ...commonProperties,
                         };
                     }
                     default: {
@@ -355,8 +355,7 @@ export default {
                             field: col.field,
                             sortable: col.sortable,
                             filter: col.filter,
-                            minWidth,
-                            maxWidth,
+                            ...commonProperties,
                         };
                     }
                 }
