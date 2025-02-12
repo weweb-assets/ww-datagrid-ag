@@ -18,17 +18,17 @@ export default {
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
             [
                 "actionTitle",
-                "action_color",
-                "action_backgroundColor",
-                "action_padding",
-                "action_border",
-                "action_borderRadius",
-                "action_font",
-                "action_fontSize",
-                "action_fontFamily",
-                "action_fontWeight",
-                "action_fontStyle",
-                "action_lineHeight",
+                "actionColor",
+                "actionBackgroundColor",
+                "actionPadding",
+                "actionBorder",
+                "actionBorderRadius",
+                "actionFont",
+                "actionFontSize",
+                "actionFontFamily",
+                "actionFontWeight",
+                "actionFontStyle",
+                "actionLineHeight",
             ],
         ],
     },
@@ -55,6 +55,11 @@ export default {
         cellTitle: {
             type: "Title",
             label: "Cell",
+            editorOnly: true,
+        },
+        actionTitle: {
+            type: "Title",
+            label: "Action",
             editorOnly: true,
         },
         height: {
@@ -242,12 +247,7 @@ export default {
             states: true,
             classes: true,
         },
-        actionTitle: {
-            type: "Title",
-            label: "Action",
-            editorOnly: true,
-        },
-        action_color: {
+        actionColor: {
             label: "Text color",
             type: "Color",
             category: "text",
@@ -258,7 +258,7 @@ export default {
             states: true,
             classes: true,
         },
-        action_backgroundColor: {
+        actionBackgroundColor: {
             label: "Background color",
             type: "Color",
             category: "background",
@@ -269,7 +269,7 @@ export default {
             states: true,
             classes: true,
         },
-        action_padding: {
+        actionPadding: {
             label: "Padding",
             type: "Spacing",
             responsive: true,
@@ -282,7 +282,7 @@ export default {
                 cssSupports: "padding",
             },
         },
-        action_border: {
+        actionBorder: {
             label: "Border",
             type: "Border",
             responsive: true,
@@ -295,7 +295,7 @@ export default {
                 cssSupports: "border",
             },
         },
-        action_borderRadius: {
+        actionBorderRadius: {
             label: "Border radius",
             type: "Spacing",
             options: {
@@ -315,24 +315,24 @@ export default {
                 cssSupports: "border-radius",
             },
         },
-        action_font: {
+        actionFont: {
             label: "Typography",
             type: "Typography",
             category: "text",
             options: (content, sidepanelContent, boundProperties) => ({
                 initialValue: {
-                    fontSize: content["action_fontSize"],
-                    fontFamily: content["action_fontFamily"],
-                    fontWeight: content["action_fontWeight"],
-                    fontStyle: content["action_fontStyle"],
-                    lineHeight: content["action_lineHeight"],
+                    fontSize: content["actionFontSize"],
+                    fontFamily: content["actionFontFamily"],
+                    fontWeight: content["actionFontWeight"],
+                    fontStyle: content["actionFontStyle"],
+                    lineHeight: content["actionLineHeight"],
                 },
                 creationDisabled:
-                    boundProperties["action_fontSize"] ||
-                    boundProperties["action_fontFamily"] ||
-                    boundProperties["action_fontWeight"] ||
-                    boundProperties["action_fontStyle"] ||
-                    boundProperties["action_lineHeight"],
+                    boundProperties["actionFontSize"] ||
+                    boundProperties["actionFontFamily"] ||
+                    boundProperties["actionFontWeight"] ||
+                    boundProperties["actionFontStyle"] ||
+                    boundProperties["actionLineHeight"],
                 creationDisabledMessage: "Cannot create typography from bound properties",
             }),
             bindable: true,
@@ -340,7 +340,7 @@ export default {
             states: true,
             classes: true,
         },
-        action_fontSize: {
+        actionFontSize: {
             label: "Size",
             type: "Length",
             category: "text",
@@ -356,10 +356,10 @@ export default {
             states: true,
             classes: true,
             bindable: true,
-            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            hidden: (content, _, boundProps) => content["actionFont"] || boundProps["actionFont"],
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
-        action_fontFamily: {
+        actionFontFamily: {
             label: "Font family",
             type: "FontFamily",
             category: "text",
@@ -367,10 +367,10 @@ export default {
             states: true,
             classes: true,
             bindable: true,
-            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            hidden: (content, _, boundProps) => content["actionFont"] || boundProps["actionFont"],
             bindingValidation: { markdown: "font-family", type: "string", cssSupports: "font-family" },
         },
-        action_fontWeight: {
+        actionFontWeight: {
             label: "Font weight",
             type: "TextSelect",
             category: "text",
@@ -392,10 +392,10 @@ export default {
             states: true,
             classes: true,
             bindable: true,
-            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            hidden: (content, _, boundProps) => content["actionFont"] || boundProps["actionFont"],
             bindingValidation: { markdown: "font-weight", type: "string", cssSupports: "font-weight" },
         },
-        action_fontStyle: {
+        actionFontStyle: {
             label: "Font Style",
             type: "TextRadioGroup",
             category: "text",
@@ -409,10 +409,10 @@ export default {
             states: true,
             bindable: true,
             classes: true,
-            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            hidden: (content, _, boundProps) => content["actionFont"] || boundProps["actionFont"],
             bindingValidation: { markdown: "font-style", type: "string", cssSupports: "font-style" },
         },
-        action_lineHeight: {
+        actionLineHeight: {
             label: "Line height",
             type: "Length",
             category: "text",
@@ -431,10 +431,11 @@ export default {
             states: true,
             classes: true,
             bindable: true,
-            hidden: (content, _, boundProps) => content["action_font"] || boundProps["action_font"],
+            hidden: (content, _, boundProps) => content["actionFont"] || boundProps["actionFont"],
             bindingValidation: { markdown: "line-height", type: "string", cssSupports: "line-height" },
         },
-        rowsData: {
+
+        rowData: {
             label: { en: "Data" },
             type: "Array",
             section: "settings",
@@ -458,63 +459,14 @@ export default {
             type: "Formula",
             label: "ID (per row)",
             options: (content) => ({
-                template: wwLib.wwUtils.getDataFromCollection(content.rowsData)?.[0],
+                template: wwLib.wwUtils.getDataFromCollection(content.rowData)?.[0],
             }),
             section: "settings",
             propertyHelp: {
                 tooltip: "A unique id per row. Very useful for performance optimization.",
             },
         },
-        rowSelection: {
-            label: { en: "Row Selection" },
-            type: "TextSelect",
-            section: "settings",
-            bindable: true,
-            options: {
-                options: [
-                    { value: "none", label: "None", default: true },
-                    { value: "single", label: "Single" },
-                    { value: "multiple", label: "Multiple" },
-                ],
-            },
-            /* wwEditor:start */
-            bindingValidation: {
-                type: "string",
-                tooltip: "Type of row selection: none or single or multiple",
-            },
-            /* wwEditor:end */
-        },
-        pagination: {
-            label: { en: "Pagination" },
-            type: "OnOff",
-            section: "settings",
-            bindable: true,
-            defaultValue: false,
-            /* wwEditor:start */
-            bindingValidation: {
-                type: "boolean",
-                tooltip: "Enable or disable pagination",
-            },
-            /* wwEditor:end */
-        },
-        paginationPageSize: {
-            label: { en: "Rows Per Page" },
-            type: "Number",
-            section: "settings",
-            bindable: true,
-            defaultValue: 10,
-            options: {
-                noRange: true,
-            },
-            /* wwEditor:start */
-            bindingValidation: {
-                type: "number",
-                tooltip: "Number of rows to display per page",
-            },
-            hidden: (content) => !content.pagination,
-            /* wwEditor:end */
-        },
-        toggleState: {
+        generateColumns: {
             type: "Button",
             options: {
                 text: "Generate columns",
@@ -636,6 +588,55 @@ export default {
             defaultValue: [],
             section: "settings",
             bindable: true,
+        },
+        pagination: {
+            label: { en: "Pagination" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            defaultValue: false,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable pagination",
+            },
+            /* wwEditor:end */
+        },
+        paginationPageSize: {
+            label: { en: "Rows Per Page" },
+            type: "Number",
+            section: "settings",
+            bindable: true,
+            defaultValue: 10,
+            options: {
+                noRange: true,
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "number",
+                tooltip: "Number of rows to display per page",
+            },
+            hidden: (content) => !content.pagination,
+            /* wwEditor:end */
+        },
+        rowSelection: {
+            label: { en: "Row Selection" },
+            type: "TextSelect",
+            section: "settings",
+            bindable: true,
+            options: {
+                options: [
+                    { value: "none", label: "None", default: true },
+                    { value: "single", label: "Single" },
+                    { value: "multiple", label: "Multiple" },
+                ],
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "Type of row selection: none or single or multiple",
+            },
+            /* wwEditor:end */
         },
     },
 };

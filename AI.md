@@ -12,7 +12,7 @@ keywords:
 A highly customizable data grid/table component that supports features like sorting, filtering, pagination, row selection, and custom actions. It's designed to handle large datasets efficiently with various data types and styling options. Its based on the AGGrid framework
 
 2. **Properties:**
-   - `rowsData`: `Array<object>` - Data to display in the grid. Default: `[]`.
+   - `rowData`: `Array<object>` - Data to display in the grid. Default: `[]`.
    - `idFormula`: `Formula` - Formula to generate unique IDs for each row. . Always use 'context.mapping...'
    - `height`: `string` - Height of the grid. Default: `"400px"`.
    - `headerBackgroundColor`: `string | null` - Background color of the header cells.
@@ -24,15 +24,20 @@ A highly customizable data grid/table component that supports features like sort
    - `cellColor`: `string | null` - Text color of grid cells.
    - `cellFontFamily`: `string` - Font family for cell text.
    - `cellFontSize`: `string` - Font size for cell text.
-   - `rowAlternateColor`: `string | null` - Background color for alternate rows.
-   - `rowHoverColor`: `string | null` - Background color when hovering over rows.
+   - `rowBackgroundColor`: `string | null` - Background color for rows.
+   - `rowAlternateColor`: `string | null` - Background color for alternate rows. Be sure it works well with cell default text color, as the color is common
+   - `rowHoverColor`: `string | null` - Background color when hovering over rows. Use color with semi transparent, so it works well with alternatate and selected background color
    - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows.
-   - `action_color`: `string | null` - Text color for action buttons.
-   - `action_backgroundColor`: `string | null` - Background color for action buttons.
-   - `action_padding`: `string` - Padding for action buttons.
-   - `action_border`: `string` - Border style for action buttons.
-   - `action_borderRadius`: `string` - Border radius for action buttons.
-   - `action_font`: `object` - Typography settings for action buttons.
+   - `actionColor`: `string | null` - Text color for action buttons.
+   - `actionBackgroundColor`: `string | null` - Background color for action buttons.
+   - `actionPadding`: `string` - Padding for action buttons.
+   - `actionBorder`: `string` - Border style for action buttons.
+   - `actionBorderRadius`: `string` - Border radius for action buttons.
+   - `actionFontSize`: `string`: Font size of the button in action column
+   - `actionFontFamily`: `string`: Font family of the button in action column
+   - `actionFontWeight`: `string`: Font weight of the button in action column
+   - `actionFontStyle`: `string`: Font style of the button in action column
+   - `actionLineHeight`: `string`: Line height of the button in action column
    - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`.
    - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
    - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
@@ -87,5 +92,6 @@ There is no children.
 
 8. **Notes:**
 
-- idFormula is 'Formula' type ('type' and 'code' keys) not bindings.
+- idFormula is 'Formula' type ('type' and 'code' keys) not bindings. Be sure it is unique per row
 **CRITICAL** : You have to perfectly style this datagrid according to the page.
+- Defautl theme is usually great, use other colors only if you need to be on brand

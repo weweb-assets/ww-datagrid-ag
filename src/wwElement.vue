@@ -307,7 +307,7 @@ export default {
     },
     computed: {
         rowData() {
-            const data = wwLib.wwUtils.getDataFromCollection(this.content.rowsData);
+            const data = wwLib.wwUtils.getDataFromCollection(this.content.rowData);
             return Array.isArray(data) ? data ?? [] : [];
         },
         columnDefs() {
@@ -329,7 +329,7 @@ export default {
                                 name: col.actionName,
                                 label: col.actionLabel,
                                 trigger: this.onActionTrigger,
-                                withFont: !!this.content.action_font,
+                                withFont: !!this.content.actionFont,
                             },
                             sortable: false,
                             filter: false,
@@ -379,19 +379,19 @@ export default {
         },
         cssVars() {
             return {
-                "--ww-data-grid_action-backgroundColor": this.content.action_backgroundColor,
-                "--ww-data-grid_action-color": this.content.action_color,
-                "--ww-data-grid_action-padding": this.content.action_padding,
-                "--ww-data-grid_action-border": this.content.action_border,
-                "--ww-data-grid_action-borderRadius": this.content.action_borderRadius,
-                ...(this.content.action_font
-                    ? { "--ww-data-grid_action-font": this.content.action_font }
+                "--ww-data-grid_action-backgroundColor": this.content.actionBackgroundColor,
+                "--ww-data-grid_action-color": this.content.actionColor,
+                "--ww-data-grid_action-padding": this.content.actionPadding,
+                "--ww-data-grid_action-border": this.content.actionBorder,
+                "--ww-data-grid_action-borderRadius": this.content.actionBorderRadius,
+                ...(this.content.actionFont
+                    ? { "--ww-data-grid_action-font": this.content.actionFont }
                     : {
-                          "--ww-data-grid_action-fontSize": this.content.action_fontSize,
-                          "--ww-data-grid_action-fontFamily": this.content.action_fontFamily,
-                          "--ww-data-grid_action-fontWeight": this.content.action_fontWeight,
-                          "--ww-data-grid_action-fontStyle": this.content.action_fontStyle,
-                          "--ww-data-grid_action-lineHeight": this.content.action_lineHeight,
+                          "--ww-data-grid_action-fontSize": this.content.actionFontSize,
+                          "--ww-data-grid_action-fontFamily": this.content.actionFontFamily,
+                          "--ww-data-grid_action-fontWeight": this.content.actionFontWeight,
+                          "--ww-data-grid_action-fontStyle": this.content.actionFontStyle,
+                          "--ww-data-grid_action-lineHeight": this.content.actionLineHeight,
                       }),
             };
         },
