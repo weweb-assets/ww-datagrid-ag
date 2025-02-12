@@ -407,10 +407,9 @@ export default {
                 cellFontFamily: this.content.cellFontFamily,
                 dataFontSize: this.content.cellFontSize,
                 oddRowBackgroundColor: this.content.rowAlternateColor,
+                backgroundColor: this.content.rowBackgroundColor,
                 rowHoverColor: this.content.rowHoverColor,
                 selectedRowBackgroundColor: this.content.selectedRowBackgroundColor,
-                // selectCellBackgroundColor: this.content.selectedCellBackgroundColor,
-                // selectCellBorder: this.content.selectedCellBorder,
             });
         },
         isEditing() {

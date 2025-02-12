@@ -14,7 +14,7 @@ export default {
                 "headerFontSize",
                 "headerFontFamily",
             ],
-            ["rowTitle", "rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+            ["rowBackgroundColor", "rowTitle", "rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
             [
                 "actionTitle",
@@ -22,6 +22,7 @@ export default {
                 "action_backgroundColor",
                 "action_padding",
                 "action_border",
+                "action_borderRadius",
                 "action_font",
                 "action_fontSize",
                 "action_fontFamily",
@@ -196,6 +197,17 @@ export default {
             classes: true,
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
+        },
+        rowBackgroundColor: {
+            type: "Color",
+            label: "Background Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
         },
         rowAlternateColor: {
             type: "Color",
