@@ -11,6 +11,7 @@
             :pagination="content.pagination"
             :paginationPageSize="content.paginationPageSize || 10"
             :paginationPageSizeSelector="false"
+            :enableCellTextSelection="true"
         >
             <!-- <div class="ag-grid-table">
         <ag-grid-vue
