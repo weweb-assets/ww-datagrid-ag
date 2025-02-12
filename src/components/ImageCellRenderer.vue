@@ -1,20 +1,19 @@
 <template>
     <div class="image-cell">
-        <img v-if="params?.value" :src="params.value" :alt="params.value" />
-        <div v-else class="no-image">No image</div>
+        <img v-if="params?.value" :src="params.value" :style="{ width: params.width, height: params.height }" />
     </div>
 </template>
 
 <script>
 export default {
-    name: 'ImageCellRenderer',
+    name: "ImageCellRenderer",
     props: {
         params: {
             type: Object,
-            required: true
-        }
-    }
-}
+            required: true,
+        },
+    },
+};
 </script>
 
 <style scoped>
@@ -25,13 +24,6 @@ export default {
 }
 
 .image-cell img {
-    max-height: 40px;
-    max-width: 60px;
     object-fit: contain;
-}
-
-.no-image {
-    color: #999;
-    font-style: italic;
 }
 </style>

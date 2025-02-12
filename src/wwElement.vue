@@ -41,6 +41,7 @@ import { ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
+import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -50,6 +51,7 @@ export default {
     components: {
         AgGridVue,
         ActionCellRenderer,
+        ImageCellRenderer,
     },
     props: {
         content: {
@@ -304,22 +306,43 @@ export default {
             return wwLib.wwUtils.getDataFromCollection(this.content.rowsData);
         },
         columnDefs() {
-            return this.content.columns.map((col) =>
-                col.cellDataType === "action"
-                    ? {
-                          headerName: col.headerName,
-                          cellRenderer: "ActionCellRenderer",
-                          cellRendererParams: {
-                              name: col.actionName,
-                              label: col.actionLabel,
-                              trigger: this.onActionTrigger,
-                              withFont: !!this.content.action_font,
-                          },
-                          sortable: false,
-                          filter: false,
-                      }
-                    : col
-            );
+            return this.content.columns.map((col) => {
+                switch (col.cellDataType) {
+                    case "action": {
+                        return {
+                            headerName: col.headerName,
+                            cellRenderer: "ActionCellRenderer",
+                            cellRendererParams: {
+                                name: col.actionName,
+                                label: col.actionLabel,
+                                trigger: this.onActionTrigger,
+                                withFont: !!this.content.action_font,
+                            },
+                            sortable: false,
+                            filter: false,
+                        };
+                    }
+                    case "image": {
+                        return {
+                            headerName: col.headerName,
+                            field: col.field,
+                            cellRenderer: "ImageCellRenderer",
+                            cellRendererParams: {
+                                width: col.imageWidth,
+                                height: col.imageHeight,
+                            },
+                        };
+                    }
+                    default: {
+                        return {
+                            headerName: col.headerName,
+                            field: col.field,
+                            sortable: col.sortable,
+                            filter: col.filter,
+                        };
+                    }
+                }
+            });
         },
         rowSelection() {
             if (this.content.rowSelection === "multiple") {

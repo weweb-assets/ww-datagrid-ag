@@ -507,6 +507,7 @@ export default {
                                         { value: "boolean", label: "Boolean" },
                                         { value: "date", label: "Date" },
                                         { value: "dateString", label: "Date as string" },
+                                        { value: "image", label: "Image" },
                                         { value: "action", label: "Action" },
                                     ],
                                 },
@@ -519,12 +520,12 @@ export default {
                             filter: {
                                 label: "Filter",
                                 type: "OnOff",
-                                hidden: array?.item?.cellDataType === "action",
+                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
                             },
                             sortable: {
                                 label: "Sortable",
                                 type: "OnOff",
-                                hidden: array?.item?.cellDataType === "action",
+                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
                             },
                             actionName: {
                                 label: "Action Name",
@@ -535,6 +536,22 @@ export default {
                                 label: "Action Label",
                                 type: "Text",
                                 hidden: array?.item?.cellDataType !== "action",
+                            },
+                            imageWidth: {
+                                label: "Image width",
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                },
+                                hidden: array?.item?.cellDataType !== "image",
+                            },
+                            imageHeight: {
+                                label: "Image height",
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                },
+                                hidden: array?.item?.cellDataType !== "image",
                             },
                             // valueFormula: {
                             //     type: "Formula",
