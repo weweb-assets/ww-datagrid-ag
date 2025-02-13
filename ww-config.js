@@ -14,7 +14,14 @@ export default {
                 "headerFontSize",
                 "headerFontFamily",
             ],
-            ["rowBackgroundColor", "rowTitle", "rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+            [
+                "rowBackgroundColor",
+                "rowTitle",
+                "rowAlternateColor",
+                "rowHoverColor",
+                "rowVerticalPaddingScale",
+                "selectedRowBackgroundColor",
+            ],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
             [
                 "actionTitle",
@@ -37,8 +44,19 @@ export default {
             name: "action",
             label: { en: "On Action" },
             event: { actionName: "", row: null, id: 0, index: 0, displayIndex: 0 },
-            getTestEvent: "getTestEvent",
+            getTestEvent: "getOnActionTestEvent",
             default: true,
+        },
+        {
+            name: "cellValueChanged",
+            label: { en: "On Cell Value Changed" },
+            event: {
+                oldValue: null,
+                newValue: null,
+                columnId: "id",
+                row: null,
+            },
+            getTestEvent: "getOnCellValueChangedTestEvent",
         },
     ],
     properties: {
@@ -247,6 +265,20 @@ export default {
             states: true,
             classes: true,
         },
+        rowVerticalPaddingScale: {
+            type: "Number",
+            label: "Vertical Padding Scale",
+            options: {
+                min: 0,
+                max: 5,
+                step: 0.1,
+                default: 1,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
         actionColor: {
             label: "Text color",
             type: "Color",
@@ -437,7 +469,10 @@ export default {
 
         rowData: {
             label: { en: "Data" },
-            type: "Array",
+            type: "ObjectList",
+            options: {
+                useSchema: true,
+            },
             section: "settings",
             bindable: true,
             defaultValue: [],
@@ -531,6 +566,11 @@ export default {
                                         { value: "auto", label: "auto" },
                                     ],
                                 },
+                            },
+                            editable: {
+                                label: "Editable",
+                                type: "OnOff",
+                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
                             },
                             filter: {
                                 label: "Filter",
