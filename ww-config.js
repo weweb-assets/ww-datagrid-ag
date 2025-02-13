@@ -14,7 +14,14 @@ export default {
                 "headerFontSize",
                 "headerFontFamily",
             ],
-            ["rowBackgroundColor", "rowTitle", "rowAlternateColor", "rowHoverColor", "selectedRowBackgroundColor"],
+            [
+                "rowBackgroundColor",
+                "rowTitle",
+                "rowAlternateColor",
+                "rowHoverColor",
+                "rowVerticalPaddingScale",
+                "selectedRowBackgroundColor",
+            ],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
             [
                 "actionTitle",
@@ -252,6 +259,20 @@ export default {
             label: "Selected Background Color",
             options: {
                 nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        rowVerticalPaddingScale: {
+            type: "Number",
+            label: "Vertical Padding Scale",
+            options: {
+                min: 0,
+                max: 5,
+                step: 0.1,
+                default: 1,
             },
             responsive: true,
             bindable: true,

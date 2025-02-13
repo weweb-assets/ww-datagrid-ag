@@ -408,6 +408,7 @@ export default {
                 backgroundColor: this.content.rowBackgroundColor,
                 rowHoverColor: this.content.rowHoverColor,
                 selectedRowBackgroundColor: this.content.selectedRowBackgroundColor,
+                rowVerticalPaddingScale: this.content.rowVerticalPaddingScale || 1,
             });
         },
         isEditing() {
