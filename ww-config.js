@@ -1,7 +1,7 @@
 export default {
     editor: {
         label: {
-            en: "AG Grid Table",
+            en: "Datagrid",
         },
         icon: "table",
         customStylePropertiesOrder: [
