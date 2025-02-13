@@ -37,8 +37,19 @@ export default {
             name: "action",
             label: { en: "On Action" },
             event: { actionName: "", row: null, id: 0, index: 0, displayIndex: 0 },
-            getTestEvent: "getTestEvent",
+            getTestEvent: "getOnActionTestEvent",
             default: true,
+        },
+        {
+            name: "cellValueChanged",
+            label: { en: "On Cell Value Changed" },
+            event: {
+                oldValue: null,
+                newValue: null,
+                columnId: "id",
+                row: null,
+            },
+            getTestEvent: "getOnCellValueChangedTestEvent",
         },
     ],
     properties: {
@@ -531,6 +542,11 @@ export default {
                                         { value: "auto", label: "auto" },
                                     ],
                                 },
+                            },
+                            editable: {
+                                label: "Editable",
+                                type: "OnOff",
+                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
                             },
                             filter: {
                                 label: "Filter",

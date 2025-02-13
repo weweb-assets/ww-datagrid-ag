@@ -13,6 +13,7 @@
             :paginationPageSizeSelector="false"
             @grid-ready="onGridReady"
             @row-selected="onRowSelected"
+            @cell-value-changed="onCellValueChanged"
         >
             <!-- <div class="ag-grid-table">
         <ag-grid-vue
@@ -76,9 +77,6 @@ export default {
         const { resolveMappingFormula } = wwLib.wwFormula.useFormula();
 
         const gridApi = shallowRef(null);
-        //     const gridColumnApi = ref(null);
-        //     const isRefreshing = ref(false);
-        //     // Internal variables setup using wwLib
         const { value: selectedRows, setValue: setSelectedRows } = wwLib.wwVariable.useComponentVariable({
             uid: props.uid,
             name: "selectedRows",
@@ -100,6 +98,7 @@ export default {
             resolveMappingFormula,
             onGridReady,
             onRowSelected,
+            gridApi,
         };
 
         //     const { value: filterModel, setValue: setFilterModel } = wwLib.wwVariable.useComponentVariable({
@@ -324,6 +323,7 @@ export default {
                 switch (col.cellDataType) {
                     case "action": {
                         return {
+                            ...commonProperties,
                             headerName: col.headerName,
                             cellRenderer: "ActionCellRenderer",
                             cellRendererParams: {
@@ -334,11 +334,11 @@ export default {
                             },
                             sortable: false,
                             filter: false,
-                            ...commonProperties,
                         };
                     }
                     case "image": {
                         return {
+                            ...commonProperties,
                             headerName: col.headerName,
                             field: col.field,
                             cellRenderer: "ImageCellRenderer",
@@ -346,16 +346,16 @@ export default {
                                 width: col.imageWidth,
                                 height: col.imageHeight,
                             },
-                            ...commonProperties,
                         };
                     }
                     default: {
                         return {
+                            ...commonProperties,
                             headerName: col.headerName,
                             field: col.field,
                             sortable: col.sortable,
                             filter: col.filter,
-                            ...commonProperties,
+                            editable: col.editable,
                         };
                     }
                 }
@@ -428,6 +428,17 @@ export default {
                 event,
             });
         },
+        onCellValueChanged(event) {
+            this.$emit("trigger-event", {
+                name: "cellValueChanged",
+                event: {
+                    oldValue: event.oldValue,
+                    newValue: event.newValue,
+                    columnId: event.column.getColId(),
+                    row: event.data,
+                },
+            });
+        },
         /* wwEditor:start */
         generateColumns() {
             this.$emit("update:content", {
@@ -436,10 +447,15 @@ export default {
                     : [],
             });
         },
-        getTestEvent() {
+        getOnActionTestEvent() {
             const data = this.rowData;
             if (!data || !data[0]) throw new Error("No data found");
             return { actionName: "actionName", row: data[0], id: 0, index: 0, displayIndex: 0 };
+        },
+        getOnCellValueChangedTestEvent() {
+            const data = this.rowData;
+            if (!data || !data[0]) throw new Error("No data found");
+            return { oldValue: "oldValue", newValue: "newValue", columnId: "columnId", row: data[0] };
         },
         /* wwEditor:end */
     },
