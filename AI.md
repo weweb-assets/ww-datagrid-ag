@@ -27,6 +27,7 @@ A highly customizable data grid/table component that supports features like sort
    - `rowBackgroundColor`: `string | null` - Background color for rows.
    - `rowAlternateColor`: `string | null` - Background color for alternate rows. Be sure it works well with cell default text color, as the color is common
    - `rowHoverColor`: `string | null` - Background color when hovering over rows. Use color with semi transparent, so it works well with alternatate and selected background color
+   - `rowVerticalPaddingScale`: `Number | null` - A number for scaling the vertical padding of cells. Use 2 to multiply it by 2 or a number between 0 and 1 to make it smaller.
    - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows.
    - `actionColor`: `string | null` - Text color for action buttons.
    - `actionBackgroundColor`: `string | null` - Background color for action buttons.
@@ -89,6 +90,7 @@ There is no children.
 7. **Events:**
 
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
+- cellValueChanged: Triggered after a cell edition so that you can update the data source. Payload: { oldValue: {/* old value */}, newValue: { /* row data */}, columnId: "id", row: { /* row data */} }
 
 8. **Notes:**
 
