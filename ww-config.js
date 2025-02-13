@@ -448,7 +448,10 @@ export default {
 
         rowData: {
             label: { en: "Data" },
-            type: "Array",
+            type: "ObjectList",
+            options: {
+                useSchema: true,
+            },
             section: "settings",
             bindable: true,
             defaultValue: [],
