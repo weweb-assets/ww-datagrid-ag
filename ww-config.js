@@ -457,7 +457,7 @@ export default {
         },
         idFormula: {
             type: "Formula",
-            label: "ID (per row)",
+            label: "Unique Row Id",
             options: (content) => ({
                 template: wwLib.wwUtils.getDataFromCollection(content.rowData)?.[0],
             }),
