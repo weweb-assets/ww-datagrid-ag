@@ -11,6 +11,7 @@
             :pagination="content.pagination"
             :paginationPageSize="content.paginationPageSize || 10"
             :paginationPageSizeSelector="false"
+            :suppressMovableColumns="!content.movableColumns"
             @grid-ready="onGridReady"
             @row-selected="onRowSelected"
             @cell-value-changed="onCellValueChanged"
@@ -305,6 +306,12 @@ export default {
             const data = wwLib.wwUtils.getDataFromCollection(this.content.rowData);
             return Array.isArray(data) ? data ?? [] : [];
         },
+        defaultColDef() {
+            return {
+                editable: false,
+                resizable: this.content.resizableColumns,
+            };
+        },
         columnDefs() {
             return this.content.columns.map((col) => {
                 const minWidth =
@@ -318,7 +325,7 @@ export default {
                 const commonProperties = {
                     minWidth,
                     maxWidth,
-                    editable: false,
+                    pinned: col.pinned === "none" ? undefined : col.pinned,
                 };
                 switch (col.cellDataType) {
                     case "action": {
