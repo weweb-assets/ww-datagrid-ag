@@ -567,6 +567,17 @@ export default {
                                     ],
                                 },
                             },
+                            pinned: {
+                                label: "Pinned",
+                                type: "TextRadioGroup",
+                                options: {
+                                    choices: [
+                                        { value: "none", label: "None", default: true },
+                                        { value: "left", label: "Left" },
+                                        { value: "right", label: "Right" },
+                                    ],
+                                },
+                            },
                             editable: {
                                 label: "Editable",
                                 type: "OnOff",
@@ -675,6 +686,31 @@ export default {
             bindingValidation: {
                 type: "string",
                 tooltip: "Type of row selection: none or single or multiple",
+            },
+            /* wwEditor:end */
+        },
+        movableColumns: {
+            label: { en: "Movable Columns?" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable movable columns",
+            },
+            /* wwEditor:end */
+        },
+        resizableColumns: {
+            label: { en: "Resizable Columns?" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            defaultValue: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable resizable columns",
             },
             /* wwEditor:end */
         },
