@@ -545,6 +545,25 @@ export default {
                                 type: "Text",
                                 hidden: array?.item?.cellDataType === "action",
                             },
+                            useCustomLabel: {
+                                label: "Use Custom Label",
+                                type: "OnOff",
+                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
+                            },
+                            displayLabelFormula: {
+                                label: "Display Label",
+                                type: "Formula",
+                                options: {
+                                    template: _.get(
+                                        wwLib.wwUtils.getDataFromCollection(content.rowData)?.[0],
+                                        array?.item?.field
+                                    ),
+                                },
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    !array?.item?.useCustomLabel,
+                            },
                             minWidth: {
                                 label: "Min Width",
                                 type: "Length",
