@@ -600,6 +600,7 @@ export default {
                                         { value: "dateString", label: "Date" },
                                         { value: "image", label: "Image" },
                                         { value: "action", label: "Action" },
+                                        { value: "custom", label: "Custom" },
                                     ],
                                 },
                             },
@@ -611,7 +612,10 @@ export default {
                             useCustomLabel: {
                                 label: "Custom display value",
                                 type: "OnOff",
-                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    array?.item?.cellDataType === "custom",
                             },
                             displayLabelFormula: {
                                 label: "Display value",
@@ -625,7 +629,8 @@ export default {
                                 hidden:
                                     array?.item?.cellDataType === "action" ||
                                     array?.item?.cellDataType === "image" ||
-                                    !array?.item?.useCustomLabel,
+                                    !array?.item?.useCustomLabel ||
+                                    array?.item?.cellDataType === "custom",
                             },
                             width: {
                                 label: "Width",
@@ -689,7 +694,10 @@ export default {
                             editable: {
                                 label: "Editable",
                                 type: "OnOff",
-                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    array?.item?.cellDataType === "custom",
                             },
                             filter: {
                                 label: "Filter",
