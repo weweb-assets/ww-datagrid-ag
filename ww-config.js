@@ -22,7 +22,9 @@ export default {
                 "rowVerticalPaddingScale",
                 "selectedRowBackgroundColor",
             ],
+            ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
+            ["menuTitle", "menuTextColor", "menuBackgroundColor"],
             [
                 "actionTitle",
                 "actionColor",
@@ -70,9 +72,19 @@ export default {
             label: "Row",
             editorOnly: true,
         },
+        columnTitle: {
+            type: "Title",
+            label: "Column",
+            editorOnly: true,
+        },
         cellTitle: {
             type: "Title",
             label: "Cell",
+            editorOnly: true,
+        },
+        menuTitle: {
+            type: "Title",
+            label: "Menu",
             editorOnly: true,
         },
         actionTitle: {
@@ -221,6 +233,29 @@ export default {
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
+        columnHoverHighlight: {
+            type: "OnOff",
+            label: "Hover Highlight",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        columnHoverColor: {
+            type: "Color",
+            label: "Hover Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
+            hidden: (content) => !content.columnHoverHighlight,
+        },
         rowBackgroundColor: {
             type: "Color",
             label: "Background Color",
@@ -253,6 +288,9 @@ export default {
             bindable: true,
             states: true,
             classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
         },
         selectedRowBackgroundColor: {
             type: "Color",
@@ -264,6 +302,9 @@ export default {
             bindable: true,
             states: true,
             classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
         },
         rowVerticalPaddingScale: {
             type: "Number",
@@ -276,6 +317,28 @@ export default {
             },
             responsive: true,
             bindable: true,
+            states: true,
+            classes: true,
+        },
+        menuTextColor: {
+            label: "Text color",
+            type: "Color",
+            category: "text",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+            responsive: true,
+            states: true,
+            classes: true,
+        },
+        menuBackgroundColor: {
+            label: "Background color",
+            type: "Color",
+            category: "background",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "background-color", type: "string", cssSupports: "background-color" },
+            responsive: true,
             states: true,
             classes: true,
         },
@@ -546,12 +609,12 @@ export default {
                                 hidden: array?.item?.cellDataType === "action",
                             },
                             useCustomLabel: {
-                                label: "Use Custom Label",
+                                label: "Custom display value",
                                 type: "OnOff",
                                 hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
                             },
                             displayLabelFormula: {
-                                label: "Display Label",
+                                label: "Display value",
                                 type: "Formula",
                                 options: {
                                     template: _.get(
@@ -563,6 +626,32 @@ export default {
                                     array?.item?.cellDataType === "action" ||
                                     array?.item?.cellDataType === "image" ||
                                     !array?.item?.useCustomLabel,
+                            },
+                            width: {
+                                label: "Width",
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                    unitChoices: [
+                                        { value: "px", label: "px", min: 0, max: 1300 },
+                                        { value: "auto", label: "auto" },
+                                    ],
+                                },
+                            },
+                            flex: {
+                                label: "Flex",
+                                type: "Number",
+                                options: {
+                                    min: 1,
+                                    max: 10,
+                                    step: 1,
+                                    noRange: true,
+                                    nullable: true,
+                                    defaultValue: 1,
+                                },
+                                propertyHelp: {
+                                    tooltip: "Will be ignore if width is different from auto",
+                                },
                             },
                             minWidth: {
                                 label: "Min Width",

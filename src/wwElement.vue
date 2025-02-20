@@ -12,6 +12,7 @@
             :paginationPageSize="content.paginationPageSize || 10"
             :paginationPageSizeSelector="false"
             :suppressMovableColumns="!content.movableColumns"
+            :columnHoverHighlight="content.columnHoverHighlight"
             @grid-ready="onGridReady"
             @row-selected="onRowSelected"
             @cell-value-changed="onCellValueChanged"
@@ -123,11 +124,20 @@ export default {
                     !col.maxWidth || col.maxWidth === "auto"
                         ? undefined
                         : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
+                const width =
+                    !col.width || col.width === "auto" ? undefined : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
+                const flex = !width ? col.flex : undefined;
                 const commonProperties = {
                     minWidth,
                     maxWidth,
                     pinned: col.pinned === "none" ? undefined : col.pinned,
                 };
+                if (width) {
+                    commonProperties.width = width;
+                }
+                if (flex) {
+                    commonProperties.flex = flex;
+                }
                 switch (col.cellDataType) {
                     case "action": {
                         return {
@@ -223,6 +233,9 @@ export default {
                 rowHoverColor: this.content.rowHoverColor,
                 selectedRowBackgroundColor: this.content.selectedRowBackgroundColor,
                 rowVerticalPaddingScale: this.content.rowVerticalPaddingScale || 1,
+                menuBackgroundColor: this.content.menuBackgroundColor,
+                menuTextColor: this.content.menuTextColor,
+                columnHoverColor: this.content.columnHoverColor,
             });
         },
         isEditing() {

@@ -26,9 +26,13 @@ A highly customizable data grid/table component that supports features like sort
    - `cellFontSize`: `string` - Font size for cell text.
    - `rowBackgroundColor`: `string | null` - Background color for rows.
    - `rowAlternateColor`: `string | null` - Background color for alternate rows. Be sure it works well with cell default text color, as the color is common
-   - `rowHoverColor`: `string | null` - Background color when hovering over rows. Use color with semi transparent, so it works well with alternatate and selected background color
+   - `rowHoverColor`: `string | null` - Background color when hovering over rows. Must be a semi transparent color, at it will be an overlay on top
    - `rowVerticalPaddingScale`: `Number | null` - A number for scaling the vertical padding of cells. Use 2 to multiply it by 2 or a number between 0 and 1 to make it smaller.
-   - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows.
+   - `columnHoverHighlight`: `string | null` - Does column highlight on hover is active 
+   - `columnHoverColor`: `string | null` - If active, column hover highlight. Must be a semi transparent color, at it will be an overlay on top
+   - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows. Must be a semi transparent color, at it will be an overlay on top
+   - `menuTextColor`: `string | null` - Text color for the filter menu
+   - `menuBackgroundColor`: `string | null` - Background color for the filter menu
    - `actionColor`: `string | null` - Text color for action buttons.
    - `actionBackgroundColor`: `string | null` - Background color for action buttons.
    - `actionPadding`: `string` - Padding for action buttons.
@@ -39,7 +43,7 @@ A highly customizable data grid/table component that supports features like sort
    - `actionFontWeight`: `string`: Font weight of the button in action column
    - `actionFontStyle`: `string`: Font style of the button in action column
    - `actionLineHeight`: `string`: Line height of the button in action column
-   - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`.
+   - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`. Must be a semi transparent color, at it will be an overlay on top
    - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
    - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
    - `columns`: `Array<{
@@ -48,29 +52,34 @@ A highly customizable data grid/table component that supports features like sort
        field: string,
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        filter: boolean,
-       sortable: boolean
+       sortable: boolean,
+       pinned: undefined | 'left' | 'right'
      } | {
-        
        headerName: string,
        cellDataType:'image',
        field: string,
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        imageWidth: string,
-       imageHeight: string
-     
+       imageHeight: string,
+       pinned: undefined | 'left' | 'right'
      } | {
-        
        headerName: string,
        cellDataType:'action',
        field: string,
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        actionName: string,
        actionLabel: string,
-     
-     }>` - MANDATORY. Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. At least one column must be defined.
+       pinned: undefined | 'left' | 'right'
+     }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.`
 
 3. **Children Components:**
 
