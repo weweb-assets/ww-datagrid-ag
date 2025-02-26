@@ -94,6 +94,6 @@ There is no children.
 
 8. **Notes:**
 
-- idFormula is 'Formula' type ('type' and 'code' keys) not bindings. Be sure it is unique per row
+- idFormula is 'Formula' type (ex: `{ "wwFormula": "context.mapping..." }`, must always use wwFormula, wwJavascript is not allowed). Be sure it is unique per row
 **CRITICAL** : You have to perfectly style this datagrid according to the page.
-- Defautl theme is usually great, use other colors only if you need to be on brand
+- Default theme is usually great, use other colors only if you need to be on brand
