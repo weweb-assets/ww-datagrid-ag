@@ -70,7 +70,7 @@ A highly customizable data grid/table component that supports features like sort
        actionName: string,
        actionLabel: string,
      
-     }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. Default: `[]`.
+     }>` - MANDATORY. Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. At least one column must be defined.
 
 3. **Children Components:**
 
