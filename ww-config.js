@@ -5,7 +5,7 @@ export default {
         },
         icon: "table",
         customStylePropertiesOrder: [
-            ["height", "borderColor"],
+            ["layout", "height", "borderColor"],
             [
                 "headerTitle",
                 "headerBackgroundColor",
@@ -92,6 +92,22 @@ export default {
             label: "Action",
             editorOnly: true,
         },
+        layout: {
+            type: "TextSelect",
+            label: "Height Mode",
+            options: {
+                options: [
+                    { value: "fixed", label: "Fixed", default: true },
+                    { value: "auto", label: "Auto" },
+                ],
+            },
+            bindable: true,
+            responsive: true,
+            propertyHelp: {
+                tooltip:
+                    "Be careful with the auto mode if you have lot of rows, it can slow down the rendering of the page.",
+            },
+        },
         height: {
             label: { en: "Grid Height" },
             type: "Length",
@@ -109,6 +125,7 @@ export default {
                 type: "string",
                 tooltip: "Height of the grid (e.g., 400px)",
             },
+            hidden: (content) => content.layout === "auto",
             /* wwEditor:end */
         },
         headerBackgroundColor: {
@@ -627,14 +644,13 @@ export default {
                                     array?.item?.cellDataType === "image" ||
                                     !array?.item?.useCustomLabel,
                             },
-                            width: {
+                            widthAlgo: {
+                                type: "TextRadioGroup",
                                 label: "Width",
-                                type: "Length",
                                 options: {
-                                    noRange: true,
-                                    unitChoices: [
-                                        { value: "px", label: "px", min: 0, max: 1300 },
-                                        { value: "auto", label: "auto" },
+                                    choices: [
+                                        { value: "fixed", label: "Fixed", default: true },
+                                        { value: "flex", label: "Flex" },
                                     ],
                                 },
                             },
@@ -646,12 +662,20 @@ export default {
                                     max: 10,
                                     step: 1,
                                     noRange: true,
-                                    nullable: true,
                                     defaultValue: 1,
                                 },
-                                propertyHelp: {
-                                    tooltip: "Will be ignore if width is different from auto",
+                                hidden: array?.item?.widthAlgo !== "flex",
+                            },
+                            width: {
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                    unitChoices: [
+                                        { value: "px", label: "px", min: 0, max: 1300 },
+                                        { value: "auto", label: "auto" },
+                                    ],
                                 },
+                                hidden: array?.item?.widthAlgo === "flex",
                             },
                             minWidth: {
                                 label: "Min Width",
