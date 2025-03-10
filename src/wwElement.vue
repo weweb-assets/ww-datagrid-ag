@@ -4,6 +4,7 @@
             :rowData="rowData"
             :columnDefs="columnDefs"
             :defaultColDef="defaultColDef"
+            :domLayout="content.layout === 'auto' ? 'autoHeight' : 'normal'"
             :style="style"
             :rowSelection="rowSelection"
             :theme="theme"
@@ -17,29 +18,6 @@
             @row-selected="onRowSelected"
             @cell-value-changed="onCellValueChanged"
         >
-            <!-- <div class="ag-grid-table">
-        <ag-grid-vue
-            :class="gridThemeClass"
-            :style="gridStyle"
-            :rowData="safeRowData"
-            :columnDefs="processedColumnDefs"
-            :defaultColDef="defaultColDef"
-            :pagination="true"
-            :paginationPageSize="content?.paginationPageSize || 10"
-            :rowSelection="content?.rowSelection || 'single'"
-            :suppressRowClickSelection="content?.showSelectionColumn"
-            :checkboxSelection="content?.showSelectionColumn"
-            :headerCheckboxSelection="content?.showSelectionColumn && content?.rowSelection === 'multiple'"
-            :headerHeight="content?.headerHeight ? parseInt(content?.headerHeight) : 56"
-            :rowHeight="content?.rowHeight ? parseInt(content?.rowHeight) : 48"
-            @grid-ready="onGridReady"
-            @row-selected="onRowSelected"
-            @row-clicked="onRowClicked"
-            @cell-clicked="onCellClicked"
-            @filter-changed="onFilterChanged"
-            @sort-changed="onSortChanged"
-        />
-    </div> -->
         </ag-grid-vue>
     </div>
 </template>
@@ -125,8 +103,10 @@ export default {
                         ? undefined
                         : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
                 const width =
-                    !col.width || col.width === "auto" ? undefined : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
-                const flex = !width ? col.flex : undefined;
+                    !col.width || col.width === "auto" || this.content.widthAlgo === "flex"
+                        ? undefined
+                        : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
+                const flex = this.content.widthAlgo === "flex" ? col.flex : undefined;
                 const commonProperties = {
                     minWidth,
                     maxWidth,
@@ -195,6 +175,7 @@ export default {
             }
         },
         style() {
+            if (this.content.layout === "auto") return {};
             return {
                 height: this.content.height || "400px",
             };
