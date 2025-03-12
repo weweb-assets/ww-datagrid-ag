@@ -17,29 +17,6 @@
             @row-selected="onRowSelected"
             @cell-value-changed="onCellValueChanged"
         >
-            <!-- <div class="ag-grid-table">
-        <ag-grid-vue
-            :class="gridThemeClass"
-            :style="gridStyle"
-            :rowData="safeRowData"
-            :columnDefs="processedColumnDefs"
-            :defaultColDef="defaultColDef"
-            :pagination="true"
-            :paginationPageSize="content?.paginationPageSize || 10"
-            :rowSelection="content?.rowSelection || 'single'"
-            :suppressRowClickSelection="content?.showSelectionColumn"
-            :checkboxSelection="content?.showSelectionColumn"
-            :headerCheckboxSelection="content?.showSelectionColumn && content?.rowSelection === 'multiple'"
-            :headerHeight="content?.headerHeight ? parseInt(content?.headerHeight) : 56"
-            :rowHeight="content?.rowHeight ? parseInt(content?.rowHeight) : 48"
-            @grid-ready="onGridReady"
-            @row-selected="onRowSelected"
-            @row-clicked="onRowClicked"
-            @cell-clicked="onCellClicked"
-            @filter-changed="onFilterChanged"
-            @sort-changed="onSortChanged"
-        />
-    </div> -->
         </ag-grid-vue>
     </div>
 </template>
@@ -315,21 +292,18 @@ export default {
             async handler() {
                 if (this.wwEditorState.isACopy) return;
                 if (this.wwEditorState?.boundProps?.columns) return;
-                // if (this.updatingColumn) return;
                 // We assume there will only be one custom column each time
                 const columnIndex = (this.content.columns || []).findIndex(
                     (col) => col.cellDataType === "custom" && !col.containerId
                 );
                 if (columnIndex === -1) return;
                 const newColumns = [...this.content.columns];
-                // this.updatingColumn = true;
                 let column = { ...newColumns[columnIndex] };
                 column.containerId = await this.createElement("ww-flexbox", {
                     _state: { name: `Cell ${column.headerName || column.field}` },
                 });
                 newColumns[columnIndex] = column;
                 this.$emit("update:content:effect", { columns: newColumns });
-                // this.updatingColumn = false;
             },
             deep: true,
         },
