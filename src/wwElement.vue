@@ -53,7 +53,7 @@ export default {
         /* wwEditor:end */
     },
     emits: ["trigger-event"],
-    setup(props) {
+    setup(props, ctx) {
         const { resolveMappingFormula } = wwLib.wwFormula.useFormula();
 
         const gridApi = shallowRef(null);
@@ -72,6 +72,10 @@ export default {
             if (!gridApi.value) return;
             const selected = gridApi.value.getSelectedRows() || [];
             setSelectedRows(selected);
+            ctx.emit('trigger-event', {
+                name: 'selection-changed',
+                event: selected
+            });
         };
 
         return {
@@ -271,7 +275,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ww-datagrid {
     position: relative;
     /* wwEditor:start */
