@@ -28,6 +28,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
+import WewebCellRenderer from "./components/WewebCellRenderer.vue";
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -38,6 +39,7 @@ export default {
         AgGridVue,
         ActionCellRenderer,
         ImageCellRenderer,
+        WewebCellRenderer,
     },
     props: {
         content: {
@@ -52,7 +54,7 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    emits: ["trigger-event"],
+    emits: ["trigger-event", "update:content:effect"],
     setup(props) {
         const { resolveMappingFormula } = wwLib.wwFormula.useFormula();
 
@@ -74,11 +76,18 @@ export default {
             setSelectedRows(selected);
         };
 
+        /* wwEditor:start */
+        const { createElement } = wwLib.useCreateElement();
+        /* wwEditor:end */
+
         return {
             resolveMappingFormula,
             onGridReady,
             onRowSelected,
             gridApi,
+            /* wwEditor:start */
+            createElement,
+            /* wwEditor:end */
         };
     },
     computed: {
@@ -134,6 +143,18 @@ export default {
                             filter: false,
                         };
                     }
+                    case "custom":
+                        return {
+                            ...commonProperties,
+                            headerName: col.headerName,
+                            field: col.field,
+                            cellRenderer: "WewebCellRenderer",
+                            cellRendererParams: {
+                                containerId: col.containerId,
+                            },
+                            sortable: col.sortable,
+                            filter: col.filter,
+                        };
                     case "image": {
                         return {
                             ...commonProperties,
@@ -268,6 +289,30 @@ export default {
         },
         /* wwEditor:end */
     },
+    /* wwEditor:start */
+    watch: {
+        columnDefs: {
+            // TODO: also do data cleaning
+            async handler() {
+                if (this.wwEditorState.isACopy) return;
+                if (this.wwEditorState?.boundProps?.columns) return;
+                // We assume there will only be one custom column each time
+                const columnIndex = (this.content.columns || []).findIndex(
+                    (col) => col.cellDataType === "custom" && !col.containerId
+                );
+                if (columnIndex === -1) return;
+                const newColumns = [...this.content.columns];
+                let column = { ...newColumns[columnIndex] };
+                column.containerId = await this.createElement("ww-flexbox", {
+                    _state: { name: `Cell ${column.headerName || column.field}` },
+                });
+                newColumns[columnIndex] = column;
+                this.$emit("update:content:effect", { columns: newColumns });
+            },
+            deep: true,
+        },
+    },
+    /* wwEditor:end */
 };
 </script>
 
