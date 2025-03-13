@@ -75,7 +75,7 @@ export default {
             const selected = gridApi.value.getSelectedRows() || [];
             setSelectedRows(selected);
             ctx.emit('trigger-event', {
-                name: 'selection-changed',
+                name: 'rowSelected',
                 event: selected
             });
         };
@@ -116,10 +116,10 @@ export default {
                         ? undefined
                         : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
                 const width =
-                    !col.width || col.width === "auto" || this.content.widthAlgo === "flex"
+                    !col.width || col.width === "auto" || col.widthAlgo === "flex"
                         ? undefined
                         : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
-                const flex = this.content.widthAlgo === "flex" ? col.flex : undefined;
+                const flex = col.widthAlgo === "flex" ? col.flex ?? 1 : undefined;
                 const commonProperties = {
                     minWidth,
                     maxWidth,

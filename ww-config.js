@@ -62,7 +62,7 @@ export default {
         },
         {
             name: "rowSelected",
-            label: { en: "On Row Selected" },
+            label: { en: "On Row Selection change" },
             event: [],
         }
     ],
@@ -110,7 +110,7 @@ export default {
             responsive: true,
             propertyHelp: {
                 tooltip:
-                    "Be careful with the auto mode if you have lot of rows, it can slow down the rendering of the page.",
+                    "Be cautious when using auto mode with a large number of rows, as it may slow down page rendering",
             },
         },
         height: {
