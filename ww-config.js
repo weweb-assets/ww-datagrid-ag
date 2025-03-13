@@ -60,6 +60,11 @@ export default {
             },
             getTestEvent: "getOnCellValueChangedTestEvent",
         },
+        {
+            name: "rowSelected",
+            label: { en: "On Row Selected" },
+            event: [],
+        }
     ],
     properties: {
         headerTitle: {
