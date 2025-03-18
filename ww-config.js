@@ -112,6 +112,10 @@ export default {
                 tooltip:
                     "Be cautious when using auto mode with a large number of rows, as it may slow down page rendering",
             },
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'fixed | auto',
+            },
         },
         height: {
             label: { en: "Grid Height" },
@@ -609,6 +613,7 @@ export default {
                             headerName: {
                                 label: "Header Name",
                                 type: "Text",
+                                bindable: true,
                             },
                             cellDataType: {
                                 label: "Type",
@@ -625,6 +630,14 @@ export default {
                                         { value: "custom", label: "Custom" },
                                     ],
                                 },
+                            },
+                            info: {
+                                type: 'Info',
+                                options: {
+                                    text: 'To select your custom cell, use the Layout view',
+                                },
+                                editorOnly: true,
+                                hidden:  array?.item?.cellDataType !== 'custom',
                             },
                             field: {
                                 label: "Key",
@@ -835,7 +848,7 @@ export default {
             /* wwEditor:end */
         },
         movableColumns: {
-            label: { en: "Movable Columns?" },
+            label: { en: "Movable Columns" },
             type: "OnOff",
             section: "settings",
             bindable: true,
@@ -847,7 +860,7 @@ export default {
             /* wwEditor:end */
         },
         resizableColumns: {
-            label: { en: "Resizable Columns?" },
+            label: { en: "Resizable Columns" },
             type: "OnOff",
             section: "settings",
             bindable: true,

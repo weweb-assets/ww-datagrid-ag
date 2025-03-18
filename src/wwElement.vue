@@ -16,7 +16,7 @@
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       @grid-ready="onGridReady"
-      @row-selected="onRowSelected"
+      @selection-changed="onSelectionChanged"
       @cell-value-changed="onCellValueChanged"
     >
     </ag-grid-vue>
@@ -77,7 +77,7 @@ export default {
     const onGridReady = (params) => {
       gridApi.value = params.api;
     };
-    const onRowSelected = (event) => {
+    const onSelectionChanged = (event) => {
       if (!gridApi.value) return;
       const selected = gridApi.value.getSelectedRows() || [];
       setSelectedRows(selected);
@@ -94,7 +94,7 @@ export default {
     return {
       resolveMappingFormula,
       onGridReady,
-      onRowSelected,
+      onSelectionChanged,
       gridApi,
       /* wwEditor:start */
       createElement,
@@ -116,28 +116,24 @@ export default {
       return this.content.columns.map((col) => {
         const minWidth =
           !col.minWidth || col.minWidth === "auto"
-            ? undefined
+            ? null
             : wwLib.wwUtils.getLengthUnit(col.minWidth)?.[0];
         const maxWidth =
           !col.maxWidth || col.maxWidth === "auto"
-            ? undefined
+            ? null
             : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
         const width =
           !col.width || col.width === "auto" || col.widthAlgo === "flex"
-            ? undefined
+            ? null
             : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
-        const flex = col.widthAlgo === "flex" ? col.flex ?? 1 : undefined;
+        const flex = col.widthAlgo === "flex" ? col.flex ?? 1 : null;
         const commonProperties = {
           minWidth,
           maxWidth,
-          pinned: col.pinned === "none" ? undefined : col.pinned,
+          pinned: col.pinned === "none" ? false : col.pinned,
+          width,
+          flex,
         };
-        if (width) {
-          commonProperties.width = width;
-        }
-        if (flex) {
-          commonProperties.flex = flex;
-        }
         switch (col.cellDataType) {
           case "action": {
             return {
@@ -202,11 +198,11 @@ export default {
     },
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
-        return { mode: "multiRow" };
+        return { mode: "multiRow", checkboxes: true };
       } else if (this.content.rowSelection === "single") {
-        return { mode: "singleRow" };
+        return { mode: "singleRow", checkboxes: true };
       } else {
-        return null;
+        return { mode: 'singleRow', checkboxes: false, isRowSelectable: () => false };
       }
     },
     style() {
@@ -328,14 +324,15 @@ export default {
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
         for (const col of this.content.columns) {
-            const column = this.gridApi.getColumn(col.field);
-            if (!column) continue;
-            if (col.pinned && !column.pinned) {
-              this.gridApi.setColumnsPinned([col.field], col.pinned);
-            } else if ((!col.pinned || col.pinned === 'none') && column.pinned) {
-              this.gridApi.setColumnsPinned([col.field], null);
-            }
+          // const column = this.gridApi.getColumn(col.field);
+          // if (!column) continue;
+          // if (col.pinned && !column.pinned) {
+          //   this.gridApi.setColumnsPinned([col.field], col.pinned);
+          // } else if ((!col.pinned || col.pinned === 'none') && column.pinned) {
+          //   this.gridApi.setColumnsPinned([col.field], null);
+          // }
         }
+        this.gridApi.resetColumnState();
 
         if (this.wwEditorState.isACopy) return;
 
