@@ -114,6 +114,7 @@ export default {
     },
     columnDefs() {
       return this.content.columns.map((col) => {
+        col ??= {};
         const minWidth =
           !col.minWidth || col.minWidth === "auto"
             ? undefined
