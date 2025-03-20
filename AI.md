@@ -105,6 +105,8 @@ There is no children.
 
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
 - cellValueChanged: Triggered after a cell edition so that you can update the data source. Payload: { oldValue: {/* old value */}, newValue: { /* row data */}, columnId: "id", row: { /* row data */} }
+- rowSelected: triggered when a row is selected. Payload: { row: { /* row data */} }
+- rowDeselected: triggered when a row is deselected. Payload: { row: { /* row data */} }
 
 8. **Notes:**
 

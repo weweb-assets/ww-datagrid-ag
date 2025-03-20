@@ -62,8 +62,19 @@ export default {
         },
         {
             name: "rowSelected",
-            label: { en: "On Row Selection change" },
-            event: [],
+            label: { en: "On Row Selected" },
+            event: {
+                row: null,
+            },
+            getTestEvent: "getSelectionTestEvent",
+        },
+        {
+            name: "rowDeselected",
+            label: { en: "On Row Deselected" },
+            event: {
+                row: null,
+            },
+            getTestEvent: "getSelectionTestEvent",
         }
     ],
     properties: {
