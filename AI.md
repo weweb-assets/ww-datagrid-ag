@@ -72,9 +72,9 @@ A highly customizable data grid/table component that supports features like sort
      
      }>` - MANDATORY. Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. At least one column must be defined.
 
-3. **Children Components:**
+3. **Slots:**
 
-There is no children.
+There is no slot.
 
 4. **Special Features:**
    - Supports multiple data types including text, numbers, dates, images, and action buttons
@@ -94,6 +94,6 @@ There is no children.
 
 8. **Notes:**
 
-- idFormula is 'Formula' type (ex: `{ "wwFormula": "context.mapping..." }`, must always use wwFormula, wwJavascript is not allowed). Be sure it is unique per row
+- idFormula is 'Formula' type (ex: `{ "wwFormula": "context.mapping..." }`, must always use wwFormula, without a "return" statement). Be sure it is unique per row
 **CRITICAL** : You have to perfectly style this datagrid according to the page.
 - Default theme is usually great, use other colors only if you need to be on brand
