@@ -643,9 +643,10 @@ export default {
                                 },
                             },
                             info: {
-                                type: 'Info',
+                                type: 'InfoBox',
                                 options: {
-                                    text: 'To select your custom cell, use the Layout view',
+                                    variant: 'warning',
+                                    content: 'To select your custom cell, use the Layout view',
                                 },
                                 editorOnly: true,
                                 hidden:  array?.item?.cellDataType !== 'custom',
