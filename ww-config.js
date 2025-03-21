@@ -5,7 +5,7 @@ export default {
         },
         icon: "table",
         customStylePropertiesOrder: [
-            ["height", "borderColor"],
+            ["layout", "height", "textColor", "borderColor"],
             [
                 "headerTitle",
                 "headerBackgroundColor",
@@ -22,7 +22,9 @@ export default {
                 "rowVerticalPaddingScale",
                 "selectedRowBackgroundColor",
             ],
+            ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
+            ["menuTitle", "menuTextColor", "menuBackgroundColor"],
             [
                 "actionTitle",
                 "actionColor",
@@ -58,6 +60,22 @@ export default {
             },
             getTestEvent: "getOnCellValueChangedTestEvent",
         },
+        {
+            name: "rowSelected",
+            label: { en: "On Row Selected" },
+            event: {
+                row: null,
+            },
+            getTestEvent: "getSelectionTestEvent",
+        },
+        {
+            name: "rowDeselected",
+            label: { en: "On Row Deselected" },
+            event: {
+                row: null,
+            },
+            getTestEvent: "getSelectionTestEvent",
+        }
     ],
     properties: {
         headerTitle: {
@@ -70,15 +88,45 @@ export default {
             label: "Row",
             editorOnly: true,
         },
+        columnTitle: {
+            type: "Title",
+            label: "Column",
+            editorOnly: true,
+        },
         cellTitle: {
             type: "Title",
             label: "Cell",
+            editorOnly: true,
+        },
+        menuTitle: {
+            type: "Title",
+            label: "Menu",
             editorOnly: true,
         },
         actionTitle: {
             type: "Title",
             label: "Action",
             editorOnly: true,
+        },
+        layout: {
+            type: "TextSelect",
+            label: "Height Mode",
+            options: {
+                options: [
+                    { value: "fixed", label: "Fixed", default: true },
+                    { value: "auto", label: "Auto" },
+                ],
+            },
+            bindable: true,
+            responsive: true,
+            propertyHelp: {
+                tooltip:
+                    "Be cautious when using auto mode with a large number of rows, as it may slow down page rendering",
+            },
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'fixed | auto',
+            },
         },
         height: {
             label: { en: "Grid Height" },
@@ -97,6 +145,7 @@ export default {
                 type: "string",
                 tooltip: "Height of the grid (e.g., 400px)",
             },
+            hidden: (content) => content.layout === "auto",
             /* wwEditor:end */
         },
         headerBackgroundColor: {
@@ -162,6 +211,17 @@ export default {
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
+        textColor: {
+            label: "Text Color",
+            type: "Color",
+            category: "text",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+            responsive: true,
+            states: true,
+            classes: true,
+        },
         headerFontFamily: {
             label: "Font family",
             type: "FontFamily",
@@ -221,6 +281,29 @@ export default {
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
+        columnHoverHighlight: {
+            type: "OnOff",
+            label: "Hover Highlight",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+        },
+        columnHoverColor: {
+            type: "Color",
+            label: "Hover Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
+            hidden: (content) => !content.columnHoverHighlight,
+        },
         rowBackgroundColor: {
             type: "Color",
             label: "Background Color",
@@ -253,6 +336,9 @@ export default {
             bindable: true,
             states: true,
             classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
         },
         selectedRowBackgroundColor: {
             type: "Color",
@@ -264,6 +350,9 @@ export default {
             bindable: true,
             states: true,
             classes: true,
+            propertyHelp: {
+                tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
+            },
         },
         rowVerticalPaddingScale: {
             type: "Number",
@@ -276,6 +365,28 @@ export default {
             },
             responsive: true,
             bindable: true,
+            states: true,
+            classes: true,
+        },
+        menuTextColor: {
+            label: "Text color",
+            type: "Color",
+            category: "text",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+            responsive: true,
+            states: true,
+            classes: true,
+        },
+        menuBackgroundColor: {
+            label: "Background color",
+            type: "Color",
+            category: "background",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "background-color", type: "string", cssSupports: "background-color" },
+            responsive: true,
             states: true,
             classes: true,
         },
@@ -524,6 +635,7 @@ export default {
                             headerName: {
                                 label: "Header Name",
                                 type: "Text",
+                                bindable: true,
                             },
                             cellDataType: {
                                 label: "Type",
@@ -537,13 +649,79 @@ export default {
                                         { value: "dateString", label: "Date" },
                                         { value: "image", label: "Image" },
                                         { value: "action", label: "Action" },
+                                        { value: "custom", label: "Custom" },
                                     ],
                                 },
+                            },
+                            info: {
+                                type: 'InfoBox',
+                                options: {
+                                    variant: 'warning',
+                                    content: 'To select your custom cell, use the Layout view',
+                                },
+                                editorOnly: true,
+                                hidden:  array?.item?.cellDataType !== 'custom',
                             },
                             field: {
                                 label: "Key",
                                 type: "Text",
                                 hidden: array?.item?.cellDataType === "action",
+                            },
+                            useCustomLabel: {
+                                label: "Custom display value",
+                                type: "OnOff",
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    array?.item?.cellDataType === "custom",
+                            },
+                            displayLabelFormula: {
+                                label: "Display value",
+                                type: "Formula",
+                                options: {
+                                    template: _.get(
+                                        wwLib.wwUtils.getDataFromCollection(content.rowData)?.[0],
+                                        array?.item?.field
+                                    ),
+                                },
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    !array?.item?.useCustomLabel ||
+                                    array?.item?.cellDataType === "custom",
+                            },
+                            widthAlgo: {
+                                type: "TextRadioGroup",
+                                label: "Width",
+                                options: {
+                                    choices: [
+                                        { value: "fixed", label: "Fixed", default: true },
+                                        { value: "flex", label: "Flex" },
+                                    ],
+                                },
+                            },
+                            flex: {
+                                label: "Flex",
+                                type: "Number",
+                                options: {
+                                    min: 1,
+                                    max: 10,
+                                    step: 1,
+                                    noRange: true,
+                                    defaultValue: 1,
+                                },
+                                hidden: array?.item?.widthAlgo !== "flex",
+                            },
+                            width: {
+                                type: "Length",
+                                options: {
+                                    noRange: true,
+                                    unitChoices: [
+                                        { value: "px", label: "px", min: 0, max: 1300 },
+                                        { value: "auto", label: "auto" },
+                                    ],
+                                },
+                                hidden: array?.item?.widthAlgo === "flex",
                             },
                             minWidth: {
                                 label: "Min Width",
@@ -567,10 +745,24 @@ export default {
                                     ],
                                 },
                             },
+                            pinned: {
+                                label: "Pinned",
+                                type: "TextRadioGroup",
+                                options: {
+                                    choices: [
+                                        { value: "none", label: "None", default: true },
+                                        { value: "left", label: "Left" },
+                                        { value: "right", label: "Right" },
+                                    ],
+                                },
+                            },
                             editable: {
                                 label: "Editable",
                                 type: "OnOff",
-                                hidden: array?.item?.cellDataType === "action" || array?.item?.cellDataType === "image",
+                                hidden:
+                                    array?.item?.cellDataType === "action" ||
+                                    array?.item?.cellDataType === "image" ||
+                                    array?.item?.cellDataType === "custom",
                             },
                             filter: {
                                 label: "Filter",
@@ -675,6 +867,31 @@ export default {
             bindingValidation: {
                 type: "string",
                 tooltip: "Type of row selection: none or single or multiple",
+            },
+            /* wwEditor:end */
+        },
+        movableColumns: {
+            label: { en: "Movable Columns" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable movable columns",
+            },
+            /* wwEditor:end */
+        },
+        resizableColumns: {
+            label: { en: "Resizable Columns" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            defaultValue: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "Enable or disable resizable columns",
             },
             /* wwEditor:end */
         },
