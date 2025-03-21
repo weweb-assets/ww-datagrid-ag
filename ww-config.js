@@ -5,7 +5,7 @@ export default {
         },
         icon: "table",
         customStylePropertiesOrder: [
-            ["layout", "height", "borderColor"],
+            ["layout", "height", "textColor", "borderColor"],
             [
                 "headerTitle",
                 "headerBackgroundColor",
@@ -210,6 +210,17 @@ export default {
             classes: true,
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
+        },
+        textColor: {
+            label: "Text Color",
+            type: "Color",
+            category: "text",
+            options: { nullable: true },
+            bindable: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+            responsive: true,
+            states: true,
+            classes: true,
         },
         headerFontFamily: {
             label: "Font family",

@@ -258,6 +258,7 @@ export default {
         menuBackgroundColor: this.content.menuBackgroundColor,
         menuTextColor: this.content.menuTextColor,
         columnHoverColor: this.content.columnHoverColor,
+        foregroundColor: this.content.textColor,
       });
     },
     isEditing() {

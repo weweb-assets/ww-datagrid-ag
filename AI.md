@@ -15,6 +15,7 @@ A highly customizable data grid/table component that supports features like sort
    - `rowData`: `Array<object>` - MANDATORY - Data to display in the grid. Default: `[]`.
    - `idFormula`: `Formula` - MANDATORY - Formula to generate unique IDs for each row. . Always use 'context.mapping...'
    - `height`: `string` - Height of the grid. Default: `"400px"`.
+   - `textColor`: `string` - Color of all the text in the grid. Use more specific field if needed (headerTextColor, cellColor, actionColor)
    - `headerBackgroundColor`: `string | null` - Background color of the header cells.
    - `headerTextColor`: `string | null` - Text color of the header cells.
    - `headerFontWeight`: `null | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900` - Font weight of header text.
