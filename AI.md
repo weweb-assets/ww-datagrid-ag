@@ -58,6 +58,8 @@ A highly customizable data grid/table component that supports features like sort
        flex: number, // Only if widthAlgo is 'flex'
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        filter: boolean,
        sortable: boolean,
        pinned: undefined | 'left' | 'right'
@@ -70,6 +72,8 @@ A highly customizable data grid/table component that supports features like sort
        flex: number, // Only if widthAlgo is 'flex'
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        imageWidth: string,
        imageHeight: string,
        pinned: undefined | 'left' | 'right'
@@ -82,6 +86,8 @@ A highly customizable data grid/table component that supports features like sort
        flex: number, // Only if widthAlgo is 'flex'
        minWidth: string,
        maxWidth: string,
+       width: string,
+       flex: number,
        actionName: string,
        actionLabel: string,
        pinned: undefined | 'left' | 'right'
@@ -111,7 +117,7 @@ There is no children.
 
 8. **Notes:**
 
-- idFormula is 'Formula' type ('type' and 'code' keys) not bindings. Be sure it is unique per row
+- idFormula is 'Formula' type (ex: `{ "wwFormula": "context.mapping..." }`, must always use wwFormula, wwJavascript is not allowed). Be sure it is unique per row
 **CRITICAL** : You have to perfectly style this datagrid according to the page.
 - Default theme is usually great, use other colors only if you need to be on brand
 
