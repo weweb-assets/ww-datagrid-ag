@@ -19,6 +19,7 @@
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
       @cell-value-changed="onCellValueChanged"
+      @filter-changed="onFilterChanged"
     >
     </ag-grid-vue>
   </div>
@@ -73,6 +74,14 @@ export default {
         defaultValue: [],
         readonly: true,
       });
+    const { value: filterState, setValue: setFilterState } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "filterState",
+        type: "object",
+        defaultValue: {},
+        readonly: true,
+      });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -91,6 +100,12 @@ export default {
       setSelectedRows(selected);
     };
 
+    const onFilterChanged = (event) => {
+      if (!gridApi.value) return;
+      const filterModel = gridApi.value.getFilterModel();
+      setFilterState(filterModel);
+    };
+
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
@@ -101,6 +116,7 @@ export default {
       onRowSelected,
       onSelectionChanged,
       gridApi,
+      onFilterChanged,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
