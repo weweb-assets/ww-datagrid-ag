@@ -895,5 +895,12 @@ export default {
             },
             /* wwEditor:end */
         },
+        initialFilters: {
+            label: { en: "Initial Filters" },
+            type: "Object",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
+        }
     },
 };
