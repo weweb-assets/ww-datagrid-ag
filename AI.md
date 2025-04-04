@@ -92,6 +92,8 @@ A highly customizable data grid/table component that supports features like sort
        actionLabel: string,
        pinned: undefined | 'left' | 'right'
      }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.`
+  - `lang`: `'en' | 'fr' | 'de' | 'pt' | 'custom'` - Locale use for the interface. Default: `"en"`. If `custom` the property localeText should be provided
+  - `localeText`: only needed when lang is set to custom. Must be an object provided to aggrid 
 
 3. **Children Components:**
 

@@ -15,6 +15,7 @@
       :paginationPageSizeSelector="false"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
+      :locale-text="localeText"
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
@@ -25,16 +26,25 @@
 </template>
 
 <script>
-import { shallowRef } from "vue";
+import { shallowRef, computed } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
+import {
+  AG_GRID_LOCALE_EN,
+  AG_GRID_LOCALE_FR,
+  AG_GRID_LOCALE_DE,
+  AG_GRID_LOCALE_ES,
+  AG_GRID_LOCALE_PT,
+} from "@ag-grid-community/locale";
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
+
+console.log("AG Grid version:", AG_GRID_LOCALE_FR);
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -101,6 +111,25 @@ export default {
       onRowSelected,
       onSelectionChanged,
       gridApi,
+      localeText: computed(() => {
+        switch (props.content.lang) {
+          case "fr":
+            return AG_GRID_LOCALE_FR;
+          case "de":
+            return AG_GRID_LOCALE_DE;
+          case "es":
+            return AG_GRID_LOCALE_ES;
+          case "pt":
+            return AG_GRID_LOCALE_PT;
+          case "custom":
+            return {
+              ...AG_GRID_LOCALE_EN,
+              ...(props.content.localeText || {}),
+            };
+          default:
+            AG_GRID_LOCALE_EN;
+        }
+      }),
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
