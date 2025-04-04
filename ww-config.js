@@ -895,5 +895,12 @@ export default {
             },
             /* wwEditor:end */
         },
+        localeText: {
+            label: { en: "Locale texts" },
+            type: "Object",
+            section: "settings",
+            bindable: true,
+            defaultValue: {},
+        }
     },
 };
