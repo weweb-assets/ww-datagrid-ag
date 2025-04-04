@@ -15,6 +15,7 @@
       :paginationPageSizeSelector="false"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
+      :locale-text="localeText"
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
@@ -25,12 +26,13 @@
 </template>
 
 <script>
-import { shallowRef } from "vue";
+import { shallowRef, computed } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
   ModuleRegistry,
   themeQuartz,
+  AG_GRID_LOCALE_EN,
 } from "ag-grid-community";
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
@@ -101,6 +103,12 @@ export default {
       onRowSelected,
       onSelectionChanged,
       gridApi,
+      localeText: computed(() => {
+        return {
+          ...AG_GRID_LOCALE_EN,
+          ...(props.content.localeText || {}),
+        };
+      }),
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
