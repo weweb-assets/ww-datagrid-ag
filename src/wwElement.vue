@@ -259,6 +259,8 @@ export default {
         menuTextColor: this.content.menuTextColor,
         columnHoverColor: this.content.columnHoverColor,
         foregroundColor: this.content.textColor,
+        checkboxCheckedBackgroundColor: this.content.selectionCheckboxColor,
+        rangeSelectionBorderColor: this.content.cellSelectionBorderColor
       });
     },
     isEditing() {
