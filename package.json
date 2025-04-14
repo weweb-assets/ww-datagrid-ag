@@ -6,6 +6,7 @@
         "serve": "weweb serve"
     },
     "dependencies": {
+        "@ag-grid-community/locale": "33.0.4",
         "ag-grid-vue3": "33.0.4"
     },
     "devDependencies": {

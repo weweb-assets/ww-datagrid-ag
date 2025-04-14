@@ -908,6 +908,30 @@ export default {
             section: "settings",
             bindable: true,
             defaultValue: null,
+        },
+        lang: {
+            label: { en: "Language" },
+            type: "TextSelect",
+            section: "settings",
+            bindable: true,
+            options: {
+                options: [
+                    { value: "en", label: "English", default: true },
+                    { value: "fr", label: "French" },
+                    { value: "es", label: "Spanish" },
+                    { value: "de", label: "German" },
+                    { value: "pt", label: "Portuguese" },
+                    { value: "custom", label: "Custom" },
+                ],
+            },
+        },
+        localeText: {
+            label: { en: "Locale texts" },
+            type: "Object",
+            section: "settings",
+            bindable: true,
+            defaultValue: {},
+            hidden: (content) => content.lang !== "custom",
         }
     },
 };
