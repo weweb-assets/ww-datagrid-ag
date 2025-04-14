@@ -901,6 +901,13 @@ export default {
             section: "settings",
             bindable: true,
             defaultValue: null,
+        },
+        initialSort: {
+            label: { en: "Initial Sort" },
+            type: "Object",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
         }
     },
 };
