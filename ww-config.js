@@ -910,6 +910,12 @@ export default {
                     { value: "custom", label: "Custom" },
                 ],
             },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "Localisation to use. Default is English. Possible values: en, fr, es, de, pt, custom. Use custom to set your own locale texts.",
+            },
+            /* wwEditor:end */
         },
         localeText: {
             label: { en: "Locale texts" },
@@ -918,6 +924,12 @@ export default {
             bindable: true,
             defaultValue: {},
             hidden: (content) => content.lang !== "custom",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "object",
+                tooltip: 'See <a href="https://github.com/ag-grid/ag-grid/blob/latest/community-modules/locale/src/en-US.ts">Aggrid website</a> for the list of texts to localise',
+            },
+            /* wwEditor:end */
         }
     },
 };
