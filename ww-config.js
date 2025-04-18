@@ -897,14 +897,14 @@ export default {
         },
         initialFilters: {
             label: { en: "Initial Filters" },
-            type: "Object",
+            type: "RawObject",
             section: "settings",
             bindable: true,
             defaultValue: null,
         },
         initialSort: {
             label: { en: "Initial Sort" },
-            type: "Object",
+            type: "RawObject",
             section: "settings",
             bindable: true,
             defaultValue: null,
