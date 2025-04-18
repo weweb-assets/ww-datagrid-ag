@@ -919,7 +919,7 @@ export default {
         },
         localeText: {
             label: { en: "Locale texts" },
-            type: "Object",
+            type: "RawObject",
             section: "settings",
             bindable: true,
             defaultValue: {},
