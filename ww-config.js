@@ -895,6 +895,20 @@ export default {
             },
             /* wwEditor:end */
         },
+        initialFilters: {
+            label: { en: "Initial Filters" },
+            type: "RawObject",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
+        },
+        initialSort: {
+            label: { en: "Initial Sort" },
+            type: "RawObject",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
+        },
         lang: {
             label: { en: "Language" },
             type: "TextSelect",

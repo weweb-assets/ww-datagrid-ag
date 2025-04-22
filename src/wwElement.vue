@@ -20,13 +20,15 @@
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
       @cell-value-changed="onCellValueChanged"
+      @filter-changed="onFilterChanged"
+      @sort-changed="onSortChanged"
     >
     </ag-grid-vue>
   </div>
 </template>
 
 <script>
-import { shallowRef, computed } from "vue";
+import { shallowRef, watchEffect, computed } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -83,10 +85,35 @@ export default {
         defaultValue: [],
         readonly: true,
       });
+    const { setValue: setFilters } = wwLib.wwVariable.useComponentVariable({
+      uid: props.uid,
+      name: "filters",
+      type: "object",
+      defaultValue: {},
+      readonly: true,
+    });
+    const { setValue: setSort } = wwLib.wwVariable.useComponentVariable({
+      uid: props.uid,
+      name: "sort",
+      type: "object",
+      defaultValue: {},
+      readonly: true,
+    });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
     };
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
+      if (props.content.initialFilters) {
+        gridApi.value.setFilterModel(props.content.initialFilters);
+      }
+      if (props.content.initialSort) {
+        gridApi.value.applyColumnState({state: [props.content.initialSort]});
+      }
+    });
+
     const onRowSelected = (event) => {
       const name = event.node.isSelected() ? "rowSelected" : "rowDeselected";
       ctx.emit("trigger-event", {
@@ -101,6 +128,18 @@ export default {
       setSelectedRows(selected);
     };
 
+    const onFilterChanged = (event) => {
+      if (!gridApi.value) return;
+      const filterModel = gridApi.value.getFilterModel();
+      setFilters(filterModel);
+    };
+
+    const onSortChanged = (event) => {
+      if (!gridApi.value) return;
+      const state = gridApi.value.getState();
+      setSort(state.sort?.sortModel?.[0] || {});
+    };
+
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
@@ -111,6 +150,8 @@ export default {
       onRowSelected,
       onSelectionChanged,
       gridApi,
+      onFilterChanged,
+      onSortChanged,
       localeText: computed(() => {
         switch (props.content.lang) {
           case "fr":
@@ -366,18 +407,8 @@ export default {
   /* wwEditor:start */
   watch: {
     columnDefs: {
-      // TODO: also do data cleaning
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
-        for (const col of this.content.columns) {
-          // const column = this.gridApi.getColumn(col.field);
-          // if (!column) continue;
-          // if (col.pinned && !column.pinned) {
-          //   this.gridApi.setColumnsPinned([col.field], col.pinned);
-          // } else if ((!col.pinned || col.pinned === 'none') && column.pinned) {
-          //   this.gridApi.setColumnsPinned([col.field], null);
-          // }
-        }
         this.gridApi.resetColumnState();
 
         if (this.wwEditorState.isACopy) return;
