@@ -34,6 +34,8 @@ A highly customizable data grid/table component that supports features like sort
    - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows. Must be a semi transparent color, at it will be an overlay on top
    - `menuTextColor`: `string | null` - Text color for the filter menu
    - `menuBackgroundColor`: `string | null` - Background color for the filter menu
+   - `selectionCheckboxColor`: `string | null` - Override the theme background color for selection checkboxes
+   - `cellSelectionBorderColor`: `string | null` - Override the theme boder color for cell selection
    - `actionColor`: `string | null` - Text color for action buttons.
    - `actionBackgroundColor`: `string | null` - Background color for action buttons.
    - `actionPadding`: `string` - Padding for action buttons.

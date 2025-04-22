@@ -23,8 +23,9 @@ export default {
                 "selectedRowBackgroundColor",
             ],
             ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
-            ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize"],
+            ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize", "cellSelectionBorderColor"],
             ["menuTitle", "menuTextColor", "menuBackgroundColor"],
+            'selectionCheckboxColor',
             [
                 "actionTitle",
                 "actionColor",
@@ -281,6 +282,18 @@ export default {
             bindable: true,
             bindingValidation: { markdown: "font-size", type: "string", cssSupports: "font-size" },
         },
+        cellSelectionBorderColor: {
+            type: "Color",
+            label: "Selection Border Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+        },
         columnHoverHighlight: {
             type: "OnOff",
             label: "Hover Highlight",
@@ -353,6 +366,18 @@ export default {
             propertyHelp: {
                 tooltip: `Should be a semi-transparent color to allow the background color to show through.`,
             },
+        },
+        selectionCheckboxColor: {
+            type: "Color",
+            label: "Selection Checkboxes Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
         },
         rowVerticalPaddingScale: {
             type: "Number",
