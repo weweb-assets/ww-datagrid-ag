@@ -85,20 +85,22 @@ export default {
         defaultValue: [],
         readonly: true,
       });
-    const { setValue: setFilters } = wwLib.wwVariable.useComponentVariable({
-      uid: props.uid,
-      name: "filters",
-      type: "object",
-      defaultValue: {},
-      readonly: true,
-    });
-    const { setValue: setSort } = wwLib.wwVariable.useComponentVariable({
-      uid: props.uid,
-      name: "sort",
-      type: "object",
-      defaultValue: {},
-      readonly: true,
-    });
+    const { value: filterValue, setValue: setFilters } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "filters",
+        type: "object",
+        defaultValue: {},
+        readonly: true,
+      });
+    const { value: sortValue, setValue: setSort } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "sort",
+        type: "object",
+        defaultValue: {},
+        readonly: true,
+      });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -110,7 +112,7 @@ export default {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
       if (props.content.initialSort) {
-        gridApi.value.applyColumnState({state: [props.content.initialSort]});
+        gridApi.value.applyColumnState({ state: [props.content.initialSort] });
       }
     });
 
@@ -131,13 +133,25 @@ export default {
     const onFilterChanged = (event) => {
       if (!gridApi.value) return;
       const filterModel = gridApi.value.getFilterModel();
-      setFilters(filterModel);
+      if (JSON.stringify(filterModel || {}) !== JSON.stringify(filterValue.value || {})) {
+        setFilters(filterModel);
+        ctx.emit("trigger-event", {
+          name: "filterChanged",
+          event: filterModel,
+        });
+      }
     };
 
     const onSortChanged = (event) => {
       if (!gridApi.value) return;
       const state = gridApi.value.getState();
-      setSort(state.sort?.sortModel?.[0] || {});
+      if (JSON.stringify(state.sort?.sortModel || {}) !== JSON.stringify(sortValue.value || {})) {
+        setSort(state.sort?.sortModel?.[0] || {});
+      ctx.emit("trigger-event", {
+        name: "sortChanged",
+        event: state.sort?.sortModel?.[0] || {} ,
+      });
+      }
     };
 
     /* wwEditor:start */
@@ -332,7 +346,7 @@ export default {
         checkboxCheckedBackgroundColor: this.content.selectionCheckboxColor,
         rangeSelectionBorderColor: this.content.cellSelectionBorderColor,
         checkboxUncheckedBorderColor: this.checkboxUncheckedBorderColor,
-        focusShadow: this.content.focusShadow
+        focusShadow: this.content.focusShadow,
       });
     },
     isEditing() {

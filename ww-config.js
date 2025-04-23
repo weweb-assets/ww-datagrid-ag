@@ -24,7 +24,7 @@ export default {
             ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize", "cellSelectionBorderColor"],
             ["menuTitle", "menuTextColor", "menuBackgroundColor"],
-            ["selectionTitle", "selectedRowBackgroundColor", 'selectionCheckboxColor', 'focusShadow'],
+            ["selectionTitle", "selectedRowBackgroundColor", 'selectionCheckboxColor', 'focusShadow', 'checkboxUncheckedBorderColor'],
             [
                 "actionTitle",
                 "actionColor",
@@ -75,7 +75,15 @@ export default {
                 row: null,
             },
             getTestEvent: "getSelectionTestEvent",
-        }
+        },
+        {
+            name: "filterChanged",
+            label: { en: "On Filter Changed" },
+        },
+        {
+            name: "sortChanged",
+            label: { en: "On Sort Changed" },
+        },
     ],
     properties: {
         headerTitle: {
