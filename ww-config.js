@@ -15,17 +15,16 @@ export default {
                 "headerFontFamily",
             ],
             [
-                "rowBackgroundColor",
                 "rowTitle",
+                "rowBackgroundColor",
                 "rowAlternateColor",
                 "rowHoverColor",
                 "rowVerticalPaddingScale",
-                "selectedRowBackgroundColor",
             ],
             ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize", "cellSelectionBorderColor"],
             ["menuTitle", "menuTextColor", "menuBackgroundColor"],
-            'selectionCheckboxColor',
+            ["selectionTitle", "selectedRowBackgroundColor", 'selectionCheckboxColor', 'focusShadow'],
             [
                 "actionTitle",
                 "actionColor",
@@ -107,6 +106,11 @@ export default {
         actionTitle: {
             type: "Title",
             label: "Action",
+            editorOnly: true,
+        },
+        selectionTitle: {
+            type: "Title",
+            label: "Selection",
             editorOnly: true,
         },
         layout: {
@@ -378,6 +382,27 @@ export default {
             states: true,
             classes: true,
             bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+        },
+        checkboxUncheckedBorderColor: {
+            type: "Color",
+            label: "Checkbox Unchecked Border Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+        },
+        focusShadow: {
+            type: "Shadows",
+            label: "Focus Shadow",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "shadow", type: "string", cssSupports: "shadow" },
         },
         rowVerticalPaddingScale: {
             type: "Number",

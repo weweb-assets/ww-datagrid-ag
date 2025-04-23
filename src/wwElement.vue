@@ -330,7 +330,9 @@ export default {
         columnHoverColor: this.content.columnHoverColor,
         foregroundColor: this.content.textColor,
         checkboxCheckedBackgroundColor: this.content.selectionCheckboxColor,
-        rangeSelectionBorderColor: this.content.cellSelectionBorderColor
+        rangeSelectionBorderColor: this.content.cellSelectionBorderColor,
+        checkboxUncheckedBorderColor: this.checkboxUncheckedBorderColor,
+        focusShadow: this.content.focusShadow
       });
     },
     isEditing() {
