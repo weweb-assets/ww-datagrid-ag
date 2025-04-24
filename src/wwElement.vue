@@ -345,7 +345,7 @@ export default {
         foregroundColor: this.content.textColor,
         checkboxCheckedBackgroundColor: this.content.selectionCheckboxColor,
         rangeSelectionBorderColor: this.content.cellSelectionBorderColor,
-        checkboxUncheckedBorderColor: this.checkboxUncheckedBorderColor,
+        checkboxUncheckedBorderColor: this.content.checkboxUncheckedBorderColor,
         focusShadow: this.content.focusShadow,
       });
     },
