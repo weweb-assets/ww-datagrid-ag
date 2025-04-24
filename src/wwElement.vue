@@ -112,7 +112,7 @@ export default {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
       if (props.content.initialSort) {
-        gridApi.value.applyColumnState({ state: [props.content.initialSort] });
+        gridApi.value.applyColumnState({ state: [props.content.initialSort], defaultState: { sort: null }, });
       }
     });
 
