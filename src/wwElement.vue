@@ -112,7 +112,7 @@ export default {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
       if (props.content.initialSort) {
-        gridApi.value.applyColumnState({ state: [props.content.initialSort], defaultState: { sort: null }, });
+        gridApi.value.applyColumnState({ state: props.content.initialSort || [], defaultState: { sort: null }, });
       }
     });
 
@@ -145,11 +145,11 @@ export default {
     const onSortChanged = (event) => {
       if (!gridApi.value) return;
       const state = gridApi.value.getState();
-      if (JSON.stringify(state.sort?.sortModel || {}) !== JSON.stringify(sortValue.value || {})) {
-        setSort(state.sort?.sortModel?.[0] || {});
+      if (JSON.stringify(state.sort?.sortModel || []) !== JSON.stringify(sortValue.value || [])) {
+        setSort(state.sort?.sortModel || []);
       ctx.emit("trigger-event", {
         name: "sortChanged",
-        event: state.sort?.sortModel?.[0] || {} ,
+        event: state.sort?.sortModel || [],
       });
       }
     };

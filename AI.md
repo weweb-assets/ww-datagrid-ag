@@ -50,7 +50,7 @@ A highly customizable data grid/table component that supports features like sort
    - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
    - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
    - `initialFilters`: `{id: { filterType, type, filter } }` (Optional): An aggrid object describing the initial filtering. Here is an example: `{ id1: { filterType: "number", type: "greaterThan", filter: 50}}`
-   - `initialSort`: `{colId: id, sort: 'asc' |'dsc'}` (Optional): Description of the initial sort column. Here is an example: `{colId: "ID", sort: "asc"}`
+   - `initialSort`: `Array<{colId: id, sort: 'asc' |'dsc'}>` (Optional): Description of the initial sort column. Here is an example: `[{colId: "ID", sort: "asc"}]`
    - `columns`: `Array<{
        headerName: string,
        cellDataType: 'text' | 'number' | 'boolean' | 'dateString',
