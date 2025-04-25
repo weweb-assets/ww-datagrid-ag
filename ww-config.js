@@ -1007,7 +1007,7 @@ export default {
             /* wwEditor:start */
             bindingValidation: {
                 type: "object",
-                tooltip: 'See <a href="https://github.com/ag-grid/ag-grid/blob/latest/community-modules/locale/src/en-US.ts">Aggrid website</a> for the list of texts to localise',
+                tooltip: 'See <a href="https://github.com/ag-grid/ag-grid/blob/latest/community-modules/locale/src/en-US.ts" target="_blank">Aggrid website</a> for the list of texts to localise',
             },
             /* wwEditor:end */
         }
