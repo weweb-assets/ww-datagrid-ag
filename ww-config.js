@@ -959,6 +959,10 @@ export default {
             section: "settings",
             bindable: true,
             defaultValue: null,
+            bindingValidation: {
+                type: "object",
+                tooltip: "An object representing the initial filter model",
+            },
         },
         initialSort: {
             label: { en: "Initial Sort" },
@@ -966,6 +970,10 @@ export default {
             section: "settings",
             bindable: true,
             defaultValue: null,
+            bindingValidation: {
+                type: "array",
+                tooltip: "An array representing the initial sort model",
+            },
         },
         lang: {
             label: { en: "Language" },
