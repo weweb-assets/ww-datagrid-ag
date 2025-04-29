@@ -15,17 +15,16 @@ export default {
                 "headerFontFamily",
             ],
             [
-                "rowBackgroundColor",
                 "rowTitle",
+                "rowBackgroundColor",
                 "rowAlternateColor",
                 "rowHoverColor",
                 "rowVerticalPaddingScale",
-                "selectedRowBackgroundColor",
             ],
             ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
             ["cellTitle", "cellColor", "cellFontFamily", "cellFontSize", "cellSelectionBorderColor"],
             ["menuTitle", "menuTextColor", "menuBackgroundColor"],
-            'selectionCheckboxColor',
+            ["selectionTitle", "selectedRowBackgroundColor", 'selectionCheckboxColor', 'focusShadow', 'checkboxUncheckedBorderColor'],
             [
                 "actionTitle",
                 "actionColor",
@@ -76,7 +75,15 @@ export default {
                 row: null,
             },
             getTestEvent: "getSelectionTestEvent",
-        }
+        },
+        {
+            name: "filterChanged",
+            label: { en: "On Filter Changed" },
+        },
+        {
+            name: "sortChanged",
+            label: { en: "On Sort Changed" },
+        },
     ],
     properties: {
         headerTitle: {
@@ -107,6 +114,11 @@ export default {
         actionTitle: {
             type: "Title",
             label: "Action",
+            editorOnly: true,
+        },
+        selectionTitle: {
+            type: "Title",
+            label: "Selection",
             editorOnly: true,
         },
         layout: {
@@ -378,6 +390,27 @@ export default {
             states: true,
             classes: true,
             bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+        },
+        checkboxUncheckedBorderColor: {
+            type: "Color",
+            label: "Checkbox Unchecked Border Color",
+            options: {
+                nullable: true,
+            },
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "color", type: "string", cssSupports: "color" },
+        },
+        focusShadow: {
+            type: "Shadows",
+            label: "Focus Shadow",
+            responsive: true,
+            bindable: true,
+            states: true,
+            classes: true,
+            bindingValidation: { markdown: "shadow", type: "string", cssSupports: "shadow" },
         },
         rowVerticalPaddingScale: {
             type: "Number",
@@ -920,5 +953,63 @@ export default {
             },
             /* wwEditor:end */
         },
+        initialFilters: {
+            label: { en: "Initial Filters" },
+            type: "RawObject",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
+            bindingValidation: {
+                type: "object",
+                tooltip: "An object representing the initial filter model",
+            },
+        },
+        initialSort: {
+            label: { en: "Initial Sort" },
+            type: "RawObject",
+            section: "settings",
+            bindable: true,
+            defaultValue: null,
+            bindingValidation: {
+                type: "array",
+                tooltip: "An array representing the initial sort model",
+            },
+        },
+        lang: {
+            label: { en: "Language" },
+            type: "TextSelect",
+            section: "settings",
+            bindable: true,
+            options: {
+                options: [
+                    { value: "en", label: "English", default: true },
+                    { value: "fr", label: "French" },
+                    { value: "es", label: "Spanish" },
+                    { value: "de", label: "German" },
+                    { value: "pt", label: "Portuguese" },
+                    { value: "custom", label: "Custom" },
+                ],
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "Localisation to use. Default is English. Possible values: en, fr, es, de, pt, custom. Use custom to set your own locale texts.",
+            },
+            /* wwEditor:end */
+        },
+        localeText: {
+            label: { en: "Locale texts" },
+            type: "RawObject",
+            section: "settings",
+            bindable: true,
+            defaultValue: {},
+            hidden: (content) => content.lang !== "custom",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "object",
+                tooltip: 'See <a href="https://github.com/ag-grid/ag-grid/blob/latest/community-modules/locale/src/en-US.ts" target="_blank">Aggrid website</a> for the list of texts to localise',
+            },
+            /* wwEditor:end */
+        }
     },
 };
