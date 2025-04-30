@@ -39,6 +39,7 @@ export default {
                 "actionFontStyle",
                 "actionLineHeight",
             ],
+            ['rowSelection', 'enableClickSelection', 'disableCheckboxes'],
         ],
     },
     triggerEvents: [
@@ -926,6 +927,33 @@ export default {
                 type: "string",
                 tooltip: "Type of row selection: none or single or multiple",
             },
+            /* wwEditor:end */
+        },
+        enableClickSelection: {
+            label: { en: "Enable Click Selection" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "True to enable row selection on click",
+            },
+            hidden: content => content.rowSelection === "none" || content.rowSelection === undefined,
+            /* wwEditor:end */
+        },
+        disableCheckboxes: {
+            label: { en: "Disable Checkboxes" },
+            type: "OnOff",
+            section: "settings",
+            bindable: true,
+            defaultValue: false,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "True to disable checkboxes",
+            },
+            hidden: content => content.rowSelection === "none" || content.rowSelection === undefined,
             /* wwEditor:end */
         },
         movableColumns: {
