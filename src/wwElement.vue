@@ -22,6 +22,7 @@
       @cell-value-changed="onCellValueChanged"
       @filter-changed="onFilterChanged"
       @sort-changed="onSortChanged"
+      @row-clicked="onRowClicked"
     >
     </ag-grid-vue>
   </div>
@@ -401,6 +402,17 @@ export default {
         },
       });
     },
+    onRowClicked(event) {
+      this.$emit("trigger-event", {
+        name: "rowClicked",
+        event: {
+          row: event.data,
+          id: event.node.id,
+          index: event.node.sourceRowIndex,
+          displayIndex: event.rowIndex,
+        },
+      });
+    },
     /* wwEditor:start */
     generateColumns() {
       this.$emit("update:content", {
@@ -439,6 +451,16 @@ export default {
       if (!data || !data[0]) throw new Error("No data found");
       return {
         row: data[0],
+      };
+    },
+    getRowClickedTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+        index: 0,
+        displayIndex: 0,
       };
     },
     /* wwEditor:end */

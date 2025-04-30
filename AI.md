@@ -122,6 +122,7 @@ There is no children.
 - cellValueChanged: Triggered after a cell edition so that you can update the data source. Payload: { oldValue: {/* old value */}, newValue: { /* row data */}, columnId: "id", row: { /* row data */} }
 - rowSelected: triggered when a row is selected. Payload: { row: { /* row data */} }
 - rowDeselected: triggered when a row is deselected. Payload: { row: { /* row data */} }
+- rowClicked: Triggered when clicking on a row. Payload: { row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
 
 8. **Notes:**
 

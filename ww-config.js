@@ -85,6 +85,17 @@ export default {
             name: "sortChanged",
             label: { en: "On Sort Changed" },
         },
+        {
+            name: 'rowClicked',
+            label: { en: "On Row Clicked" },
+            event: {
+                row: null,
+                id: 0,
+                index: 0,
+                displayIndex: 0,
+            },
+            getTestEvent: "getRowClickedTestEvent",
+        }
     ],
     properties: {
         headerTitle: {
