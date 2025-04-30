@@ -52,6 +52,24 @@ export default {
         "actionLineHeight",
       ],
     ],
+    customSettingsPropertiesOrder: [
+      "rowData",
+      "idFormula",
+      "generateColumns",
+      "columns",
+      ["pagination", "paginationPageSize"],
+      [
+        "rowSelection",
+        "enableClickSelection",
+        "disableCheckboxes",
+        "selectAll",
+      ],
+      "movableColumns",
+      "resizableColumns",
+      "initialFilters",
+      "initialSort",
+      ["lang", "localeText"],
+    ],
   },
   triggerEvents: [
     {
@@ -745,7 +763,6 @@ export default {
         cssSupports: "line-height",
       },
     },
-
     rowData: {
       label: { en: "Data" },
       type: "ObjectList",
@@ -1087,9 +1104,9 @@ export default {
       defaultValue: "all",
       options: {
         options: [
-          { value: "all", label: "Select all rows", default: true },
-          { value: "filtered", label: "Select all rows filtered" },
-          { value: "currentPage", label: "Select all rows filtered on page" },
+          { value: "all", label: "All", default: true },
+          { value: "filtered", label: "Filtered" },
+          { value: "currentPage", label: "Current Page" },
         ],
       },
       /* wwEditor:start */
