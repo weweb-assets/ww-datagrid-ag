@@ -49,6 +49,7 @@ A highly customizable data grid/table component that supports features like sort
    - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`. Must be a semi transparent color, at it will be an overlay on top
    - `enableClickSelection`: `Boolean` - True to enable selection on row click
    - `disableCheckboxes`: `Boolean` - True to hide checkbox for selection
+   - `selectAll`: `'all' | 'currentPage' | 'filtered'` - Behavior of select all button
    - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
    - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
    - `initialFilters`: `{id: { filterType, type, filter } }` (Optional): An aggrid object describing the initial filtering. Here is an example: `{ id1: { filterType: "number", type: "greaterThan", filter: 50}}`

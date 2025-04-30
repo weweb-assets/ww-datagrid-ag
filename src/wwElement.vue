@@ -300,7 +300,7 @@ export default {
         return {
           mode: "multiRow",
           checkboxes: !this.content.disableCheckboxes,
-          selectAll: "filtered",
+          selectAll: this.content.selectAll || "all",
           enableClickSelection: this.content.enableClickSelection,
         };
       } else if (this.content.rowSelection === "single") {
