@@ -1111,8 +1111,9 @@ export default {
       },
       /* wwEditor:start */
       bindingValidation: {
-        type: "boolean",
-        tooltip: "True to disable checkboxes",
+        type: "'all' | 'filtered' | 'currentPage'",
+        tooltip:
+          "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows",
       },
       hidden: (content) => content.rowSelection !== "multiple",
       /* wwEditor:end */

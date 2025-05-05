@@ -300,6 +300,7 @@ export default {
         return {
           mode: "multiRow",
           checkboxes: !this.content.disableCheckboxes,
+          headerCheckbox: !this.content.disableCheckboxes,
           selectAll: this.content.selectAll || "all",
           enableClickSelection: this.content.enableClickSelection,
         };
