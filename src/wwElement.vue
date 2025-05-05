@@ -232,6 +232,7 @@ export default {
           pinned: col.pinned === "none" ? false : col.pinned,
           width,
           flex,
+          hide: !!col.hide,
         };
         switch (col.cellDataType) {
           case "action": {

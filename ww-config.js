@@ -949,6 +949,15 @@ export default {
                   ],
                 },
               },
+              hide: {
+                label: "Hidden",
+                type: "OnOff",
+                bindable: true,
+                bindingValidation: {
+                  type: "boolean",
+                  tooltip: "True to hide the column",
+                },
+              },
               editable: {
                 label: "Editable",
                 type: "OnOff",
@@ -1111,7 +1120,8 @@ export default {
       },
       /* wwEditor:start */
       bindingValidation: {
-        type: "'all' | 'filtered' | 'currentPage'",
+        type: "string",
+        enum: ["all", "filtered", "currentPage"],
         tooltip:
           "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows",
       },
