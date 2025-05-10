@@ -22,6 +22,7 @@
       @cell-value-changed="onCellValueChanged"
       @filter-changed="onFilterChanged"
       @sort-changed="onSortChanged"
+      @row-clicked="onRowClicked"
     >
     </ag-grid-vue>
   </div>
@@ -112,7 +113,10 @@ export default {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
       if (props.content.initialSort) {
-        gridApi.value.applyColumnState({ state: props.content.initialSort || [], defaultState: { sort: null }, });
+        gridApi.value.applyColumnState({
+          state: props.content.initialSort || [],
+          defaultState: { sort: null },
+        });
       }
     });
 
@@ -133,7 +137,10 @@ export default {
     const onFilterChanged = (event) => {
       if (!gridApi.value) return;
       const filterModel = gridApi.value.getFilterModel();
-      if (JSON.stringify(filterModel || {}) !== JSON.stringify(filterValue.value || {})) {
+      if (
+        JSON.stringify(filterModel || {}) !==
+        JSON.stringify(filterValue.value || {})
+      ) {
         setFilters(filterModel);
         ctx.emit("trigger-event", {
           name: "filterChanged",
@@ -145,12 +152,15 @@ export default {
     const onSortChanged = (event) => {
       if (!gridApi.value) return;
       const state = gridApi.value.getState();
-      if (JSON.stringify(state.sort?.sortModel || []) !== JSON.stringify(sortValue.value || [])) {
+      if (
+        JSON.stringify(state.sort?.sortModel || []) !==
+        JSON.stringify(sortValue.value || [])
+      ) {
         setSort(state.sort?.sortModel || []);
-      ctx.emit("trigger-event", {
-        name: "sortChanged",
-        event: state.sort?.sortModel || [],
-      });
+        ctx.emit("trigger-event", {
+          name: "sortChanged",
+          event: state.sort?.sortModel || [],
+        });
       }
     };
 
@@ -222,6 +232,7 @@ export default {
           pinned: col.pinned === "none" ? false : col.pinned,
           width,
           flex,
+          hide: !!col.hide,
         };
         switch (col.cellDataType) {
           case "action": {
@@ -287,14 +298,25 @@ export default {
     },
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
-        return { mode: "multiRow", checkboxes: true };
+        return {
+          mode: "multiRow",
+          checkboxes: !this.content.disableCheckboxes,
+          headerCheckbox: !this.content.disableCheckboxes,
+          selectAll: this.content.selectAll || "all",
+          enableClickSelection: this.content.enableClickSelection,
+        };
       } else if (this.content.rowSelection === "single") {
-        return { mode: "singleRow", checkboxes: true };
+        return {
+          mode: "singleRow",
+          checkboxes: !this.content.disableCheckboxes,
+          enableClickSelection: this.content.enableClickSelection,
+        };
       } else {
         return {
           mode: "singleRow",
           checkboxes: false,
           isRowSelectable: () => false,
+          enableClickSelection: this.content.enableClickSelection,
         };
       }
     },
@@ -346,7 +368,9 @@ export default {
         checkboxCheckedBackgroundColor: this.content.selectionCheckboxColor,
         rangeSelectionBorderColor: this.content.cellSelectionBorderColor,
         checkboxUncheckedBorderColor: this.content.checkboxUncheckedBorderColor,
-        focusShadow: this.content.focusShadow?.length ? this.content.focusShadow : undefined,
+        focusShadow: this.content.focusShadow?.length
+          ? this.content.focusShadow
+          : undefined,
       });
     },
     isEditing() {
@@ -377,6 +401,17 @@ export default {
           newValue: event.newValue,
           columnId: event.column.getColId(),
           row: event.data,
+        },
+      });
+    },
+    onRowClicked(event) {
+      this.$emit("trigger-event", {
+        name: "rowClicked",
+        event: {
+          row: event.data,
+          id: event.node.id,
+          index: event.node.sourceRowIndex,
+          displayIndex: event.rowIndex,
         },
       });
     },
@@ -418,6 +453,16 @@ export default {
       if (!data || !data[0]) throw new Error("No data found");
       return {
         row: data[0],
+      };
+    },
+    getRowClickedTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+        index: 0,
+        displayIndex: 0,
       };
     },
     /* wwEditor:end */
