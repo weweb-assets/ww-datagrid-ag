@@ -43,6 +43,8 @@ A highly customizable data grid/table component that supports features like sort
 - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows. Must be a semi transparent color, at it will be an overlay on top
 - `menuTextColor`: `string | null` - Text color for the filter menu
 - `menuBackgroundColor`: `string | null` - Background color for the filter menu
+- `selectionCheckboxColor`: `string | null` - Override the theme background color for selection checkboxes
+- `cellSelectionBorderColor`: `string | null` - Override the theme boder color for cell selection
 - `actionColor`: `string | null` - Text color for action buttons.
 - `actionBackgroundColor`: `string | null` - Background color for action buttons.
 - `actionPadding`: `string` - Padding for action buttons.
@@ -54,8 +56,15 @@ A highly customizable data grid/table component that supports features like sort
 - `actionFontStyle`: `string`: Font style of the button in action column
 - `actionLineHeight`: `string`: Line height of the button in action column
 - `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`. Must be a semi transparent color, at it will be an overlay on top
+- `enableClickSelection`: `Boolean` - True to enable selection on row click
+- `disableCheckboxes`: `Boolean` - True to hide checkbox for selection
+- `selectAll`: `'all' | 'currentPage' | 'filtered'` - Behavior of select all button
 - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
 - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
+- `initialFilters`: `{id: { filterType, type, filter } }` (Optional): An aggrid object describing the initial filtering. Here is an example: `{ id1: { filterType: "number", type: "greaterThan", filter: 50}}`
+- `initialSort`: `Array<{colId: id, sort: 'asc' |'dsc'}>` (Optional): Description of the initial sort column. Here is an example: `[{colId: "ID", sort: "asc"}]`
+- `lang`: `'en' | 'fr' | 'de' | 'pt' | 'custom'` - Locale use for the interface. Default: `"en"`. If `custom` the property localeText should be provided
+- `localeText`: only needed when lang is set to custom. Must be an object provided to aggrid 
 - `columns`: `Array<{
     headerName: string,
     cellDataType: 'text' | 'number' | 'boolean' | 'dateString',
@@ -102,11 +111,13 @@ A highly customizable data grid/table component that supports features like sort
     pinned: undefined | 'left' | 'right'
   }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.`
 
+
 ***Events:***
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
 - cellValueChanged: Triggered after a cell edition so that you can update the data source. Payload: { oldValue: {/* old value */}, newValue: { /* row data */}, columnId: "id", row: { /* row data */} }
 - rowSelected: triggered when a row is selected. Payload: { row: { /* row data */} }
 - rowDeselected: triggered when a row is deselected. Payload: { row: { /* row data */} }
+- rowClicked: Triggered when clicking on a row. Payload: { row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
 
 ***Notes:***
 - idFormula always use javascript with context.mapping value "context.mapping..."
