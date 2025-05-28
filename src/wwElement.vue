@@ -10,7 +10,7 @@
       :selection-column-def="{ pinned: true }"
       :theme="theme"
       :getRowId="getRowId"
-      :pagination="content.pagination"
+      :pagination="!content.rowReorder && content.pagination"
       :paginationPageSize="content.paginationPageSize || 10"
       :paginationPageSizeSelector="false"
       :suppressMovableColumns="!content.movableColumns"
@@ -18,6 +18,7 @@
       :locale-text="localeText"
       enableCellTextSelection
       ensureDomOrder
+      :row-drag-managed="true"
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
@@ -25,13 +26,14 @@
       @filter-changed="onFilterChanged"
       @sort-changed="onSortChanged"
       @row-clicked="onRowClicked"
+      @row-drag-end="onRowDragged"
     >
     </ag-grid-vue>
   </div>
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed } from "vue";
+import { shallowRef, watchEffect, computed, nextTick, ref, watch } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -48,8 +50,6 @@ import {
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
-
-console.log("AG Grid version:", AG_GRID_LOCALE_FR);
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -130,6 +130,22 @@ export default {
       });
     };
 
+    const onRowDragged = (event) => {
+      const rows = [];
+      event.api.forEachNode(node => { 
+          rows.push(node.data);
+      });
+      ctx.emit("trigger-event", {
+        name: "rowDragged",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+          targetIndex: event.overIndex,
+          rows,
+        },
+      });
+    };
+
     const onSelectionChanged = (event) => {
       if (!gridApi.value) return;
       const selected = gridApi.value.getSelectedRows() || [];
@@ -197,6 +213,7 @@ export default {
             AG_GRID_LOCALE_EN;
         }
       }),
+      onRowDragged,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
@@ -214,7 +231,7 @@ export default {
       };
     },
     columnDefs() {
-      return this.content.columns.map((col) => {
+      return this.content.columns.map((col, index) => {
         const minWidth =
           !col.minWidth || col.minWidth === "auto"
             ? null
@@ -236,6 +253,9 @@ export default {
           flex,
           hide: !!col.hide,
         };
+        if (index === 0 && this.content.rowReorder) {
+          commonProperties.rowDrag = true;
+        }
         switch (col.cellDataType) {
           case "action": {
             return {
@@ -468,6 +488,17 @@ export default {
         displayIndex: 0,
       };
     },
+    getRowDraggedTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+        index: 0,
+        targetIndex: 1,
+        rows: data,
+      };
+    },
     /* wwEditor:end */
   },
   /* wwEditor:start */
@@ -475,7 +506,7 @@ export default {
     columnDefs: {
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
-        this.gridApi.resetColumnState();
+        this.gridApi?.resetColumnState();
 
         if (this.wwEditorState.isACopy) return;
 

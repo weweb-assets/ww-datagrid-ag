@@ -66,6 +66,7 @@ export default {
       ],
       "movableColumns",
       "resizableColumns",
+      "rowReorder",
       "initialFilters",
       "initialSort",
       ["lang", "localeText"],
@@ -124,6 +125,17 @@ export default {
         displayIndex: 0,
       },
       getTestEvent: "getRowClickedTestEvent",
+    },
+    {
+      name: "rowDragged",
+      label: { en: "On Row Dragged" },
+      event: {
+        row: null,
+        id: 0,
+        targetIndex: 0,
+        rows: []
+      },
+      getTestEvent: "getRowDraggedTestEvent",
     },
   ],
   properties: {
@@ -1226,6 +1238,19 @@ export default {
       responsive: true,
       states: true,
       classes: true,
+    },
+    rowReorder: {
+      label: { en: "Row Reorder" },
+      type: "OnOff",
+      section: "settings",
+      bindable: true,
+      defaultValue: false,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "boolean",
+        tooltip: "Enable or disable row reordering",
+      },
+      /* wwEditor:end */
     }
   },
 };
