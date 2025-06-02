@@ -28,6 +28,7 @@
       @row-clicked="onRowClicked"
       @row-drag-end="onRowDragged"
       @row-drag-enter="onRowDragEnter"
+      @column-moved="onColumnMoved"
 
     >
     </ag-grid-vue>
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed, nextTick, ref, watch } from "vue";
+import { shallowRef, watchEffect, computed } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -106,6 +107,13 @@ export default {
         defaultValue: {},
         readonly: true,
       });
+      const { value: columnOrder, setValue: setColumnOrder } = wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "columnOrder",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -116,11 +124,25 @@ export default {
       if (props.content.initialFilters) {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
+    });
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
       if (props.content.initialSort) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
         });
+      }
+    })
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
+      if (props.content.initialColumnsOrder) {
+        gridApi.value.applyColumnState({
+          state: props.content.initialColumnsOrder.map((colId) => ({ colId })),
+          applyOrder: true,
+        })
       }
     });
 
@@ -194,6 +216,22 @@ export default {
       }
     };
 
+    const onColumnMoved = (event) => {
+      if (!event.finished || event.source !== 'uiColumnMoved') return;
+      const columns = event.api.getAllGridColumns();
+      setColumnOrder(
+        columns.map((col) => col.getColId())
+      );
+      ctx.emit("trigger-event", {
+        name: "columnMoved",
+        event: {
+          toIndex: event.toIndex,
+          columnId: event.column.getColId(),
+          columnsOrder: columns.map((col) => col.getColId()),
+        },
+      });
+    };
+
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
@@ -227,6 +265,7 @@ export default {
       }),
       onRowDragged,
       onRowDragEnter,
+      onColumnMoved,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
@@ -517,6 +556,15 @@ export default {
       return {
         row: data[0],
         id: 0,
+      };
+    },
+    getColumnMovedTestEvent() {
+      const data = this.columnDefs;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        toIndex: 1,
+        columnId: data[0].field,
+        columnsOrder: data.map((col) => col.field),
       };
     },
     /* wwEditor:end */
