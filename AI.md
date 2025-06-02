@@ -6,10 +6,10 @@ keywords: [datagrid, table]
 
 #### ww-datagrid-ag
 
-***Component Purpose:***
+***Purpose:***
 A highly customizable data grid/table component that supports features like sorting, filtering, pagination, row selection, and custom actions. It's designed to handle large datasets efficiently with various data types and styling options. Its based on the AGGrid framework
 
-***Special Features:***
+***Features:***
 - Supports multiple data types including text, numbers, dates, images, and action buttons
 - Advanced filtering and sorting capabilities
 - Customizable pagination
@@ -111,6 +111,10 @@ A highly customizable data grid/table component that supports features like sort
     pinned: undefined | 'left' | 'right'
   }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.`
 
+***Exposed Variables:***
+- selectedRows: ***READ ONLY*** Array of currently selected rows. (path: variables['current_element_uid-selectedRows'])
+- filters: ***READ ONLY*** Current filter state as an object containing active filters. (path: variables['current_element_uid-filters'])
+- sort: ***READ ONLY*** Current sort state as an array of sort configurations. (path: variables['current_element_uid-sort'])
 
 ***Events:***
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
@@ -118,6 +122,8 @@ A highly customizable data grid/table component that supports features like sort
 - rowSelected: triggered when a row is selected. Payload: { row: { /* row data */} }
 - rowDeselected: triggered when a row is deselected. Payload: { row: { /* row data */} }
 - rowClicked: Triggered when clicking on a row. Payload: { row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
+- filterChanged: Triggered when filters are applied or changed. Payload: filter model object
+- sortChanged: Triggered when sorting is applied or changed. Payload: array of sort configurations
 
 ***Notes:***
 - idFormula always use javascript with context.mapping value "context.mapping..."
