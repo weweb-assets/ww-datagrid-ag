@@ -69,6 +69,7 @@ export default {
       "rowReorder",
       "initialFilters",
       "initialSort",
+      "initialColumnsOrder",
       ["lang", "localeText"],
     ],
   },
@@ -146,6 +147,16 @@ export default {
       },
       getTestEvent: "getRowDraggedTestEvent",
     },
+    {
+      name: 'columnMoved',
+      label: { en: "On Column Moved" },
+      event: {
+        columnId: null,
+        toIndex: 0,
+        columnsOrder: [],
+      },
+      getTestEvent: "getColumnMovedTestEvent",
+    }
   ],
   properties: {
     headerTitle: {
@@ -1194,6 +1205,17 @@ export default {
       bindingValidation: {
         type: "array",
         tooltip: "An array representing the initial sort model",
+      },
+    },
+    initialColumnsOrder: {
+      label: { en: "Initial Columns Order" },
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      defaultValue: null,
+      bindingValidation: {
+        type: "array",
+        tooltip: "An array representing the id of the initial columns order",
       },
     },
     lang: {
