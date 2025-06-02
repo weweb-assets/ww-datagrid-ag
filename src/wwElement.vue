@@ -27,6 +27,8 @@
       @sort-changed="onSortChanged"
       @row-clicked="onRowClicked"
       @row-drag-end="onRowDragged"
+      @row-drag-enter="onRowDragEnter"
+
     >
     </ag-grid-vue>
   </div>
@@ -146,6 +148,16 @@ export default {
       });
     };
 
+    const onRowDragEnter = (event) => {
+      ctx.emit("trigger-event", {
+        name: "rowDragStart",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+        },
+      });
+    };
+
     const onSelectionChanged = (event) => {
       if (!gridApi.value) return;
       const selected = gridApi.value.getSelectedRows() || [];
@@ -214,6 +226,7 @@ export default {
         }
       }),
       onRowDragged,
+      onRowDragEnter,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
@@ -494,9 +507,16 @@ export default {
       return {
         row: data[0],
         id: 0,
-        index: 0,
         targetIndex: 1,
         rows: data,
+      };
+    },
+    getRowDragStartTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
       };
     },
     /* wwEditor:end */

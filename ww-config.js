@@ -127,6 +127,15 @@ export default {
       getTestEvent: "getRowClickedTestEvent",
     },
     {
+      name: "rowDragStart",
+      label: { en: "On Row Drag start" },
+      event: {
+        row: null,
+        id: 0,
+      },
+      getTestEvent: "getRowDragStartTestEvent",
+    },
+    {
       name: "rowDragged",
       label: { en: "On Row Dragged" },
       event: {
