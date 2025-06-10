@@ -66,8 +66,10 @@ export default {
       ],
       "movableColumns",
       "resizableColumns",
+      "rowReorder",
       "initialFilters",
       "initialSort",
+      "initialColumnsOrder",
       ["lang", "localeText"],
     ],
   },
@@ -125,6 +127,36 @@ export default {
       },
       getTestEvent: "getRowClickedTestEvent",
     },
+    {
+      name: "rowDragStart",
+      label: { en: "On Row Drag start" },
+      event: {
+        row: null,
+        id: 0,
+      },
+      getTestEvent: "getRowDragStartTestEvent",
+    },
+    {
+      name: "rowDragged",
+      label: { en: "On Row Dragged" },
+      event: {
+        row: null,
+        id: 0,
+        targetIndex: 0,
+        rows: []
+      },
+      getTestEvent: "getRowDraggedTestEvent",
+    },
+    {
+      name: 'columnMoved',
+      label: { en: "On Column Moved" },
+      event: {
+        columnId: null,
+        toIndex: 0,
+        columnsOrder: [],
+      },
+      getTestEvent: "getColumnMovedTestEvent",
+    }
   ],
   properties: {
     headerTitle: {
@@ -1175,6 +1207,17 @@ export default {
         tooltip: "An array representing the initial sort model",
       },
     },
+    initialColumnsOrder: {
+      label: { en: "Initial Columns Order" },
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      defaultValue: null,
+      bindingValidation: {
+        type: "array",
+        tooltip: "An array representing the id of the initial columns order",
+      },
+    },
     lang: {
       label: { en: "Language" },
       type: "TextSelect",
@@ -1213,5 +1256,18 @@ export default {
       },
       /* wwEditor:end */
     },
+    rowReorder: {
+      label: { en: "Row Reorder" },
+      type: "OnOff",
+      section: "settings",
+      bindable: true,
+      defaultValue: false,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "boolean",
+        tooltip: "Enable or disable row reordering",
+      },
+      /* wwEditor:end */
+    }
   },
 };
