@@ -965,6 +965,7 @@ export default {
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image" ||
                   array?.item?.cellDataType === "custom",
+                bindable: true,
               },
               filter: {
                 label: "Filter",
@@ -972,6 +973,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
+                  bindable: true,
               },
               sortable: {
                 label: "Sortable",
@@ -979,6 +981,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
+                  bindable: true,
               },
               actionName: {
                 label: "Action Name",
