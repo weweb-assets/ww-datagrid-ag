@@ -57,7 +57,7 @@ export default {
       "idFormula",
       "generateColumns",
       "columns",
-      ["pagination", "paginationPageSize"],
+      ["reorderInfoBox", "pagination", "paginationPageSize"],
       [
         "rowSelection",
         "enableClickSelection",
@@ -67,6 +67,7 @@ export default {
       "movableColumns",
       "resizableColumns",
       "rowReorder",
+      "reorderInfoBox",
       "initialFilters",
       "initialSort",
       "initialColumnsOrder",
@@ -1282,6 +1283,18 @@ export default {
         tooltip: "Enable or disable row reordering",
       },
       /* wwEditor:end */
+    },
+    reorderInfoBox: {
+        type: "InfoBox",
+        section: "settings",
+        editorOnly: true,
+        hidden: (content) => !(content.rowReorder && content.pagination),
+        options: {
+            variant: 'warning',
+            icon: 'warning',
+            title: 'Incompatible options',
+            content: `Row reordering is not compatible with pagination. Pagination will be disabled`,
+        },
     }
   },
 };
