@@ -130,6 +130,32 @@ export default {
       getTestEvent: "getRowClickedTestEvent",
     },
   ],
+  actions: [
+        { label: 'Reset filters', action: 'resetFilters' },
+        { label: 'Reset sort', action: 'resetSort' },
+        { label: 'Select all', action: 'selectAll' },
+        { label: 'Deselect all', action: 'deselectAll' },
+        {
+            label: 'Select row',
+            action: 'selectRow',
+            args: [
+                {
+                    name: 'Row id',
+                    type: 'string',
+                },
+            ],
+        },
+        {
+            label: 'Deselect row',
+            action: 'deselectRow',
+            args: [
+                {
+                    name: 'Row id',
+                    type: 'string',
+                },
+            ],
+        },
+    ],
   properties: {
     headerTitle: {
       type: "Title",
