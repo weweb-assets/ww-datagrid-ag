@@ -281,7 +281,7 @@ export default {
       };
     },
     columnDefs() {
-      return this.content.columns.map((col, index) => {
+      const columns = this.content.columns.map((col, index) => {
         const minWidth =
           !col.minWidth || col.minWidth === "auto"
             ? null
@@ -303,9 +303,6 @@ export default {
           flex,
           hide: !!col.hide,
         };
-        if (index === 0 && this.content.rowReorder) {
-          commonProperties.rowDrag = true;
-        }
         switch (col.cellDataType) {
           case "action": {
             return {
@@ -367,6 +364,24 @@ export default {
           }
         }
       });
+
+      if (this.content.initialColumnsOrder) {
+        columns.sort((a, b) => {
+          const aIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col.field === a.field
+          );
+          const bIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col.field === b.field
+          );
+          return aIndex - bIndex;
+        });
+      }
+
+      if (this.content.rowReorder && columns[0]) {
+        columns[0].rowDrag = true;
+      }
+
+      return columns;
     },
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
