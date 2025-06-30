@@ -501,6 +501,9 @@ export default {
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
+  :deep(.ag-cell-wrapper), :deep(.ag-cell-value) {
+    height: 100%;
+  }
   /* wwEditor:start */
   &.editing {
     &::before {
