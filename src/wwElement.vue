@@ -17,6 +17,8 @@
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
       :row-drag-managed="true"
+      enableCellTextSelection
+      ensureDomOrder
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
