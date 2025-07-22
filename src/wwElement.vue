@@ -10,12 +10,13 @@
       :selection-column-def="{ pinned: true }"
       :theme="theme"
       :getRowId="getRowId"
-      :pagination="content.pagination"
+      :pagination="!content.rowReorder && content.pagination"
       :paginationPageSize="content.paginationPageSize || 10"
       :paginationPageSizeSelector="false"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
+      :row-drag-managed="true"
       enableCellTextSelection
       ensureDomOrder
       @grid-ready="onGridReady"
@@ -25,6 +26,10 @@
       @filter-changed="onFilterChanged"
       @sort-changed="onSortChanged"
       @row-clicked="onRowClicked"
+      @row-drag-end="onRowDragged"
+      @row-drag-enter="onRowDragEnter"
+      @column-moved="onColumnMoved"
+
     >
     </ag-grid-vue>
   </div>
@@ -48,8 +53,6 @@ import {
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
-
-console.log("AG Grid version:", AG_GRID_LOCALE_FR);
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -104,6 +107,13 @@ export default {
         defaultValue: {},
         readonly: true,
       });
+      const { value: columnOrder, setValue: setColumnOrder } = wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "columnOrder",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
@@ -114,11 +124,25 @@ export default {
       if (props.content.initialFilters) {
         gridApi.value.setFilterModel(props.content.initialFilters);
       }
+    });
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
       if (props.content.initialSort) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
         });
+      }
+    })
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
+      if (props.content.initialColumnsOrder) {
+        gridApi.value.applyColumnState({
+          state: props.content.initialColumnsOrder.map((colId) => ({ colId })),
+          applyOrder: true,
+        })
       }
     });
 
@@ -127,6 +151,32 @@ export default {
       ctx.emit("trigger-event", {
         name,
         event: { row: event.data },
+      });
+    };
+
+    const onRowDragged = (event) => {
+      const rows = [];
+      event.api.forEachNode(node => { 
+          rows.push(node.data);
+      });
+      ctx.emit("trigger-event", {
+        name: "rowDragged",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+          targetIndex: event.overIndex,
+          rows,
+        },
+      });
+    };
+
+    const onRowDragEnter = (event) => {
+      ctx.emit("trigger-event", {
+        name: "rowDragStart",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+        },
       });
     };
 
@@ -166,6 +216,22 @@ export default {
       }
     };
 
+    const onColumnMoved = (event) => {
+      if (!event.finished || event.source !== 'uiColumnMoved') return;
+      const columns = event.api.getAllGridColumns();
+      setColumnOrder(
+        columns.map((col) => col.getColId())
+      );
+      ctx.emit("trigger-event", {
+        name: "columnMoved",
+        event: {
+          toIndex: event.toIndex,
+          columnId: event.column.getColId(),
+          columnsOrder: columns.map((col) => col.getColId()),
+        },
+      });
+    };
+
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
@@ -197,6 +263,9 @@ export default {
             AG_GRID_LOCALE_EN;
         }
       }),
+      onRowDragged,
+      onRowDragEnter,
+      onColumnMoved,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
@@ -214,7 +283,7 @@ export default {
       };
     },
     columnDefs() {
-      return this.content.columns.map((col) => {
+      const columns = this.content.columns.map((col, index) => {
         const minWidth =
           !col.minWidth || col.minWidth === "auto"
             ? null
@@ -297,6 +366,24 @@ export default {
           }
         }
       });
+
+      if (this.content.initialColumnsOrder) {
+        columns.sort((a, b) => {
+          const aIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col.field === a.field
+          );
+          const bIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col.field === b.field
+          );
+          return aIndex - bIndex;
+        });
+      }
+
+      if (this.content.rowReorder && columns[0]) {
+        columns[0].rowDrag = true;
+      }
+
+      return columns;
     },
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
@@ -467,6 +554,33 @@ export default {
         displayIndex: 0,
       };
     },
+    getRowDraggedTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+        targetIndex: 1,
+        rows: data,
+      };
+    },
+    getRowDragStartTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+      };
+    },
+    getColumnMovedTestEvent() {
+      const data = this.columnDefs;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        toIndex: 1,
+        columnId: data[0].field,
+        columnsOrder: data.map((col) => col.field),
+      };
+    },
     /* wwEditor:end */
   },
   /* wwEditor:start */
@@ -474,7 +588,7 @@ export default {
     columnDefs: {
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
-        this.gridApi.resetColumnState();
+        this.gridApi?.resetColumnState();
 
         if (this.wwEditorState.isACopy) return;
 
