@@ -443,9 +443,13 @@ export default {
       if (!this.gridApi) return;
       this.gridApi.deselectAll();
     },
-    selectAll() {
+    selectAll(mode) {
       if (!this.gridApi) return;
-      this.gridApi.selectAll();
+      if (this.content.rowSelection !== "multiple") {
+        wwLib.logStore.warning('Select all will have no effect, as row selection is not set to multiple');
+        return;
+      }
+      this.gridApi.selectAll(mode || this.content.selectAll || "all");
     },
     selectRow(rowId) {
       if (!this.gridApi) return;
