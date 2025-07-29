@@ -127,31 +127,40 @@ export default {
     },
   ],
   actions: [
-        { label: 'Reset filters', action: 'resetFilters' },
-        { label: 'Reset sort', action: 'resetSort' },
-        { label: 'Select all', action: 'selectAll' },
-        { label: 'Deselect all', action: 'deselectAll' },
+    { label: "Reset filters", action: "resetFilters" },
+    { label: "Reset sort", action: "resetSort" },
+    {
+      label: "Select all",
+      action: "selectAll",
+      args: [
         {
-            label: 'Select row',
-            action: 'selectRow',
-            args: [
-                {
-                    name: 'Row id',
-                    type: 'string',
-                },
-            ],
+          name: "mode",
+          type: "string",
         },
+      ],
+    },
+    { label: "Deselect all", action: "deselectAll" },
+    {
+      label: "Select row",
+      action: "selectRow",
+      args: [
         {
-            label: 'Deselect row',
-            action: 'deselectRow',
-            args: [
-                {
-                    name: 'Row id',
-                    type: 'string',
-                },
-            ],
+          name: "Row id",
+          type: "string",
         },
-    ],
+      ],
+    },
+    {
+      label: "Deselect row",
+      action: "deselectRow",
+      args: [
+        {
+          name: "Row id",
+          type: "string",
+        },
+      ],
+    },
+  ],
   properties: {
     headerTitle: {
       type: "Title",
@@ -999,7 +1008,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               sortable: {
                 label: "Sortable",
@@ -1007,7 +1016,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               actionName: {
                 label: "Action Name",
