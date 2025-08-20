@@ -1217,7 +1217,7 @@ export default {
       /* wwEditor:end */
     },
     wrapperBorderRadius: {
-      label: { en: "Wrapper Border Radius" },
+      label: { en: "Border Radius" },
       type: "Length",
       options: {
         noRange: true
