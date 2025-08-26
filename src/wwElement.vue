@@ -373,6 +373,7 @@ export default {
         focusShadow: this.content.focusShadow?.length
           ? this.content.focusShadow
           : undefined,
+        wrapperBorderRadius: this.content.wrapperBorderRadius,
       });
     },
     isEditing() {
