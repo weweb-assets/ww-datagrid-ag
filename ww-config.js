@@ -140,6 +140,14 @@ export default {
         {
           name: "mode",
           type: "string",
+          /* wwEditor:start */
+          bindingValidation: {
+            type: "string",
+            enum: ["all", "filtered", "currentPage"],
+            tooltip:
+              "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows",
+          },
+          /* wwEditor:end */
         },
       ],
     },
