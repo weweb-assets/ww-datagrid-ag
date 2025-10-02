@@ -211,6 +211,8 @@ export default {
       return {
         editable: false,
         resizable: this.content.resizableColumns,
+        autoHeaderHeight: this.content.headerHeightMode === "auto",
+        wrapHeaderText: this.content.headerHeightMode === "auto",
       };
     },
     columnDefs() {
@@ -354,6 +356,7 @@ export default {
         headerFontSize: this.content.headerFontSize,
         headerFontFamily: this.content.headerFontFamily,
         headerFontWeight: this.content.headerFontWeight,
+        headerHeight: this.content.headerHeightMode !== 'auto' ? this.content.headerHeight : undefined,
         borderColor: this.content.borderColor,
         cellTextColor: this.content.cellColor,
         cellFontFamily: this.content.cellFontFamily,

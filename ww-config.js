@@ -13,6 +13,8 @@ export default {
         "headerFontWeight",
         "headerFontSize",
         "headerFontFamily",
+        "headerHeightMode",
+        "headerHeight",
       ],
       [
         "rowTitle",
@@ -301,6 +303,37 @@ export default {
         type: "string",
         cssSupports: "font-family",
       },
+    },
+    headerHeightMode: {
+      type: "TextSelect",
+      options: {
+        options: [
+          { value: null, label: "Fixed", default: true },
+          { value: "auto", label: "Auto" },
+        ],
+      },
+      label: "Height mode",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
+    },
+    headerHeight: {
+      label: { en: "Height" },
+      type: "Length",
+      options: {
+        noRange: true,
+        unitChoices: [
+          { value: "px", label: "px", default: true },
+          { value: "em", label: "em", digits: 3, step: 0.1 },
+          { value: "rem", label: "rem", digits: 3, step: 0.1 },
+        ],
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      hidden: (content) => content.headerHeightMode === "auto",
     },
     borderColor: {
       type: "Color",
@@ -973,7 +1006,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               sortable: {
                 label: "Sortable",
@@ -981,7 +1014,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               actionName: {
                 label: "Action Name",
@@ -1220,12 +1253,12 @@ export default {
       label: { en: "Border Radius" },
       type: "Length",
       options: {
-        noRange: true
+        noRange: true,
       },
       bindable: true,
       responsive: true,
       states: true,
       classes: true,
-    }
+    },
   },
 };
