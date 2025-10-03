@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed } from "vue";
+import { shallowRef, watchEffect, computed, inject } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -199,6 +199,7 @@ export default {
       }),
       /* wwEditor:start */
       createElement,
+      rawContent: inject('componentRawContent', {})
       /* wwEditor:end */
     };
   },
@@ -216,35 +217,35 @@ export default {
     columnDefs() {
       return this.content.columns.map((col) => {
         const minWidth =
-          !col.minWidth || col.minWidth === "auto"
+          !col?.minWidth || col?.minWidth === "auto"
             ? null
-            : wwLib.wwUtils.getLengthUnit(col.minWidth)?.[0];
+            : wwLib.wwUtils.getLengthUnit(col?.minWidth)?.[0];
         const maxWidth =
-          !col.maxWidth || col.maxWidth === "auto"
+          !col?.maxWidth || col?.maxWidth === "auto"
             ? null
-            : wwLib.wwUtils.getLengthUnit(col.maxWidth)?.[0];
+            : wwLib.wwUtils.getLengthUnit(col?.maxWidth)?.[0];
         const width =
-          !col.width || col.width === "auto" || col.widthAlgo === "flex"
+          !col?.width || col?.width === "auto" || col?.widthAlgo === "flex"
             ? null
-            : wwLib.wwUtils.getLengthUnit(col.width)?.[0];
-        const flex = col.widthAlgo === "flex" ? col.flex ?? 1 : null;
+            : wwLib.wwUtils.getLengthUnit(col?.width)?.[0];
+        const flex = col?.widthAlgo === "flex" ? col?.flex ?? 1 : null;
         const commonProperties = {
           minWidth,
           maxWidth,
-          pinned: col.pinned === "none" ? false : col.pinned,
+          pinned: col?.pinned === "none" ? false : col?.pinned,
           width,
           flex,
-          hide: !!col.hide,
+          hide: !!col?.hide,
         };
-        switch (col.cellDataType) {
+        switch (col?.cellDataType) {
           case "action": {
             return {
               ...commonProperties,
-              headerName: col.headerName,
+              headerName: col?.headerName,
               cellRenderer: "ActionCellRenderer",
               cellRendererParams: {
-                name: col.actionName,
-                label: col.actionLabel,
+                name: col?.actionName,
+                label: col?.actionLabel,
                 trigger: this.onActionTrigger,
                 withFont: !!this.content.actionFont,
               },
@@ -255,40 +256,40 @@ export default {
           case "custom":
             return {
               ...commonProperties,
-              headerName: col.headerName,
-              field: col.field,
+              headerName: col?.headerName,
+              field: col?.field,
               cellRenderer: "WewebCellRenderer",
               cellRendererParams: {
-                containerId: col.containerId,
+                containerId: col?.containerId,
               },
-              sortable: col.sortable,
-              filter: col.filter,
+              sortable: col?.sortable,
+              filter: col?.filter,
             };
           case "image": {
             return {
               ...commonProperties,
-              headerName: col.headerName,
-              field: col.field,
+              headerName: col?.headerName,
+              field: col?.field,
               cellRenderer: "ImageCellRenderer",
               cellRendererParams: {
-                width: col.imageWidth,
-                height: col.imageHeight,
+                width: col?.imageWidth,
+                height: col?.imageHeight,
               },
             };
           }
           default: {
             const result = {
               ...commonProperties,
-              headerName: col.headerName,
-              field: col.field,
-              sortable: col.sortable,
-              filter: col.filter,
-              editable: col.editable,
+              headerName: col?.headerName,
+              field: col?.field,
+              sortable: col?.sortable,
+              filter: col?.filter,
+              editable: col?.editable,
             };
-            if (col.useCustomLabel) {
+            if (col?.useCustomLabel) {
               result.valueFormatter = (params) => {
                 return this.resolveMappingFormula(
-                  col.displayLabelFormula,
+                  col?.displayLabelFormula,
                   params.value
                 );
               };
@@ -480,11 +481,11 @@ export default {
         if (this.wwEditorState.isACopy) return;
 
         // We assume there will only be one custom column each time
-        const columnIndex = (this.content.columns || []).findIndex(
-          (col) => col.cellDataType === "custom" && !col.containerId
+        const columnIndex = (this.rawContent.columns || []).findIndex(
+          (col) => col?.cellDataType === "custom" && !col?.containerId
         );
         if (columnIndex === -1) return;
-        const newColumns = [...this.content.columns];
+        const newColumns = [...this.rawContent.columns];
         let column = { ...newColumns[columnIndex] };
         column.containerId = await this.createElement("ww-flexbox", {
           _state: { name: `Cell ${column.headerName || column.field}` },
