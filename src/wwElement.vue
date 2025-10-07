@@ -372,17 +372,19 @@ export default {
         }
       });
 
-      // if (this.content.initialColumnsOrder) {
-      //   columns.sort((a, b) => {
-      //     const aIndex = this.content.initialColumnsOrder.findIndex(
-      //       (col) => col?.field === a.field
-      //     );
-      //     const bIndex = this.content.initialColumnsOrder.findIndex(
-      //       (col) => col?.field === b.field
-      //     );
-      //     return aIndex - bIndex;
-      //   });
-      // }
+      /* wwFront:start */
+      if (this.content.initialColumnsOrder) {
+        columns.sort((a, b) => {
+          const aIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col?.field === a.field
+          );
+          const bIndex = this.content.initialColumnsOrder.findIndex(
+            (col) => col?.field === b.field
+          );
+          return aIndex - bIndex;
+        });
+      }
+      /* wwFront:end */
 
       if (this.content.rowReorder && columns[0]) {
         columns[0].rowDrag = true;
@@ -390,6 +392,8 @@ export default {
 
       return columns;
     },
+
+
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
         return {
