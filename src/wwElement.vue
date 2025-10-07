@@ -16,6 +16,7 @@
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
+      :initialState="initialState"
       enableCellTextSelection
       ensureDomOrder
       :row-drag-managed="true"
@@ -29,7 +30,6 @@
       @row-drag-end="onRowDragged"
       @row-drag-enter="onRowDragEnter"
       @column-moved="onColumnMoved"
-
     >
     </ag-grid-vue>
   </div>
@@ -107,7 +107,8 @@ export default {
         defaultValue: {},
         readonly: true,
       });
-      const { value: columnOrder, setValue: setColumnOrder } = wwLib.wwVariable.useComponentVariable({
+    const { value: columnOrder, setValue: setColumnOrder } =
+      wwLib.wwVariable.useComponentVariable({
         uid: props.uid,
         name: "columnOrder",
         type: "array",
@@ -118,9 +119,7 @@ export default {
     const onGridReady = (params) => {
       gridApi.value = params.api;
       const columns = params.api.getAllGridColumns();
-      setColumnOrder(
-        columns.map((col) => col.getColId())
-      );
+      setColumnOrder(columns.map((col) => col.getColId()));
     };
 
     watchEffect(() => {
@@ -150,6 +149,24 @@ export default {
       }
     });
 
+    const initialState = computed(() => {
+      const state = {
+        partialColumnState: true,
+      };
+      if (props.content.initialFilters) {
+        state.filter = { filterModel: props.content.initialFilters };
+      }
+      if (props.content.initialSort) {
+        state.sort = { sortModel: props.content.initialSort };
+      }
+      if (props.content.initialColumnsOrder) {
+        state.columnOrder = {
+          orderedColIds: props.content.initialColumnsOrder,
+        };
+      }
+      return state;
+    });
+
     const onRowSelected = (event) => {
       const name = event.node.isSelected() ? "rowSelected" : "rowDeselected";
       ctx.emit("trigger-event", {
@@ -160,8 +177,8 @@ export default {
 
     const onRowDragged = (event) => {
       const rows = [];
-      event.api.forEachNode(node => { 
-          rows.push(node.data);
+      event.api.forEachNode((node) => {
+        rows.push(node.data);
       });
       ctx.emit("trigger-event", {
         name: "rowDragged",
@@ -221,11 +238,9 @@ export default {
     };
 
     const onColumnMoved = (event) => {
-      if (!event.finished || event.source !== 'uiColumnMoved') return;
+      if (!event.finished || event.source !== "uiColumnMoved") return;
       const columns = event.api.getAllGridColumns();
-      setColumnOrder(
-        columns.map((col) => col.getColId())
-      );
+      setColumnOrder(columns.map((col) => col.getColId()));
       ctx.emit("trigger-event", {
         name: "columnMoved",
         event: {
@@ -270,6 +285,7 @@ export default {
       onRowDragged,
       onRowDragEnter,
       onColumnMoved,
+      initialState,
       /* wwEditor:start */
       createElement,
       /* wwEditor:end */
@@ -323,7 +339,7 @@ export default {
               },
               sortable: false,
               filter: false,
-              colId: col?.actionName
+              colId: col?.actionName,
             };
           }
           case "custom":
@@ -372,28 +388,12 @@ export default {
         }
       });
 
-      /* wwFront:start */
-      if (this.content.initialColumnsOrder) {
-        columns.sort((a, b) => {
-          const aIndex = this.content.initialColumnsOrder.findIndex(
-            (col) => col?.field === a.field
-          );
-          const bIndex = this.content.initialColumnsOrder.findIndex(
-            (col) => col?.field === b.field
-          );
-          return aIndex - bIndex;
-        });
-      }
-      /* wwFront:end */
-
       if (this.content.rowReorder && columns[0]) {
         columns[0].rowDrag = true;
       }
 
       return columns;
     },
-
-
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
         return {
@@ -625,7 +625,8 @@ export default {
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
-  :deep(.ag-cell-wrapper), :deep(.ag-cell-value) {
+  :deep(.ag-cell-wrapper),
+  :deep(.ag-cell-value) {
     height: 100%;
   }
   /* wwEditor:start */
