@@ -61,7 +61,12 @@ export default {
       "idFormula",
       "generateColumns",
       "columns",
-      ["pagination", "paginationPageSize"],
+      [
+        "pagination",
+        "hasPaginationSelector",
+        "paginationPageSize",
+        "paginationPageSizeSelector",
+      ],
       [
         "rowSelection",
         "enableClickSelection",
@@ -1168,8 +1173,22 @@ export default {
       },
       /* wwEditor:end */
     },
-    paginationPageSize: {
+    hasPaginationSelector: {
       label: { en: "Rows Per Page" },
+      type: "TextSelect",
+      section: "settings",
+      bindable: true,
+      options: {
+        options: [
+          { value: false, label: "Single", default: true },
+          { value: true, label: "Multiple" },
+        ],
+      },
+      /* wwEditor:start */
+      hidden: (content) => !content.pagination,
+      /* wwEditor:end */
+    },
+    paginationPageSize: {
       type: "Number",
       section: "settings",
       bindable: true,
@@ -1182,7 +1201,23 @@ export default {
         type: "number",
         tooltip: "Number of rows to display per page",
       },
-      hidden: (content) => !content.pagination,
+      hidden: (content) => !content.pagination || content.hasPaginationSelector,
+      /* wwEditor:end */
+    },
+    paginationPageSizeSelector: {
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      options: {
+        placeholder: "[10, 20, 50, 100]",
+      },
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "Array",
+        tooltip: "Array of number of rows to display per page",
+      },
+      hidden: (content) =>
+        !content.pagination || !content.hasPaginationSelector,
       /* wwEditor:end */
     },
     rowSelection: {

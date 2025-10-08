@@ -11,8 +11,8 @@
       :theme="theme"
       :getRowId="getRowId"
       :pagination="content.pagination"
-      :paginationPageSize="content.paginationPageSize || 10"
-      :paginationPageSizeSelector="false"
+      :paginationPageSize="paginationPageSizeSelector ? paginationPageSizeSelector[0]: (content.paginationPageSize || 10)"
+      :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
@@ -397,6 +397,15 @@ export default {
       // eslint-disable-next-line no-unreachable
       return false;
     },
+    paginationPageSizeSelector() {
+      if (!this.content.pagination || !this.content.hasPaginationSelector) {
+        return false;
+      }
+      if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {
+        return false;
+      }
+      return this.content.paginationPageSizeSelector;
+    }
   },
   methods: {
     getRowId(params) {
