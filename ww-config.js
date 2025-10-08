@@ -22,6 +22,8 @@ export default {
         "rowAlternateColor",
         "rowHoverColor",
         "rowVerticalPaddingScale",
+        "rowHeightMode",
+        "rowHeight",
       ],
       ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
       [
@@ -541,6 +543,35 @@ export default {
       bindable: true,
       states: true,
       classes: true,
+    },
+    rowHeightMode: {
+      type: "TextSelect",
+      label: "Height Mode",
+      options: {
+        options: [
+          { value: "fixed", label: "Fixed", default: true },
+          { value: "auto", label: "Auto" },
+        ],
+      },
+    },
+    rowHeight: {
+      label: { en: "Height (px)" },
+      type: "Number",
+      section: "style",
+      options: {
+        noRange: true,
+      },
+      bindable: true,
+      classes: true,
+      responsive: true,
+      states: true,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "string",
+        tooltip: "Height of each row in px (e.g., 40)",
+      },
+      hidden: (content) => content.rowHeightMode === "auto",
+      /* wwEditor:end */
     },
     menuTextColor: {
       label: "Text color",
@@ -1062,6 +1093,16 @@ export default {
                   enum: ["left", "center", "right"],
                   tooltip: "Cell alignment: left, center, or right",
                 },
+              },
+              autoRowHeight: {
+                label: "Auto Row Height",
+                type: "OnOff",
+                hidden: content.rowHeightMode !== "auto",
+                propertyHelp: {
+                  tooltip:
+                    "The row height will adjust to fit the content of this column. This only works if the grid's row height mode is set to auto.",
+                },
+                bindable: true,
               },
               pinned: {
                 label: "Pinned",

@@ -49,8 +49,6 @@ import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
 
-console.log("AG Grid version:", AG_GRID_LOCALE_FR);
-
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -235,6 +233,8 @@ export default {
             ? null
             : wwLib.wwUtils.getLengthUnit(col?.width)?.[0];
         const flex = col?.widthAlgo === "flex" ? col?.flex ?? 1 : null;
+        const isAutoRowHeight =
+          this.content.rowHeightMode === "auto" && !!col.autoRowHeight;
         const commonProperties = {
           minWidth,
           maxWidth,
@@ -246,6 +246,8 @@ export default {
           ...(this.content.cellAlignmentMode !== "custom"
             ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
             : {}),
+          autoHeight: isAutoRowHeight,
+          wrapText: isAutoRowHeight,
         };
         switch (col?.cellDataType) {
           case "action": {
@@ -274,6 +276,7 @@ export default {
               },
               sortable: col?.sortable,
               filter: col?.filter,
+              cellClass: isAutoRowHeight ? undefined : "-fullHeight",
             };
           case "image": {
             return {
@@ -482,8 +485,8 @@ export default {
     },
     /* wwEditor:end */
   },
-  /* wwEditor:start */
   watch: {
+    /* wwEditor:start */
     columnDefs: {
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
@@ -506,17 +509,19 @@ export default {
       },
       deep: true,
     },
+    /* wwEditor:end */
   },
-  /* wwEditor:end */
 };
 </script>
 
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
-  :deep(.ag-cell-wrapper),
-  :deep(.ag-cell-value) {
-    height: 100%;
+  :deep(.ag-cell.-fullHeight) {
+    .ag-cell-wrapper,
+    .ag-cell-value {
+      height: 100%;
+    }
   }
   :deep(.ag-header-cell) {
     &.-center .ag-header-cell-label {
