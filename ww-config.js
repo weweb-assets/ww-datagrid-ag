@@ -5,52 +5,85 @@ export default {
     },
     icon: "table",
     customStylePropertiesOrder: [
-      ["layout", "height", "textColor", "borderColor", "wrapperBorderRadius"],
-      [
-        "headerTitle",
-        "headerBackgroundColor",
-        "headerTextColor",
-        "headerFontWeight",
-        "headerFontSize",
-        "headerFontFamily",
-      ],
-      [
-        "rowTitle",
-        "rowBackgroundColor",
-        "rowAlternateColor",
-        "rowHoverColor",
-        "rowVerticalPaddingScale",
-      ],
-      ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
-      [
-        "cellTitle",
-        "cellColor",
-        "cellFontFamily",
-        "cellFontSize",
-        "cellSelectionBorderColor",
-      ],
-      ["menuTitle", "menuTextColor", "menuBackgroundColor"],
-      [
-        "selectionTitle",
-        "selectedRowBackgroundColor",
-        "selectionCheckboxColor",
-        "focusShadow",
-        "checkboxUncheckedBorderColor",
-      ],
-      [
-        "actionTitle",
-        "actionColor",
-        "actionBackgroundColor",
-        "actionPadding",
-        "actionBorder",
-        "actionBorderRadius",
-        "actionFont",
-        "actionFontSize",
-        "actionFontFamily",
-        "actionFontWeight",
-        "actionFontStyle",
-        "actionLineHeight",
-      ],
+      {
+        label: "General",
+        isCollapsible: true,
+        properties: [
+          "layout",
+          "height",
+          "textColor",
+          "borderColor",
+          "wrapperBorderRadius",
+        ],
+      },
+      {
+        label: "Header",
+        isCollapsible: true,
+        properties: [
+          "headerBackgroundColor",
+          "headerTextColor",
+          "headerFontWeight",
+          "headerFontSize",
+          "headerFontFamily",
+        ],
+      },
+      {
+        label: "Row",
+        isCollapsible: true,
+        properties: [
+          "rowBackgroundColor",
+          "rowAlternateColor",
+          "rowHoverColor",
+          "rowVerticalPaddingScale",
+        ],
+      },
+      {
+        label: "Column",
+        isCollapsible: true,
+        properties: ["columnHoverHighlight", "columnHoverColor"],
+      },
+      {
+        label: "Cell",
+        isCollapsible: true,
+        properties: [
+          "cellColor",
+          "cellFontFamily",
+          "cellFontSize",
+          "cellSelectionBorderColor",
+        ],
+      },
+      {
+        label: "Menu",
+        isCollapsible: true,
+        properties: ["menuTextColor", "menuBackgroundColor"],
+      },
+      {
+        label: "Selection",
+        isCollapsible: true,
+        properties: [
+          "selectedRowBackgroundColor",
+          "selectionCheckboxColor",
+          "focusShadow",
+          "checkboxUncheckedBorderColor",
+        ],
+      },
+      {
+        label: "Action",
+        isCollapsible: true,
+        properties: [
+          "actionColor",
+          "actionBackgroundColor",
+          "actionPadding",
+          "actionBorder",
+          "actionBorderRadius",
+          "actionFont",
+          "actionFontSize",
+          "actionFontFamily",
+          "actionFontWeight",
+          "actionFontStyle",
+          "actionLineHeight",
+        ],
+      },
     ],
     customSettingsPropertiesOrder: [
       "rowData",
@@ -127,41 +160,6 @@ export default {
     },
   ],
   properties: {
-    headerTitle: {
-      type: "Title",
-      label: "Header",
-      editorOnly: true,
-    },
-    rowTitle: {
-      type: "Title",
-      label: "Row",
-      editorOnly: true,
-    },
-    columnTitle: {
-      type: "Title",
-      label: "Column",
-      editorOnly: true,
-    },
-    cellTitle: {
-      type: "Title",
-      label: "Cell",
-      editorOnly: true,
-    },
-    menuTitle: {
-      type: "Title",
-      label: "Menu",
-      editorOnly: true,
-    },
-    actionTitle: {
-      type: "Title",
-      label: "Action",
-      editorOnly: true,
-    },
-    selectionTitle: {
-      type: "Title",
-      label: "Selection",
-      editorOnly: true,
-    },
     layout: {
       type: "TextSelect",
       label: "Height Mode",
@@ -885,7 +883,6 @@ export default {
               },
               widthAlgo: {
                 type: "TextRadioGroup",
-                label: "Width",
                 options: {
                   choices: [
                     { value: "fixed", label: "Fixed", default: true },
@@ -973,7 +970,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               sortable: {
                 label: "Sortable",
@@ -981,7 +978,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image",
-                  bindable: true,
+                bindable: true,
               },
               actionName: {
                 label: "Action Name",
@@ -1010,6 +1007,13 @@ export default {
                 hidden: array?.item?.cellDataType !== "image",
               },
             },
+            propertiesOrder: [
+              {
+                label: "Width",
+                isCollapsible: true,
+                properties: ["widthAlgo", "width", "minWidth", "maxWidth"],
+              },
+            ],
           }),
         },
         defaultValue: {
@@ -1220,12 +1224,12 @@ export default {
       label: { en: "Border Radius" },
       type: "Length",
       options: {
-        noRange: true
+        noRange: true,
       },
       bindable: true,
       responsive: true,
       states: true,
       classes: true,
-    }
+    },
   },
 };
