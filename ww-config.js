@@ -863,6 +863,7 @@ export default {
             wwProps,
             array
           ) => ({
+            singleLine: true,
             item: {
               headerName: {
                 label: "Header Name",
