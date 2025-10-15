@@ -30,6 +30,8 @@ export default {
         "cellFontFamily",
         "cellFontSize",
         "cellSelectionBorderColor",
+        "cellAlignmentMode",
+        "cellAlignment",
       ],
       ["menuTitle", "menuTextColor", "menuBackgroundColor"],
       [
@@ -820,6 +822,43 @@ export default {
       },
       /* wwEditor:end */
     },
+    cellAlignmentMode: {
+      label: "Alignment Mode",
+      type: "TextSelect",
+      options: {
+        options: [
+          { value: "inherit", label: "Same as column", default: true },
+          { value: "custom", label: "Custom" },
+        ],
+      },
+    },
+    cellAlignment: {
+      type: "TextRadioGroup",
+      label: "Alignment",
+      options: {
+        choices: [
+          {
+            value: "left",
+            title: "Left",
+            icon: "align-left",
+            default: true,
+          },
+          { value: "center", title: "Center", icon: "align-center" },
+          { value: "right", title: "Right", icon: "align-right" },
+        ],
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      section: "style",
+      bindingValidation: {
+        type: "string",
+        enum: ["left", "center", "right"],
+        tooltip: "Cell alignment: left, center, or right",
+      },
+      hidden: (content) => content.cellAlignmentMode !== "custom",
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -857,6 +896,7 @@ export default {
             wwProps,
             array
           ) => ({
+            singleLine: true,
             item: {
               headerName: {
                 label: "Header Name",
@@ -969,6 +1009,58 @@ export default {
                     { value: "px", label: "px", min: 0, max: 1300 },
                     { value: "auto", label: "auto" },
                   ],
+                },
+              },
+              headerAlignment: {
+                type: "TextRadioGroup",
+                label: "Header Alignment",
+                options: {
+                  choices: [
+                    {
+                      value: "left",
+                      title: "Left",
+                      icon: "align-left",
+                      default: true,
+                    },
+                    { value: "center", title: "Center", icon: "align-center" },
+                    { value: "right", title: "Right", icon: "align-right" },
+                  ],
+                },
+                responsive: true,
+                states: true,
+                classes: true,
+                bindable: true,
+                section: "style",
+                bindingValidation: {
+                  type: "string",
+                  enum: ["left", "center", "right"],
+                  tooltip: "Header alignment: left, center, or right",
+                },
+              },
+              cellAlignment: {
+                type: "TextRadioGroup",
+                label: "Cell Alignment",
+                options: {
+                  choices: [
+                    {
+                      value: "left",
+                      title: "Left",
+                      icon: "align-left",
+                      default: true,
+                    },
+                    { value: "center", title: "Center", icon: "align-center" },
+                    { value: "right", title: "Right", icon: "align-right" },
+                  ],
+                },
+                responsive: true,
+                states: true,
+                classes: true,
+                bindable: true,
+                section: "style",
+                bindingValidation: {
+                  type: "string",
+                  enum: ["left", "center", "right"],
+                  tooltip: "Cell alignment: left, center, or right",
                 },
               },
               pinned: {

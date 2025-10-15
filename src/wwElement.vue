@@ -213,6 +213,10 @@ export default {
         resizable: this.content.resizableColumns,
         autoHeaderHeight: this.content.headerHeightMode === "auto",
         wrapHeaderText: this.content.headerHeightMode === "auto",
+        cellClass:
+          this.content.cellAlignmentMode === "custom" ?
+          `-${this.content.cellAlignment ||'left'} ||`
+            : null,
       };
     },
     columnDefs() {
@@ -237,6 +241,10 @@ export default {
           width,
           flex,
           hide: !!col.hide,
+          headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
+          ...(this.content.cellAlignmentMode !== "custom"
+            ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
+            : {}),
         };
         switch (col.cellDataType) {
           case "action": {
@@ -505,8 +513,46 @@ export default {
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
-  :deep(.ag-cell-wrapper), :deep(.ag-cell-value) {
+  :deep(.ag-cell-wrapper),
+  :deep(.ag-cell-value) {
     height: 100%;
+  }
+  :deep(.ag-header-cell) {
+    &.-center .ag-header-cell-label {
+      justify-content: center;
+    }
+    &.-right {
+      .ag-header-cell-label {
+        justify-content: flex-end;
+      }
+      .ag-header-cell-filter-button {
+        margin-left: 4px;
+      }
+    }
+    &.-left .ag-header-cell-label {
+      justify-content: flex-start;
+    }
+  }
+  :deep(.ag-cell) {
+    .ag-cell-value {
+      display: flex;
+    }
+
+    &.-right {
+      .ag-cell-value {
+        justify-content: flex-end;
+      }
+    }
+    &.-center {
+      .ag-cell-value {
+        justify-content: center;
+      }
+    }
+    &.-left {
+      .ag-cell-value {
+        justify-content: flex-start;
+      }
+    }
   }
   /* wwEditor:start */
   &.editing {
