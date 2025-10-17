@@ -139,7 +139,13 @@ export default {
       args: [
         {
           name: "mode",
-          type: "string",
+          type: "select",
+          options: [
+              { value: null, label: "Grid behavior", default: true },
+              { value: "all", label: "All rows" },
+              { value: "filtered", label: "Filtered rows" },
+              { value: "currentPage", label: "Current page rows" },
+            ],
           /* wwEditor:start */
           bindingValidation: {
             type: "string",
