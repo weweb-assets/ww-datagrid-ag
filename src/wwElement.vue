@@ -398,7 +398,7 @@ export default {
       return false;
     },
     paginationPageSizeSelector() {
-      if (!this.content.pagination || !this.content.hasPaginationSelector) {
+      if (!this.content.pagination || this.content.hasPaginationSelector !== 'multiple') {
         return false;
       }
       if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {

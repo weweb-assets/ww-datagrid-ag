@@ -1180,12 +1180,17 @@ export default {
       bindable: true,
       options: {
         options: [
-          { value: false, label: "Single", default: true },
-          { value: true, label: "Multiple" },
+          { value: 'single', label: "Single", default: true },
+          { value: 'multiple', label: "Multiple" },
         ],
       },
       /* wwEditor:start */
       hidden: (content) => !content.pagination,
+      bindingValidation: {
+        type: "string",
+        enum: ["single", "multiple"],
+        tooltip: "Type of pagination (single or multiple)",
+      },
       /* wwEditor:end */
     },
     paginationPageSize: {
