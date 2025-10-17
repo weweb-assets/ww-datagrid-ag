@@ -3,6 +3,7 @@
     <ag-grid-vue
       :rowData="rowData"
       :columnDefs="columnDefs"
+      :initial-state="initialState"
       :defaultColDef="defaultColDef"
       :domLayout="content.layout === 'auto' ? 'autoHeight' : 'normal'"
       :style="style"
@@ -16,7 +17,6 @@
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
-      :initialState="initialState"
       enableCellTextSelection
       ensureDomOrder
       :row-drag-managed="true"
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed } from "vue";
+import { shallowRef, watchEffect, computed, inject } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -122,22 +122,25 @@ export default {
       setColumnOrder(columns.map((col) => col.getColId()));
     };
 
-    watchEffect(() => {
-      if (!gridApi.value) return;
-      if (props.content.initialFilters) {
-        gridApi.value.setFilterModel(props.content.initialFilters);
-      }
-    });
+    let initialFilter = '';
+    let initialSort = '';
 
     watchEffect(() => {
+      // Both initial filters and sort should be set here to avoid conflicts with column state application
+      // We keep track of previous values to avoid reinitializing one when only the other changes
       if (!gridApi.value) return;
-      if (props.content.initialSort) {
+      if (props.content.initialFilters && initialFilter !== JSON.stringify(props.content.initialFilters)) {
+        gridApi.value.setFilterModel(props.content.initialFilters);
+        initialFilter = JSON.stringify(props.content.initialFilters);
+      }
+      if (props.content.initialSort && initialSort !== JSON.stringify(props.content.initialSort)) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
         });
+        initialSort = JSON.stringify(props.content.initialSort);
       }
-    })
+    });
 
     watchEffect(() => {
       if (!gridApi.value) return;
@@ -288,6 +291,7 @@ export default {
       initialState,
       /* wwEditor:start */
       createElement,
+      rawContent: inject("componentRawContent", {}),
       /* wwEditor:end */
     };
   },
@@ -300,6 +304,12 @@ export default {
       return {
         editable: false,
         resizable: this.content.resizableColumns,
+        autoHeaderHeight: this.content.headerHeightMode === "auto",
+        wrapHeaderText: this.content.headerHeightMode === "auto",
+        cellClass:
+          this.content.cellAlignmentMode === "custom"
+            ? `-${this.content.cellAlignment || "left"} ||`
+            : null,
       };
     },
     columnDefs() {
@@ -324,6 +334,10 @@ export default {
           width,
           flex,
           hide: !!col?.hide,
+          headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
+          ...(this.content.cellAlignmentMode !== "custom"
+            ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
+            : {}),
         };
         switch (col?.cellDataType) {
           case "action": {
@@ -450,6 +464,10 @@ export default {
         headerFontSize: this.content.headerFontSize,
         headerFontFamily: this.content.headerFontFamily,
         headerFontWeight: this.content.headerFontWeight,
+        headerHeight:
+          this.content.headerHeightMode !== "auto"
+            ? this.content.headerHeight
+            : undefined,
         borderColor: this.content.borderColor,
         cellTextColor: this.content.cellColor,
         cellFontFamily: this.content.cellFontFamily,
@@ -603,11 +621,11 @@ export default {
         if (this.wwEditorState.isACopy) return;
 
         // We assume there will only be one custom column each time
-        const columnIndex = (this.content.columns || []).findIndex(
+        const columnIndex = (this.rawContent.columns || []).findIndex(
           (col) => col?.cellDataType === "custom" && !col?.containerId
         );
         if (columnIndex === -1) return;
-        const newColumns = [...this.content.columns];
+        const newColumns = [...this.rawContent.columns];
         let column = { ...newColumns[columnIndex] };
         column.containerId = await this.createElement("ww-flexbox", {
           _state: { name: `Cell ${column.headerName || column.field}` },
@@ -628,6 +646,43 @@ export default {
   :deep(.ag-cell-wrapper),
   :deep(.ag-cell-value) {
     height: 100%;
+  }
+  :deep(.ag-header-cell) {
+    &.-center .ag-header-cell-label {
+      justify-content: center;
+    }
+    &.-right {
+      .ag-header-cell-label {
+        justify-content: flex-end;
+      }
+      .ag-header-cell-filter-button {
+        margin-left: 4px;
+      }
+    }
+    &.-left .ag-header-cell-label {
+      justify-content: flex-start;
+    }
+  }
+  :deep(.ag-cell) {
+    .ag-cell-value {
+      display: flex;
+    }
+
+    &.-right {
+      .ag-cell-value {
+        justify-content: flex-end;
+      }
+    }
+    &.-center {
+      .ag-cell-value {
+        justify-content: center;
+      }
+    }
+    &.-left {
+      .ag-cell-value {
+        justify-content: flex-start;
+      }
+    }
   }
   /* wwEditor:start */
   &.editing {
