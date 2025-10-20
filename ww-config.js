@@ -24,6 +24,7 @@ export default {
         "rowVerticalPaddingScale",
         "rowHeightMode",
         "rowHeight",
+        "autoHeightWarning"
       ],
       ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
       [
@@ -34,8 +35,6 @@ export default {
         "cellSelectionBorderColor",
         "cellAlignmentMode",
         "cellAlignment",
-        "cellVerticalAlignmentMode",
-        "cellVerticalAlignment",
       ],
       ["menuTitle", "menuTextColor", "menuBackgroundColor"],
       [
@@ -580,6 +579,17 @@ export default {
       hidden: (content) => content.rowHeightMode === "auto",
       /* wwEditor:end */
     },
+    /* wwEditor:start */
+    autoHeightWarning: {
+      type: "InfoBox",
+      options: {
+        variant: "warning",
+        content: "Configure columns to use for auto height. Performance is impacted whith large datasets.",
+      },
+      editorOnly: true,
+      hidden: (content) => content.rowHeightMode !== "auto",
+    },
+    /* wwEditor:end */
     menuTextColor: {
       label: "Text color",
       type: "Color",
@@ -897,42 +907,6 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
-    cellVerticalAlignmentMode: {
-      label: "Vertical alignment Mode",
-      type: "TextSelect",
-      options: {
-        options: [
-          { value: "inherit", label: "Same as column", default: true },
-          { value: "custom", label: "Custom" },
-        ],
-      },
-    },
-    cellVerticalAlignment: {
-      type: "TextRadioGroup",
-      label: "Alignment",
-      options: {
-        choices: [
-          {
-            value: "top",
-            title: "Top",
-            default: true,
-          },
-          { value: "middle", title: "Middle" },
-          { value: "bottom", title: "Bottom" },
-        ],
-      },
-      responsive: true,
-      states: true,
-      classes: true,
-      bindable: true,
-      section: "style",
-      bindingValidation: {
-        type: "string",
-        enum: ["top", "middle", "bottom"],
-        tooltip: "Cell alignment: top, middle, or bottom",
-      },
-      hidden: (content) => content.cellVerticalAlignmentMode !== "custom",
-    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1135,31 +1109,6 @@ export default {
                   type: "string",
                   enum: ["left", "center", "right"],
                   tooltip: "Cell alignment: left, center, or right",
-                },
-              },
-              cellVerticalAlignment: {
-                type: "TextRadioGroup",
-                label: "Cell Vertical Alignment",
-                options: {
-                  choices: [
-                    {
-                      value: "top",
-                      title: "Top",
-                      default: true,
-                    },
-                    { value: "middle", title: "Middle"},
-                    { value: "bottom", title: "Bottom" },
-                  ],
-                },
-                responsive: true,
-                states: true,
-                classes: true,
-                bindable: true,
-                section: "style",
-                bindingValidation: {
-                  type: "string",
-                  enum: ["top", "middle", "bottom"],
-                  tooltip: "Cell alignment: top, middle, or bottom",
                 },
               },
               autoRowHeight: {

@@ -211,9 +211,6 @@ export default {
       if (this.content.cellAlignmentMode === "custom") {
         cellClass = `-${this.content.cellAlignment || "left"}`;
       }
-      if (this.content.cellVerticalAlignmentMode === "custom") {
-        cellClass += ` -${this.content.cellVerticalAlignment || "middle"}`;
-      }
       return {
         editable: false,
         resizable: this.content.resizableColumns,
@@ -242,9 +239,6 @@ export default {
         let cellClass = '';
         if (this.content.cellAlignmentMode === "custom" && col?.cellAlignment) {
           cellClass += `-${col.cellAlignment}`;
-        }
-        if (this.content.cellVerticalAlignmentMode === "custom" && col?.cellVerticalAlignment) {
-          cellClass += ` -${col.cellVerticalAlignment}`;
         }
         const commonProperties = {
           minWidth,
@@ -558,12 +552,6 @@ export default {
     }
   }
   :deep(.ag-cell) {
-    display: flex;
-
-    .ag-cell-wrapper {
-      width: 100%;
-    }
-
     .ag-cell-value {
       display: flex;
     }
@@ -582,15 +570,6 @@ export default {
       .ag-cell-value {
         justify-content: flex-start;
       }
-    }
-    &.-top {
-      justify-content: flex-start;
-    }
-    &.-middle {
-      justify-content: center;
-    }
-    &.-bottom {
-      justify-content: flex-end;
     }
   }
   /* wwEditor:start */
