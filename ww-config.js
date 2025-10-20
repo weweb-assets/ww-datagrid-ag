@@ -1206,7 +1206,7 @@ export default {
         type: "number",
         tooltip: "Number of rows to display per page",
       },
-      hidden: (content) => !content.pagination || content.hasPaginationSelector,
+      hidden: (content) => !content.pagination || content.hasPaginationSelector === 'multiple',
       /* wwEditor:end */
     },
     paginationPageSizeSelector: {
@@ -1222,7 +1222,7 @@ export default {
         tooltip: "Array of number of rows to display per page",
       },
       hidden: (content) =>
-        !content.pagination || !content.hasPaginationSelector,
+        !content.pagination || !content.hasPaginationSelector || content.hasPaginationSelector === 'single',
       /* wwEditor:end */
     },
     rowSelection: {
