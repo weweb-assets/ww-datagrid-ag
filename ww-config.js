@@ -34,6 +34,8 @@ export default {
         "cellSelectionBorderColor",
         "cellAlignmentMode",
         "cellAlignment",
+        "cellVerticalAlignmentMode",
+        "cellVerticalAlignment",
       ],
       ["menuTitle", "menuTextColor", "menuBackgroundColor"],
       [
@@ -560,6 +562,11 @@ export default {
       section: "style",
       options: {
         noRange: true,
+        unitChoices: [
+          { value: "px", label: "px", default: true },
+          { value: "em", label: "em", digits: 3, step: 0.1 },
+          { value: "rem", label: "rem", digits: 3, step: 0.1 },
+        ],
       },
       bindable: true,
       classes: true,
@@ -890,6 +897,42 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
+    cellVerticalAlignmentMode: {
+      label: "Vertical alignment Mode",
+      type: "TextSelect",
+      options: {
+        options: [
+          { value: "inherit", label: "Same as column", default: true },
+          { value: "custom", label: "Custom" },
+        ],
+      },
+    },
+    cellVerticalAlignment: {
+      type: "TextRadioGroup",
+      label: "Alignment",
+      options: {
+        choices: [
+          {
+            value: "top",
+            title: "Top",
+            default: true,
+          },
+          { value: "middle", title: "Middle" },
+          { value: "bottom", title: "Bottom" },
+        ],
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      section: "style",
+      bindingValidation: {
+        type: "string",
+        enum: ["top", "middle", "bottom"],
+        tooltip: "Cell alignment: top, middle, or bottom",
+      },
+      hidden: (content) => content.cellVerticalAlignmentMode !== "custom",
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1092,6 +1135,31 @@ export default {
                   type: "string",
                   enum: ["left", "center", "right"],
                   tooltip: "Cell alignment: left, center, or right",
+                },
+              },
+              cellVerticalAlignment: {
+                type: "TextRadioGroup",
+                label: "Cell Vertical Alignment",
+                options: {
+                  choices: [
+                    {
+                      value: "top",
+                      title: "Top",
+                      default: true,
+                    },
+                    { value: "middle", title: "Middle"},
+                    { value: "bottom", title: "Bottom" },
+                  ],
+                },
+                responsive: true,
+                states: true,
+                classes: true,
+                bindable: true,
+                section: "style",
+                bindingValidation: {
+                  type: "string",
+                  enum: ["top", "middle", "bottom"],
+                  tooltip: "Cell alignment: top, middle, or bottom",
                 },
               },
               autoRowHeight: {

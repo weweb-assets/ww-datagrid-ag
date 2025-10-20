@@ -197,7 +197,7 @@ export default {
       }),
       /* wwEditor:start */
       createElement,
-      rawContent: inject('componentRawContent', {})
+      rawContent: inject("componentRawContent", {}),
       /* wwEditor:end */
     };
   },
@@ -207,15 +207,19 @@ export default {
       return Array.isArray(data) ? data ?? [] : [];
     },
     defaultColDef() {
+      let cellClass = '';
+      if (this.content.cellAlignmentMode === "custom") {
+        cellClass = `-${this.content.cellAlignment || "left"}`;
+      }
+      if (this.content.cellVerticalAlignmentMode === "custom") {
+        cellClass += ` -${this.content.cellVerticalAlignment || "middle"}`;
+      }
       return {
         editable: false,
         resizable: this.content.resizableColumns,
         autoHeaderHeight: this.content.headerHeightMode === "auto",
         wrapHeaderText: this.content.headerHeightMode === "auto",
-        cellClass:
-          this.content.cellAlignmentMode === "custom" ?
-          `-${this.content.cellAlignment ||'left'} ||`
-            : null,
+        cellClass,
       };
     },
     columnDefs() {
@@ -235,6 +239,13 @@ export default {
         const flex = col?.widthAlgo === "flex" ? col?.flex ?? 1 : null;
         const isAutoRowHeight =
           this.content.rowHeightMode === "auto" && !!col.autoRowHeight;
+        let cellClass = '';
+        if (this.content.cellAlignmentMode === "custom" && col?.cellAlignment) {
+          cellClass += `-${col.cellAlignment}`;
+        }
+        if (this.content.cellVerticalAlignmentMode === "custom" && col?.cellVerticalAlignment) {
+          cellClass += ` -${col.cellVerticalAlignment}`;
+        }
         const commonProperties = {
           minWidth,
           maxWidth,
@@ -243,12 +254,12 @@ export default {
           flex,
           hide: !!col?.hide,
           headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
-          ...(this.content.cellAlignmentMode !== "custom"
-            ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
-            : {}),
           autoHeight: isAutoRowHeight,
           wrapText: isAutoRowHeight,
         };
+        if (cellClass.length > 0) {
+          commonProperties.cellClass = cellClass;
+        }
         switch (col?.cellDataType) {
           case "action": {
             return {
@@ -368,7 +379,14 @@ export default {
         headerFontSize: this.content.headerFontSize,
         headerFontFamily: this.content.headerFontFamily,
         headerFontWeight: this.content.headerFontWeight,
-        headerHeight: this.content.headerHeightMode !== 'auto' ? this.content.headerHeight : undefined,
+        headerHeight:
+          this.content.headerHeightMode !== "auto"
+            ? this.content.headerHeight
+            : undefined,
+        rowHeight:
+          this.content.rowHeightMode !== "auto"
+            ? this.content.rowHeight || 40
+            : undefined,
         borderColor: this.content.borderColor,
         cellTextColor: this.content.cellColor,
         cellFontFamily: this.content.cellFontFamily,
@@ -540,6 +558,12 @@ export default {
     }
   }
   :deep(.ag-cell) {
+    display: flex;
+
+    .ag-cell-wrapper {
+      width: 100%;
+    }
+
     .ag-cell-value {
       display: flex;
     }
@@ -558,6 +582,15 @@ export default {
       .ag-cell-value {
         justify-content: flex-start;
       }
+    }
+    &.-top {
+      justify-content: flex-start;
+    }
+    &.-middle {
+      justify-content: center;
+    }
+    &.-bottom {
+      justify-content: flex-end;
     }
   }
   /* wwEditor:start */
