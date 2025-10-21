@@ -151,7 +151,7 @@ export default {
             type: "string",
             enum: ["all", "filtered", "currentPage"],
             tooltip:
-              "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows",
+              "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows, and null if you want to fallback on the grid behavior",
           },
           /* wwEditor:end */
         },
