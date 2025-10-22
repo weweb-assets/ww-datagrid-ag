@@ -49,8 +49,6 @@ import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
 
-console.log("AG Grid version:", AG_GRID_LOCALE_FR);
-
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -429,6 +427,43 @@ export default {
           displayIndex: event.rowIndex,
         },
       });
+    },
+    resetFilters() {
+      if (!this.gridApi) return;
+      this.gridApi.setFilterModel(null);
+    },
+    resetSort() {
+      if (!this.gridApi) return;
+      this.gridApi.applyColumnState({
+        state: [],
+        defaultState: { sort: null },
+      });
+    },
+    deselectAll() {
+      if (!this.gridApi) return;
+      this.gridApi.deselectAll();
+    },
+    selectAll(mode) {
+      if (!this.gridApi) return;
+      if (this.content.rowSelection !== "multiple") {
+        wwLib.logStore.warning('Select all will have no effect, as row selection is not set to multiple');
+        return;
+      }
+      this.gridApi.selectAll(mode || this.content.selectAll || "all");
+    },
+    selectRow(rowId) {
+      if (!this.gridApi) return;
+      const rowNode = this.gridApi.getRowNode(rowId);
+      if (rowNode) {
+        rowNode.setSelected(true);
+      }
+    },
+    deselectRow(rowId) {
+      if (!this.gridApi) return;
+      const rowNode = this.gridApi.getRowNode(rowId);
+      if (rowNode) {
+        rowNode.setSelected(false);
+      }
     },
     /* wwEditor:start */
     generateColumns() {

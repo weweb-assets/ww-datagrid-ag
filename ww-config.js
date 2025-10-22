@@ -130,6 +130,55 @@ export default {
       getTestEvent: "getRowClickedTestEvent",
     },
   ],
+  actions: [
+    { label: "Reset filters", action: "resetFilters" },
+    { label: "Reset sort", action: "resetSort" },
+    {
+      label: "Select all",
+      action: "selectAll",
+      args: [
+        {
+          name: "mode",
+          type: "select",
+          options: [
+              { value: null, label: "Grid behavior", default: true },
+              { value: "all", label: "All rows" },
+              { value: "filtered", label: "Filtered rows" },
+              { value: "currentPage", label: "Current page rows" },
+            ],
+          /* wwEditor:start */
+          bindingValidation: {
+            type: "string",
+            enum: ["all", "filtered", "currentPage"],
+            tooltip:
+              "Select all behavior: 'all' to select all rows, 'filtered' to select filtered rows, 'currentPage' to select current page rows, and null if you want to fallback on the grid behavior",
+          },
+          /* wwEditor:end */
+        },
+      ],
+    },
+    { label: "Deselect all", action: "deselectAll" },
+    {
+      label: "Select row",
+      action: "selectRow",
+      args: [
+        {
+          name: "Row id",
+          type: "string",
+        },
+      ],
+    },
+    {
+      label: "Deselect row",
+      action: "deselectRow",
+      args: [
+        {
+          name: "Row id",
+          type: "string",
+        },
+      ],
+    },
+  ],
   properties: {
     headerTitle: {
       type: "Title",
