@@ -11,8 +11,8 @@
       :theme="theme"
       :getRowId="getRowId"
       :pagination="content.pagination"
-      :paginationPageSize="content.paginationPageSize || 10"
-      :paginationPageSizeSelector="false"
+      :paginationPageSize="forcedPaginationPageSize ? 0 : paginationPageSizeSelector ? paginationPageSizeSelector[0]: content.paginationPageSize"
+      :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed, inject } from "vue";
+import { shallowRef, watchEffect, computed, inject, watch, nextTick, ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -168,6 +168,20 @@ export default {
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
 
+    // Hack to force pagination page size update when changing pagination selector mode
+    const forcedPaginationPageSize = ref(false);
+    watch(
+      () => props.content.hasPaginationSelector,
+      (newVal, oldVal) => {
+        if (oldVal === 'multiple' && newVal !== 'multiple') {
+          forcedPaginationPageSize.value = true;
+          nextTick().then(() => {
+            forcedPaginationPageSize.value = false;
+          });
+        }
+      }
+    );
+
     return {
       resolveMappingFormula,
       onGridReady,
@@ -195,6 +209,7 @@ export default {
             AG_GRID_LOCALE_EN;
         }
       }),
+      forcedPaginationPageSize,
       /* wwEditor:start */
       createElement,
       rawContent: inject('componentRawContent', {})
@@ -395,6 +410,15 @@ export default {
       // eslint-disable-next-line no-unreachable
       return false;
     },
+    paginationPageSizeSelector() {
+      if (!this.content.pagination || this.content.hasPaginationSelector !== 'multiple') {
+        return false;
+      }
+      if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {
+        return false;
+      }
+      return this.content.paginationPageSizeSelector;
+    }
   },
   methods: {
     getRowId(params) {
