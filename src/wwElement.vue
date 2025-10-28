@@ -3,6 +3,7 @@
     <ag-grid-vue
       :rowData="rowData"
       :columnDefs="columnDefs"
+      :initial-state="initialState"
       :defaultColDef="defaultColDef"
       :domLayout="content.layout === 'auto' ? 'autoHeight' : 'normal'"
       :style="style"
@@ -11,13 +12,14 @@
       :theme="theme"
       :getRowId="getRowId"
       :pagination="content.pagination"
-      :paginationPageSize="content.paginationPageSize || 10"
-      :paginationPageSizeSelector="false"
+      :paginationPageSize="forcedPaginationPageSize ? 0 : paginationPageSizeSelector ? paginationPageSizeSelector[0]: content.paginationPageSize"
+      :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
       :locale-text="localeText"
       enableCellTextSelection
       ensureDomOrder
+      :row-drag-managed="true"
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
@@ -25,13 +27,16 @@
       @filter-changed="onFilterChanged"
       @sort-changed="onSortChanged"
       @row-clicked="onRowClicked"
+      @row-drag-end="onRowDragged"
+      @row-drag-enter="onRowDragEnter"
+      @column-moved="onColumnMoved"
     >
     </ag-grid-vue>
   </div>
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed, inject } from "vue";
+import { shallowRef, watchEffect, computed, inject, watch, nextTick, ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -102,22 +107,67 @@ export default {
         defaultValue: {},
         readonly: true,
       });
+    const { value: columnOrder, setValue: setColumnOrder } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "columnOrder",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
 
     const onGridReady = (params) => {
       gridApi.value = params.api;
+      const columns = params.api.getAllGridColumns();
+      setColumnOrder(columns.map((col) => col.getColId()));
     };
 
+    let initialFilter = '';
+    let initialSort = '';
+
     watchEffect(() => {
+      // Both initial filters and sort should be set here to avoid conflicts with column state application
+      // We keep track of previous values to avoid reinitializing one when only the other changes
       if (!gridApi.value) return;
-      if (props.content.initialFilters) {
+      if (props.content.initialFilters && initialFilter !== JSON.stringify(props.content.initialFilters)) {
         gridApi.value.setFilterModel(props.content.initialFilters);
+        initialFilter = JSON.stringify(props.content.initialFilters);
       }
-      if (props.content.initialSort) {
+      if (props.content.initialSort && initialSort !== JSON.stringify(props.content.initialSort)) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
         });
+        initialSort = JSON.stringify(props.content.initialSort);
       }
+    });
+
+    watchEffect(() => {
+      if (!gridApi.value) return;
+      if (props.content.initialColumnsOrder) {
+        gridApi.value.applyColumnState({
+          state: props.content.initialColumnsOrder.map((colId) => ({ colId })),
+          applyOrder: true,
+        })
+      }
+    });
+
+    const initialState = computed(() => {
+      const state = {
+        partialColumnState: true,
+      };
+      if (props.content.initialFilters) {
+        state.filter = { filterModel: props.content.initialFilters };
+      }
+      if (props.content.initialSort) {
+        state.sort = { sortModel: props.content.initialSort };
+      }
+      if (props.content.initialColumnsOrder) {
+        state.columnOrder = {
+          orderedColIds: props.content.initialColumnsOrder,
+        };
+      }
+      return state;
     });
 
     const onRowSelected = (event) => {
@@ -125,6 +175,32 @@ export default {
       ctx.emit("trigger-event", {
         name,
         event: { row: event.data },
+      });
+    };
+
+    const onRowDragged = (event) => {
+      const rows = [];
+      event.api.forEachNode((node) => {
+        rows.push(node.data);
+      });
+      ctx.emit("trigger-event", {
+        name: "rowDragged",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+          targetIndex: event.overIndex,
+          rows,
+        },
+      });
+    };
+
+    const onRowDragEnter = (event) => {
+      ctx.emit("trigger-event", {
+        name: "rowDragStart",
+        event: {
+          row: event.node.data,
+          id: event.node.id,
+        },
       });
     };
 
@@ -164,9 +240,37 @@ export default {
       }
     };
 
+    const onColumnMoved = (event) => {
+      if (!event.finished || event.source !== "uiColumnMoved") return;
+      const columns = event.api.getAllGridColumns();
+      setColumnOrder(columns.map((col) => col.getColId()));
+      ctx.emit("trigger-event", {
+        name: "columnMoved",
+        event: {
+          toIndex: event.toIndex,
+          columnId: event.column.getColId(),
+          columnsOrder: columns.map((col) => col.getColId()),
+        },
+      });
+    };
+
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
     /* wwEditor:end */
+
+    // Hack to force pagination page size update when changing pagination selector mode
+    const forcedPaginationPageSize = ref(false);
+    watch(
+      () => props.content.hasPaginationSelector,
+      (newVal, oldVal) => {
+        if (oldVal === 'multiple' && newVal !== 'multiple') {
+          forcedPaginationPageSize.value = true;
+          nextTick().then(() => {
+            forcedPaginationPageSize.value = false;
+          });
+        }
+      }
+    );
 
     return {
       resolveMappingFormula,
@@ -195,6 +299,11 @@ export default {
             AG_GRID_LOCALE_EN;
         }
       }),
+      forcedPaginationPageSize,
+      onRowDragged,
+      onRowDragEnter,
+      onColumnMoved,
+      initialState,
       /* wwEditor:start */
       createElement,
       rawContent: inject("componentRawContent", {}),
@@ -220,7 +329,7 @@ export default {
       };
     },
     columnDefs() {
-      return this.content.columns.map((col) => {
+      const columns = this.content.columns.map((col, index) => {
         const minWidth =
           !col?.minWidth || col?.minWidth === "auto"
             ? null
@@ -268,6 +377,7 @@ export default {
               },
               sortable: false,
               filter: false,
+              colId: col?.actionName,
             };
           }
           case "custom":
@@ -316,6 +426,12 @@ export default {
           }
         }
       });
+
+      if (this.content.rowReorder && columns[0]) {
+        columns[0].rowDrag = true;
+      }
+
+      return columns;
     },
     rowSelection() {
       if (this.content.rowSelection === "multiple") {
@@ -412,6 +528,15 @@ export default {
       // eslint-disable-next-line no-unreachable
       return false;
     },
+    paginationPageSizeSelector() {
+      if (!this.content.pagination || this.content.hasPaginationSelector !== 'multiple') {
+        return false;
+      }
+      if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {
+        return false;
+      }
+      return this.content.paginationPageSizeSelector;
+    }
   },
   methods: {
     getRowId(params) {
@@ -444,6 +569,43 @@ export default {
           displayIndex: event.rowIndex,
         },
       });
+    },
+    resetFilters() {
+      if (!this.gridApi) return;
+      this.gridApi.setFilterModel(null);
+    },
+    resetSort() {
+      if (!this.gridApi) return;
+      this.gridApi.applyColumnState({
+        state: [],
+        defaultState: { sort: null },
+      });
+    },
+    deselectAll() {
+      if (!this.gridApi) return;
+      this.gridApi.deselectAll();
+    },
+    selectAll(mode) {
+      if (!this.gridApi) return;
+      if (this.content.rowSelection !== "multiple") {
+        wwLib.logStore.warning('Select all will have no effect, as row selection is not set to multiple');
+        return;
+      }
+      this.gridApi.selectAll(mode || this.content.selectAll || "all");
+    },
+    selectRow(rowId) {
+      if (!this.gridApi) return;
+      const rowNode = this.gridApi.getRowNode(rowId);
+      if (rowNode) {
+        rowNode.setSelected(true);
+      }
+    },
+    deselectRow(rowId) {
+      if (!this.gridApi) return;
+      const rowNode = this.gridApi.getRowNode(rowId);
+      if (rowNode) {
+        rowNode.setSelected(false);
+      }
     },
     /* wwEditor:start */
     generateColumns() {
@@ -495,6 +657,33 @@ export default {
         displayIndex: 0,
       };
     },
+    getRowDraggedTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+        targetIndex: 1,
+        rows: data,
+      };
+    },
+    getRowDragStartTestEvent() {
+      const data = this.rowData;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        row: data[0],
+        id: 0,
+      };
+    },
+    getColumnMovedTestEvent() {
+      const data = this.columnDefs;
+      if (!data || !data[0]) throw new Error("No data found");
+      return {
+        toIndex: 1,
+        columnId: data[0].field,
+        columnsOrder: data.map((col) => col.field),
+      };
+    },
     /* wwEditor:end */
   },
   watch: {
@@ -502,7 +691,7 @@ export default {
     columnDefs: {
       async handler() {
         if (this.wwEditorState?.boundProps?.columns) return;
-        this.gridApi.resetColumnState();
+        this.gridApi?.resetColumnState();
 
         if (this.wwEditorState.isACopy) return;
 
