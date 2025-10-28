@@ -25,8 +25,8 @@ export default {
           "headerFontWeight",
           "headerFontSize",
           "headerFontFamily",
-                  "headerHeightMode",
-        "headerHeight",
+          "headerHeightMode",
+          "headerHeight",
         ],
       },
       {
@@ -53,7 +53,7 @@ export default {
           "cellFontSize",
           "cellSelectionBorderColor",
           "cellAlignmentMode",
-        "cellAlignment",
+          "cellAlignment",
         ],
       },
       {
@@ -94,22 +94,32 @@ export default {
       "idFormula",
       "generateColumns",
       "columns",
-      [
-        "pagination",
-        "hasPaginationSelector",
-        "paginationPageSize",
-        "paginationPageSizeSelector",
-      ],
-      [
-        "rowSelection",
-        "enableClickSelection",
-        "disableCheckboxes",
-        "selectAll",
-      ],
+      {
+        label: "Pagination",
+        isCollapsible: true,
+        properties: [
+          "pagination",
+          "hasPaginationSelector",
+          "paginationPageSize",
+          "paginationPageSizeSelector",
+        ],
+      },
+      {
+        label: "Selection",
+        properties: [
+          "rowSelection",
+          "enableClickSelection",
+          "disableCheckboxes",
+          "selectAll",
+        ],
+      },
       "movableColumns",
       "resizableColumns",
+      "rowReorder",
+      "reorderInfoBox",
       "initialFilters",
       "initialSort",
+      "initialColumnsOrder",
       ["lang", "localeText"],
     ],
   },
@@ -167,6 +177,36 @@ export default {
       },
       getTestEvent: "getRowClickedTestEvent",
     },
+    {
+      name: "rowDragStart",
+      label: { en: "On Row Drag Start" },
+      event: {
+        row: null,
+        id: 0,
+      },
+      getTestEvent: "getRowDragStartTestEvent",
+    },
+    {
+      name: "rowDragged",
+      label: { en: "On Row Dragged" },
+      event: {
+        row: null,
+        id: 0,
+        targetIndex: 0,
+        rows: [],
+      },
+      getTestEvent: "getRowDraggedTestEvent",
+    },
+    {
+      name: "columnMoved",
+      label: { en: "On Column Moved" },
+      event: {
+        columnId: null,
+        toIndex: 0,
+        columnsOrder: [],
+      },
+      getTestEvent: "getColumnMovedTestEvent",
+    },
   ],
   actions: [
     { label: "Reset filters", action: "resetFilters" },
@@ -179,11 +219,11 @@ export default {
           name: "mode",
           type: "select",
           options: [
-              { value: null, label: "Grid behavior", default: true },
-              { value: "all", label: "All rows" },
-              { value: "filtered", label: "Filtered rows" },
-              { value: "currentPage", label: "Current page rows" },
-            ],
+            { value: null, label: "Grid behavior", default: true },
+            { value: "all", label: "All rows" },
+            { value: "filtered", label: "Filtered rows" },
+            { value: "currentPage", label: "Current page rows" },
+          ],
           /* wwEditor:start */
           bindingValidation: {
             type: "string",
@@ -1261,8 +1301,8 @@ export default {
       bindable: true,
       options: {
         options: [
-          { value: 'single', label: "Single", default: true },
-          { value: 'multiple', label: "Multiple" },
+          { value: "single", label: "Single", default: true },
+          { value: "multiple", label: "Multiple" },
         ],
       },
       /* wwEditor:start */
@@ -1287,7 +1327,8 @@ export default {
         type: "number",
         tooltip: "Number of rows to display per page",
       },
-      hidden: (content) => !content.pagination || content.hasPaginationSelector === 'multiple',
+      hidden: (content) =>
+        !content.pagination || content.hasPaginationSelector === "multiple",
       /* wwEditor:end */
     },
     paginationPageSizeSelector: {
@@ -1303,7 +1344,9 @@ export default {
         tooltip: "Array of number of rows to display per page",
       },
       hidden: (content) =>
-        !content.pagination || !content.hasPaginationSelector || content.hasPaginationSelector === 'single',
+        !content.pagination ||
+        !content.hasPaginationSelector ||
+        content.hasPaginationSelector === "single",
       /* wwEditor:end */
     },
     rowSelection: {
@@ -1424,6 +1467,17 @@ export default {
         tooltip: "An array representing the initial sort model",
       },
     },
+    initialColumnsOrder: {
+      label: { en: "Initial Columns Order" },
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      defaultValue: null,
+      bindingValidation: {
+        type: "array",
+        tooltip: "An array representing the id of the initial columns order",
+      },
+    },
     lang: {
       label: { en: "Language" },
       type: "TextSelect",
@@ -1472,6 +1526,31 @@ export default {
       responsive: true,
       states: true,
       classes: true,
+    },
+    rowReorder: {
+      label: { en: "Row Reorder" },
+      type: "OnOff",
+      section: "settings",
+      bindable: true,
+      defaultValue: false,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "boolean",
+        tooltip: "Enable or disable row reordering",
+      },
+      /* wwEditor:end */
+    },
+    reorderInfoBox: {
+      type: "InfoBox",
+      section: "settings",
+      editorOnly: true,
+      hidden: (content) => !(content.rowReorder && content.pagination),
+      options: {
+        variant: "warning",
+        icon: "warning",
+        title: "Incompatible options",
+        content: `Row reordering is not compatible with pagination. Pagination will be disabled`,
+      },
     },
   },
 };
