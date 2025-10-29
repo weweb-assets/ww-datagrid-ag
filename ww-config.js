@@ -5,73 +5,121 @@ export default {
     },
     icon: "table",
     customStylePropertiesOrder: [
-      ["layout", "height", "textColor", "borderColor", "wrapperBorderRadius"],
-      [
-        "headerTitle",
-        "headerBackgroundColor",
-        "headerTextColor",
-        "headerFontWeight",
-        "headerFontSize",
-        "headerFontFamily",
-        "headerHeightMode",
-        "headerHeight",
-      ],
-      [
-        "rowTitle",
-        "rowBackgroundColor",
-        "rowAlternateColor",
-        "rowHoverColor",
-        "rowVerticalPaddingScale",
-      ],
-      ["columnTitle", "columnHoverHighlight", "columnHoverColor"],
-      [
-        "cellTitle",
-        "cellColor",
-        "cellFontFamily",
-        "cellFontSize",
-        "cellSelectionBorderColor",
-        "cellAlignmentMode",
-        "cellAlignment",
-      ],
-      ["menuTitle", "menuTextColor", "menuBackgroundColor"],
-      [
-        "selectionTitle",
-        "selectedRowBackgroundColor",
-        "selectionCheckboxColor",
-        "focusShadow",
-        "checkboxUncheckedBorderColor",
-      ],
-      [
-        "actionTitle",
-        "actionColor",
-        "actionBackgroundColor",
-        "actionPadding",
-        "actionBorder",
-        "actionBorderRadius",
-        "actionFont",
-        "actionFontSize",
-        "actionFontFamily",
-        "actionFontWeight",
-        "actionFontStyle",
-        "actionLineHeight",
-      ],
+      {
+        label: "General",
+        isCollapsible: true,
+        properties: [
+          "layout",
+          "height",
+          "textColor",
+          "borderColor",
+          "wrapperBorderRadius",
+        ],
+      },
+      {
+        label: "Header",
+        isCollapsible: true,
+        properties: [
+          "headerBackgroundColor",
+          "headerTextColor",
+          "headerFontWeight",
+          "headerFontSize",
+          "headerFontFamily",
+          "headerHeightMode",
+          "headerHeight",
+        ],
+      },
+      {
+        label: "Row",
+        isCollapsible: true,
+        properties: [
+          "rowBackgroundColor",
+          "rowAlternateColor",
+          "rowHoverColor",
+          "rowVerticalPaddingScale",
+        ],
+      },
+      {
+        label: "Column",
+        isCollapsible: true,
+        properties: ["columnHoverHighlight", "columnHoverColor"],
+      },
+      {
+        label: "Cell",
+        isCollapsible: true,
+        properties: [
+          "cellColor",
+          "cellFontFamily",
+          "cellFontSize",
+          "cellSelectionBorderColor",
+          "cellAlignmentMode",
+          "cellAlignment",
+        ],
+      },
+      {
+        label: "Menu",
+        isCollapsible: true,
+        properties: ["menuTextColor", "menuBackgroundColor"],
+      },
+      {
+        label: "Selection",
+        isCollapsible: true,
+        properties: [
+          "selectedRowBackgroundColor",
+          "selectionCheckboxColor",
+          "focusShadow",
+          "checkboxUncheckedBorderColor",
+        ],
+      },
+      {
+        label: "Action",
+        isCollapsible: true,
+        properties: [
+          "actionColor",
+          "actionBackgroundColor",
+          "actionPadding",
+          "actionBorder",
+          "actionBorderRadius",
+          "actionFont",
+          "actionFontSize",
+          "actionFontFamily",
+          "actionFontWeight",
+          "actionFontStyle",
+          "actionLineHeight",
+        ],
+      },
     ],
     customSettingsPropertiesOrder: [
       "rowData",
       "idFormula",
       "generateColumns",
       "columns",
-      ["pagination", "paginationPageSize"],
-      [
-        "rowSelection",
-        "enableClickSelection",
-        "disableCheckboxes",
-        "selectAll",
-      ],
+      {
+        label: "Pagination",
+        isCollapsible: true,
+        properties: [
+          "pagination",
+          "hasPaginationSelector",
+          "paginationPageSize",
+          "paginationPageSizeSelector",
+        ],
+      },
+      {
+        label: "Selection",
+        properties: [
+          "rowSelection",
+          "enableClickSelection",
+          "disableCheckboxes",
+          "selectAll",
+        ],
+      },
       "movableColumns",
       "resizableColumns",
+      "rowReorder",
+      "reorderInfoBox",
       "initialFilters",
       "initialSort",
+      "initialColumnsOrder",
       ["lang", "localeText"],
     ],
   },
@@ -129,6 +177,36 @@ export default {
       },
       getTestEvent: "getRowClickedTestEvent",
     },
+    {
+      name: "rowDragStart",
+      label: { en: "On Row Drag Start" },
+      event: {
+        row: null,
+        id: 0,
+      },
+      getTestEvent: "getRowDragStartTestEvent",
+    },
+    {
+      name: "rowDragged",
+      label: { en: "On Row Dragged" },
+      event: {
+        row: null,
+        id: 0,
+        targetIndex: 0,
+        rows: [],
+      },
+      getTestEvent: "getRowDraggedTestEvent",
+    },
+    {
+      name: "columnMoved",
+      label: { en: "On Column Moved" },
+      event: {
+        columnId: null,
+        toIndex: 0,
+        columnsOrder: [],
+      },
+      getTestEvent: "getColumnMovedTestEvent",
+    },
   ],
   actions: [
     { label: "Reset filters", action: "resetFilters" },
@@ -141,11 +219,11 @@ export default {
           name: "mode",
           type: "select",
           options: [
-              { value: null, label: "Grid behavior", default: true },
-              { value: "all", label: "All rows" },
-              { value: "filtered", label: "Filtered rows" },
-              { value: "currentPage", label: "Current page rows" },
-            ],
+            { value: null, label: "Grid behavior", default: true },
+            { value: "all", label: "All rows" },
+            { value: "filtered", label: "Filtered rows" },
+            { value: "currentPage", label: "Current page rows" },
+          ],
           /* wwEditor:start */
           bindingValidation: {
             type: "string",
@@ -180,41 +258,6 @@ export default {
     },
   ],
   properties: {
-    headerTitle: {
-      type: "Title",
-      label: "Header",
-      editorOnly: true,
-    },
-    rowTitle: {
-      type: "Title",
-      label: "Row",
-      editorOnly: true,
-    },
-    columnTitle: {
-      type: "Title",
-      label: "Column",
-      editorOnly: true,
-    },
-    cellTitle: {
-      type: "Title",
-      label: "Cell",
-      editorOnly: true,
-    },
-    menuTitle: {
-      type: "Title",
-      label: "Menu",
-      editorOnly: true,
-    },
-    actionTitle: {
-      type: "Title",
-      label: "Action",
-      editorOnly: true,
-    },
-    selectionTitle: {
-      type: "Title",
-      label: "Selection",
-      editorOnly: true,
-    },
     layout: {
       type: "TextSelect",
       label: "Height Mode",
@@ -1007,7 +1050,6 @@ export default {
               },
               widthAlgo: {
                 type: "TextRadioGroup",
-                label: "Width",
                 options: {
                   choices: [
                     { value: "fixed", label: "Fixed", default: true },
@@ -1184,6 +1226,41 @@ export default {
                 hidden: array?.item?.cellDataType !== "image",
               },
             },
+            propertiesOrder: [
+              "headerName",
+              "field",
+              "cellDataType",
+              "info",
+              "actionName",
+              "actionLabel",
+              "imageWidth",
+              "imageHeight",
+              ,
+              "useCustomLabel",
+              "displayLabelFormula",
+              {
+                label: "Width",
+                isCollapsible: true,
+                properties: [
+                  "widthAlgo",
+                  "flex",
+                  "width",
+                  "minWidth",
+                  "maxWidth",
+                ],
+              },
+              {
+                label: "Configuration",
+                isCollapsible: true,
+                properties: [
+                  "pinned",
+                  "hide",
+                  "editable",
+                  "filter",
+                  "sortable",
+                ],
+              },
+            ],
           }),
         },
         defaultValue: {
@@ -1217,8 +1294,27 @@ export default {
       },
       /* wwEditor:end */
     },
-    paginationPageSize: {
+    hasPaginationSelector: {
       label: { en: "Rows Per Page" },
+      type: "TextSelect",
+      section: "settings",
+      bindable: true,
+      options: {
+        options: [
+          { value: "single", label: "Single", default: true },
+          { value: "multiple", label: "Multiple" },
+        ],
+      },
+      /* wwEditor:start */
+      hidden: (content) => !content.pagination,
+      bindingValidation: {
+        type: "string",
+        enum: ["single", "multiple"],
+        tooltip: "Type of pagination (single or multiple)",
+      },
+      /* wwEditor:end */
+    },
+    paginationPageSize: {
       type: "Number",
       section: "settings",
       bindable: true,
@@ -1231,7 +1327,26 @@ export default {
         type: "number",
         tooltip: "Number of rows to display per page",
       },
-      hidden: (content) => !content.pagination,
+      hidden: (content) =>
+        !content.pagination || content.hasPaginationSelector === "multiple",
+      /* wwEditor:end */
+    },
+    paginationPageSizeSelector: {
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      options: {
+        placeholder: "[10, 20, 50, 100]",
+      },
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "Array",
+        tooltip: "Array of number of rows to display per page",
+      },
+      hidden: (content) =>
+        !content.pagination ||
+        !content.hasPaginationSelector ||
+        content.hasPaginationSelector === "single",
       /* wwEditor:end */
     },
     rowSelection: {
@@ -1352,6 +1467,17 @@ export default {
         tooltip: "An array representing the initial sort model",
       },
     },
+    initialColumnsOrder: {
+      label: { en: "Initial Columns Order" },
+      type: "RawObject",
+      section: "settings",
+      bindable: true,
+      defaultValue: null,
+      bindingValidation: {
+        type: "array",
+        tooltip: "An array representing the id of the initial columns order",
+      },
+    },
     lang: {
       label: { en: "Language" },
       type: "TextSelect",
@@ -1400,6 +1526,31 @@ export default {
       responsive: true,
       states: true,
       classes: true,
+    },
+    rowReorder: {
+      label: { en: "Row Reorder" },
+      type: "OnOff",
+      section: "settings",
+      bindable: true,
+      defaultValue: false,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "boolean",
+        tooltip: "Enable or disable row reordering",
+      },
+      /* wwEditor:end */
+    },
+    reorderInfoBox: {
+      type: "InfoBox",
+      section: "settings",
+      editorOnly: true,
+      hidden: (content) => !(content.rowReorder && content.pagination),
+      options: {
+        variant: "warning",
+        icon: "warning",
+        title: "Incompatible options",
+        content: `Row reordering is not compatible with pagination. Pagination will be disabled`,
+      },
     },
   },
 };
