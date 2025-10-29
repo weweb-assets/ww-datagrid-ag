@@ -37,9 +37,9 @@ export default {
           "rowAlternateColor",
           "rowHoverColor",
           "rowVerticalPaddingScale",
-                  "rowHeightMode",
-        "rowHeight",
-        "autoHeightWarning"
+          "rowHeightMode",
+          "rowHeight",
+          "autoHeightWarning",
         ],
       },
       {
@@ -57,6 +57,8 @@ export default {
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
+          "cellVerticalAlignmentMode",
+          "cellVerticalAlignment",
         ],
       },
       {
@@ -676,7 +678,8 @@ export default {
       type: "InfoBox",
       options: {
         variant: "warning",
-        content: "Configure columns to use for auto height. Performance is impacted whith large datasets.",
+        content:
+          "Configure columns to use for auto height. Performance is impacted whith large datasets.",
       },
       editorOnly: true,
       hidden: (content) => content.rowHeightMode !== "auto",
@@ -999,6 +1002,42 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
+    cellVerticalAlignmentMode: {
+      label: "Vertical Alignment Mode",
+      type: "TextSelect",
+      options: {
+        options: [
+          { value: "inherit", label: "Same as column", default: true },
+          { value: "custom", label: "Custom" },
+        ],
+      },
+    },
+    cellVerticalAlignment: {
+      type: "TextRadioGroup",
+      label: "Vertical Alignment",
+      options: {
+        choices: [
+          {
+            value: "top",
+            title: "Top",
+            default: true,
+          },
+          { value: "middle", title: "Middle", icon: "align-center" },
+          { value: "bottom", title: "Bottom", icon: "align-right" },
+        ],
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      section: "style",
+      bindingValidation: {
+        type: "string",
+        enum: ["top", "middle", "bottom"],
+        tooltip: "Vertical Cell alignment: top, middle, or bottom",
+      },
+      hidden: (content) => content.cellVerticalAlignmentMode !== "custom",
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1212,6 +1251,41 @@ export default {
                 },
                 bindable: true,
               },
+              autoTextWrap: {
+                type: "OnOff",
+                label: "Auto Text Wrap",
+                responsive: true,
+                bindable: true,
+                states: true,
+                classes: true,
+                hidden: array?.item?.autoRowHeight,
+              },
+              cellVerticalAlignment: {
+                type: "TextRadioGroup",
+                label: "Cell Vertical Alignment",
+                options: {
+                  choices: [
+                    {
+                      value: "top",
+                      title: "Top",
+                      default: array?.item?.autoTextWrap,
+                      icon: 'align-x-start-vertical',
+                    },
+                    { value: "middle", title: "Middle", icon: "align-x-center-vertical",  default: !array?.item?.autoTextWrap},
+                    { value: "bottom", title: "Bottom", icon: "align-x-end-vertical" },
+                  ],
+                },
+                responsive: true,
+                states: true,
+                classes: true,
+                bindable: true,
+                section: "style",
+                bindingValidation: {
+                  type: "string",
+                  enum: ["top", "middle", "bottom"],
+                  tooltip: "Vertical Cell alignment: top, middle, or bottom",
+                },
+              },
               pinned: {
                 label: "Pinned",
                 type: "TextRadioGroup",
@@ -1293,7 +1367,6 @@ export default {
               "actionLabel",
               "imageWidth",
               "imageHeight",
-              ,
               "useCustomLabel",
               "displayLabelFormula",
               {
@@ -1305,6 +1378,17 @@ export default {
                   "width",
                   "minWidth",
                   "maxWidth",
+                ],
+              },
+              "autoRowHeight",
+              {
+                label: "Alignment",
+                isCollapsible: true,
+                properties: [
+                  "headerAlignment",
+                  "cellAlignment",
+                  "autoTextWrap",
+                  "cellVerticalAlignment",
                 ],
               },
               {

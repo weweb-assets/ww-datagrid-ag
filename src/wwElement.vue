@@ -12,7 +12,13 @@
       :theme="theme"
       :getRowId="getRowId"
       :pagination="content.pagination"
-      :paginationPageSize="forcedPaginationPageSize ? 0 : paginationPageSizeSelector ? paginationPageSizeSelector[0]: content.paginationPageSize"
+      :paginationPageSize="
+        forcedPaginationPageSize
+          ? 0
+          : paginationPageSizeSelector
+          ? paginationPageSizeSelector[0]
+          : content.paginationPageSize
+      "
       :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
@@ -36,7 +42,15 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed, inject, watch, nextTick, ref } from "vue";
+import {
+  shallowRef,
+  watchEffect,
+  computed,
+  inject,
+  watch,
+  nextTick,
+  ref,
+} from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -122,18 +136,24 @@ export default {
       setColumnOrder(columns.map((col) => col.getColId()));
     };
 
-    let initialFilter = '';
-    let initialSort = '';
+    let initialFilter = "";
+    let initialSort = "";
 
     watchEffect(() => {
       // Both initial filters and sort should be set here to avoid conflicts with column state application
       // We keep track of previous values to avoid reinitializing one when only the other changes
       if (!gridApi.value) return;
-      if (props.content.initialFilters && initialFilter !== JSON.stringify(props.content.initialFilters)) {
+      if (
+        props.content.initialFilters &&
+        initialFilter !== JSON.stringify(props.content.initialFilters)
+      ) {
         gridApi.value.setFilterModel(props.content.initialFilters);
         initialFilter = JSON.stringify(props.content.initialFilters);
       }
-      if (props.content.initialSort && initialSort !== JSON.stringify(props.content.initialSort)) {
+      if (
+        props.content.initialSort &&
+        initialSort !== JSON.stringify(props.content.initialSort)
+      ) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
@@ -148,7 +168,7 @@ export default {
         gridApi.value.applyColumnState({
           state: props.content.initialColumnsOrder.map((colId) => ({ colId })),
           applyOrder: true,
-        })
+        });
       }
     });
 
@@ -263,7 +283,7 @@ export default {
     watch(
       () => props.content.hasPaginationSelector,
       (newVal, oldVal) => {
-        if (oldVal === 'multiple' && newVal !== 'multiple') {
+        if (oldVal === "multiple" && newVal !== "multiple") {
           forcedPaginationPageSize.value = true;
           nextTick().then(() => {
             forcedPaginationPageSize.value = false;
@@ -316,9 +336,12 @@ export default {
       return Array.isArray(data) ? data ?? [] : [];
     },
     defaultColDef() {
-      let cellClass = '';
+      let cellClass = "";
       if (this.content.cellAlignmentMode === "custom") {
         cellClass = `-${this.content.cellAlignment || "left"}`;
+      }
+      if (this.content.cellVerticalAlignmentMode === "custom") {
+        cellClass = `-${this.content.cellVerticalAlignment || "middle"}`;
       }
       return {
         editable: false,
@@ -345,9 +368,31 @@ export default {
         const flex = col?.widthAlgo === "flex" ? col?.flex ?? 1 : null;
         const isAutoRowHeight =
           this.content.rowHeightMode === "auto" && !!col.autoRowHeight;
-        let cellClass = '';
-        if (this.content.cellAlignmentMode === "custom" && col?.cellAlignment) {
-          cellClass += `-${col.cellAlignment}`;
+        let cellClass = "";
+        if (isAutoRowHeight) {
+          cellClass += " -auto-height";
+        }
+        if (this.content.cellAlignmentMode !== "custom" && col?.cellAlignment) {
+          cellClass += ` -${col.cellAlignment}`;
+        } else if (
+          this.content.cellAlignmentMode === "custom" &&
+          this.content.cellAlignment
+        ) {
+          cellClass += ` -${this.content.cellAlignment}`;
+        }
+        if (
+          this.content.cellVerticalAlignmentMode !== "custom" &&
+          col?.cellVerticalAlignment
+        ) {
+          cellClass += ` -${col.cellVerticalAlignment}`;
+        } else if (
+          this.content.cellVerticalAlignmentMode === "custom" &&
+          this.content.cellVerticalAlignment
+        ) {
+          cellClass += ` -${this.content.cellVerticalAlignment}`;
+        }
+        if (isAutoRowHeight || col?.autoTextWrap) {
+          cellClass += ` -normal-lineHeight`;
         }
         const commonProperties = {
           minWidth,
@@ -358,7 +403,7 @@ export default {
           hide: !!col?.hide,
           headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
           autoHeight: isAutoRowHeight,
-          wrapText: isAutoRowHeight,
+          wrapText: isAutoRowHeight || col?.autoTextWrap,
         };
         if (cellClass.length > 0) {
           commonProperties.cellClass = cellClass;
@@ -529,14 +574,20 @@ export default {
       return false;
     },
     paginationPageSizeSelector() {
-      if (!this.content.pagination || this.content.hasPaginationSelector !== 'multiple') {
+      if (
+        !this.content.pagination ||
+        this.content.hasPaginationSelector !== "multiple"
+      ) {
         return false;
       }
-      if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {
+      if (
+        !Array.isArray(this.content.paginationPageSizeSelector) ||
+        this.content.paginationPageSizeSelector.length === 0
+      ) {
         return false;
       }
       return this.content.paginationPageSizeSelector;
-    }
+    },
   },
   methods: {
     getRowId(params) {
@@ -588,7 +639,9 @@ export default {
     selectAll(mode) {
       if (!this.gridApi) return;
       if (this.content.rowSelection !== "multiple") {
-        wwLib.logStore.warning('Select all will have no effect, as row selection is not set to multiple');
+        wwLib.logStore.warning(
+          "Select all will have no effect, as row selection is not set to multiple"
+        );
         return;
       }
       this.gridApi.selectAll(mode || this.content.selectAll || "all");
@@ -748,17 +801,45 @@ export default {
     &.-right {
       .ag-cell-value {
         justify-content: flex-end;
+        text-align: right;
       }
     }
     &.-center {
       .ag-cell-value {
         justify-content: center;
+        text-align: center;
       }
     }
     &.-left {
       .ag-cell-value {
         justify-content: flex-start;
       }
+    }
+    &.-top,
+    &.-middle,
+    &.-bottom {
+      display: flex;
+      flex-direction: column;
+      .ag-cell-wrapper {
+        height: auto;
+      }
+    }
+    &.-top {
+      justify-content: flex-start;
+    }
+    &.-bottom {
+      justify-content: flex-end;
+    }
+    &.-middle {
+      justify-content: center;
+    }
+
+    &.-top,
+    &.-middle,
+    &.-bottom,
+    &.-auto-height,
+    &.-normal-lineHeight {
+      line-height: initial;
     }
   }
   /* wwEditor:start */
