@@ -12,7 +12,13 @@
       :theme="theme"
       :getRowId="getRowId"
       :pagination="content.pagination"
-      :paginationPageSize="forcedPaginationPageSize ? 0 : paginationPageSizeSelector ? paginationPageSizeSelector[0]: content.paginationPageSize"
+      :paginationPageSize="
+        forcedPaginationPageSize
+          ? 0
+          : paginationPageSizeSelector
+          ? paginationPageSizeSelector[0]
+          : content.paginationPageSize
+      "
       :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
       :columnHoverHighlight="content.columnHoverHighlight"
@@ -36,7 +42,15 @@
 </template>
 
 <script>
-import { shallowRef, watchEffect, computed, inject, watch, nextTick, ref } from "vue";
+import {
+  shallowRef,
+  watchEffect,
+  computed,
+  inject,
+  watch,
+  nextTick,
+  ref,
+} from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import {
   AllCommunityModule,
@@ -122,18 +136,24 @@ export default {
       setColumnOrder(columns.map((col) => col.getColId()));
     };
 
-    let initialFilter = '';
-    let initialSort = '';
+    let initialFilter = "";
+    let initialSort = "";
 
     watchEffect(() => {
       // Both initial filters and sort should be set here to avoid conflicts with column state application
       // We keep track of previous values to avoid reinitializing one when only the other changes
       if (!gridApi.value) return;
-      if (props.content.initialFilters && initialFilter !== JSON.stringify(props.content.initialFilters)) {
+      if (
+        props.content.initialFilters &&
+        initialFilter !== JSON.stringify(props.content.initialFilters)
+      ) {
         gridApi.value.setFilterModel(props.content.initialFilters);
         initialFilter = JSON.stringify(props.content.initialFilters);
       }
-      if (props.content.initialSort && initialSort !== JSON.stringify(props.content.initialSort)) {
+      if (
+        props.content.initialSort &&
+        initialSort !== JSON.stringify(props.content.initialSort)
+      ) {
         gridApi.value.applyColumnState({
           state: props.content.initialSort || [],
           defaultState: { sort: null },
@@ -148,7 +168,7 @@ export default {
         gridApi.value.applyColumnState({
           state: props.content.initialColumnsOrder.map((colId) => ({ colId })),
           applyOrder: true,
-        })
+        });
       }
     });
 
@@ -263,7 +283,7 @@ export default {
     watch(
       () => props.content.hasPaginationSelector,
       (newVal, oldVal) => {
-        if (oldVal === 'multiple' && newVal !== 'multiple') {
+        if (oldVal === "multiple" && newVal !== "multiple") {
           forcedPaginationPageSize.value = true;
           nextTick().then(() => {
             forcedPaginationPageSize.value = false;
@@ -271,6 +291,24 @@ export default {
         }
       }
     );
+
+    /* wwEditor:start */
+    watch(
+      () => [
+        props.content.dynamicHeaderBackgroundColor,
+        props.content.useDynamicStyleHeader,
+        props.content.dynamicHeaderTextColor,
+        props.content.dynamicHeaderFontWeight,
+        props.content.dynamicHeaderFontSize,
+        props.content.dynamicHeaderFontFamily,
+      ],
+      () => {
+        nextTick(() => {
+          setTimeout(() => gridApi.value?.refreshHeader(), 100);
+        });
+      }
+    );
+    /* wwEditor:end */
 
     return {
       resolveMappingFormula,
@@ -316,7 +354,7 @@ export default {
       return Array.isArray(data) ? data ?? [] : [];
     },
     defaultColDef() {
-      return {
+      const definition = {
         editable: false,
         resizable: this.content.resizableColumns,
         autoHeaderHeight: this.content.headerHeightMode === "auto",
@@ -326,6 +364,12 @@ export default {
             ? `-${this.content.cellAlignment || "left"} ||`
             : null,
       };
+      if (this.content.useDynamicStyleHeader) {
+        definition.headerStyle = this.getHeaderStyle;
+      } else {
+        definition.headerStyle = {};
+      }
+      return definition;
     },
     columnDefs() {
       const columns = this.content.columns.map((col, index) => {
@@ -515,14 +559,20 @@ export default {
       return false;
     },
     paginationPageSizeSelector() {
-      if (!this.content.pagination || this.content.hasPaginationSelector !== 'multiple') {
+      if (
+        !this.content.pagination ||
+        this.content.hasPaginationSelector !== "multiple"
+      ) {
         return false;
       }
-      if (!Array.isArray(this.content.paginationPageSizeSelector) || this.content.paginationPageSizeSelector.length === 0) {
+      if (
+        !Array.isArray(this.content.paginationPageSizeSelector) ||
+        this.content.paginationPageSizeSelector.length === 0
+      ) {
         return false;
       }
       return this.content.paginationPageSizeSelector;
-    }
+    },
   },
   methods: {
     getRowId(params) {
@@ -574,7 +624,9 @@ export default {
     selectAll(mode) {
       if (!this.gridApi) return;
       if (this.content.rowSelection !== "multiple") {
-        wwLib.logStore.warning('Select all will have no effect, as row selection is not set to multiple');
+        wwLib.logStore.warning(
+          "Select all will have no effect, as row selection is not set to multiple"
+        );
         return;
       }
       this.gridApi.selectAll(mode || this.content.selectAll || "all");
@@ -592,6 +644,42 @@ export default {
       if (rowNode) {
         rowNode.setSelected(false);
       }
+    },
+    getHeaderStyle(params) {
+      const colDef = params.column?.getColDef();
+      const id = params.column?.getColId();
+      const context = {
+        id,
+        name: colDef?.headerName || id,
+        type: colDef?.cellDataType,
+      };
+      const backgroundColor = this.resolveMappingFormula?.(
+        this.content.dynamicHeaderBackgroundColor,
+        context
+      );
+      const color = this.resolveMappingFormula?.(
+        this.content.dynamicHeaderTextColor,
+        context
+      );
+      const fontWeight = this.resolveMappingFormula?.(
+        this.content.dynamicHeaderFontWeight,
+        context
+      );
+      const fontSize = this.resolveMappingFormula?.(
+        this.content.dynamicHeaderFontSize,
+        context
+      );
+      const fontFamily = this.resolveMappingFormula?.(
+        this.content.dynamicHeaderFontFamily,
+        context
+      );
+      return {
+        backgroundColor,
+        color,
+        fontWeight,
+        fontSize,
+        fontFamily,
+      };
     },
     /* wwEditor:start */
     generateColumns() {
