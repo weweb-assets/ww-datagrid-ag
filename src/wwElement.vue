@@ -36,6 +36,7 @@
       @row-drag-end="onRowDragged"
       @row-drag-enter="onRowDragEnter"
       @column-moved="onColumnMoved"
+      @pagination-changed="onPaginationChanged"
     >
     </ag-grid-vue>
   </div>
@@ -130,6 +131,80 @@ export default {
         readonly: true,
       });
 
+    const { value: allData, setValue: setAllData } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "allData",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
+
+    const { value: total, setValue: setTotal } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "total",
+        type: "number",
+        defaultValue: 0,
+        readonly: true,
+      });
+
+    const { value: sortedFilteredData, setValue: setSortedFilteredData } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "sortedFilteredData",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
+
+    const {
+      value: totalSortedFilteredData,
+      setValue: setTotalSortedFilteredData,
+    } = wwLib.wwVariable.useComponentVariable({
+      uid: props.uid,
+      name: "totalSortedFilteredData",
+      type: "number",
+      defaultValue: 0,
+      readonly: true,
+    });
+
+    const { value: perPageTotal, setValue: setPerPageTotal } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "perPageTotal",
+        type: "number",
+        defaultValue: 0,
+        readonly: true,
+      });
+
+    const { value: totalPages, setValue: setTotalPages } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "totalPages",
+        type: "number",
+        defaultValue: 0,
+        readonly: true,
+      });
+
+    const { value: displayedData, setValue: setDisplayedData } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "displayedData",
+        type: "array",
+        defaultValue: [],
+        readonly: true,
+      });
+
+    const { value: totalDisplayedRecords, setValue: setTotalDisplayedRecords } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "totalDisplayedRecords",
+        type: "number",
+        defaultValue: 0,
+        readonly: true,
+      });
+
     const onGridReady = (params) => {
       gridApi.value = params.api;
       const columns = params.api.getAllGridColumns();
@@ -171,6 +246,65 @@ export default {
         });
       }
     });
+
+    // Wrapper to not compute variables too often
+    let rafId = null;
+    const scheduleVariableUpdate = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        updateVariables();
+      });
+    };
+
+    function updateVariables() {
+      console.log("Updating datagrid variables");
+      if (!gridApi.value) return;
+
+      const sortedFiltered = [];
+      gridApi.value.forEachNodeAfterFilterAndSort((node) => {
+        sortedFiltered.push(node.data);
+      });
+      setSortedFilteredData(sortedFiltered);
+      setTotalSortedFilteredData(sortedFiltered.length);
+
+      const pageSize = gridApi.value.paginationGetPageSize();
+      setPerPageTotal(pageSize);
+      setTotalPages(gridApi.value.paginationGetTotalPages());
+
+      let displayed = [];
+      if (props.content.pagination) {
+        const page = gridApi.value.paginationGetCurrentPage();
+        const totalDisplayed = gridApi.value.getDisplayedRowCount();
+        const start = page * pageSize;
+        const end = Math.min(start + pageSize, totalDisplayed);
+
+        for (let i = start; i < end; i++) {
+          const node = gridApi.value.getDisplayedRowAtIndex(i);
+          displayed.push(node.data);
+        }
+      } else {
+        displayed = sortedFiltered
+      }
+
+      setDisplayedData(displayed);
+      setTotalDisplayedRecords(displayed.length);
+    }
+
+    const rowData = computed(() => {
+      const data = wwLib.wwUtils.getDataFromCollection(props.content.rowData);
+      return Array.isArray(data) ? data ?? [] : [];
+    });
+
+    watch(
+      rowData,
+      (newVal) => {
+        setAllData(newVal);
+        setTotal(newVal.length);
+        scheduleVariableUpdate();
+      },
+      { immediate: true, deep: true }
+    );
 
     const initialState = computed(() => {
       const state = {
@@ -242,6 +376,7 @@ export default {
           name: "filterChanged",
           event: filterModel,
         });
+        scheduleVariableUpdate();
       }
     };
 
@@ -257,6 +392,7 @@ export default {
           name: "sortChanged",
           event: state.sort?.sortModel || [],
         });
+        scheduleVariableUpdate();
       }
     };
 
@@ -272,6 +408,10 @@ export default {
           columnsOrder: columns.map((col) => col.getColId()),
         },
       });
+    };
+
+    const onPaginationChanged = (event) => {
+      scheduleVariableUpdate();
     };
 
     /* wwEditor:start */
@@ -292,14 +432,9 @@ export default {
       }
     );
 
-    const rowData = computed(() => {
-      const data = wwLib.wwUtils.getDataFromCollection(props.content.rowData);
-      return Array.isArray(data) ? data ?? [] : [];
-    });
-
     function refreshData() {
       nextTick(() => {
-        gridApi.value?.refreshCells()
+        gridApi.value?.refreshCells();
       });
     }
 
@@ -311,6 +446,7 @@ export default {
       gridApi,
       onFilterChanged,
       onSortChanged,
+      onPaginationChanged,
       localeText: computed(() => {
         switch (props.content.lang) {
           case "fr":
