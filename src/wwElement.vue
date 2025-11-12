@@ -131,77 +131,21 @@ export default {
         readonly: true,
       });
 
-    const { value: allData, setValue: setAllData } =
+    const {value: data, setValue: setData } =
       wwLib.wwVariable.useComponentVariable({
         uid: props.uid,
-        name: "allData",
-        type: "array",
-        defaultValue: [],
-        readonly: true,
-      });
-
-    const { value: total, setValue: setTotal } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "total",
-        type: "number",
-        defaultValue: 0,
-        readonly: true,
-      });
-
-    const { value: sortedFilteredData, setValue: setSortedFilteredData } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "sortedFilteredData",
-        type: "array",
-        defaultValue: [],
-        readonly: true,
-      });
-
-    const {
-      value: totalSortedFilteredData,
-      setValue: setTotalSortedFilteredData,
-    } = wwLib.wwVariable.useComponentVariable({
-      uid: props.uid,
-      name: "totalSortedFilteredData",
-      type: "number",
-      defaultValue: 0,
-      readonly: true,
-    });
-
-    const { value: perPageTotal, setValue: setPerPageTotal } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "perPageTotal",
-        type: "number",
-        defaultValue: 0,
-        readonly: true,
-      });
-
-    const { value: totalPages, setValue: setTotalPages } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "totalPages",
-        type: "number",
-        defaultValue: 0,
-        readonly: true,
-      });
-
-    const { value: displayedData, setValue: setDisplayedData } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "displayedData",
-        type: "array",
-        defaultValue: [],
-        readonly: true,
-      });
-
-    const { value: totalDisplayedRecords, setValue: setTotalDisplayedRecords } =
-      wwLib.wwVariable.useComponentVariable({
-        uid: props.uid,
-        name: "totalDisplayedRecords",
-        type: "number",
-        defaultValue: 0,
+        name: "data",
+        type: "object",
+        defaultValue: {
+          allData: [],
+          total: 0,
+          sortedFilteredData: [],
+          totalSortedFilteredData: 0,
+          perPageTotal: 0,
+          totalPages: 0,
+          displayedData: [],
+          totalDisplayedRecords: 0,
+        },
         readonly: true,
       });
 
@@ -258,19 +202,23 @@ export default {
     };
 
     function updateVariables() {
-      console.log("Updating datagrid variables");
       if (!gridApi.value) return;
+
+      const dataValue = {
+        allData: data.value.allData,
+        total: data.value.total
+      };
 
       const sortedFiltered = [];
       gridApi.value.forEachNodeAfterFilterAndSort((node) => {
         sortedFiltered.push(node.data);
       });
-      setSortedFilteredData(sortedFiltered);
-      setTotalSortedFilteredData(sortedFiltered.length);
+      dataValue.sortedFilteredData = sortedFiltered;
+      dataValue.totalSortedFilteredData = sortedFiltered.length;
 
       const pageSize = gridApi.value.paginationGetPageSize();
-      setPerPageTotal(pageSize);
-      setTotalPages(gridApi.value.paginationGetTotalPages());
+      dataValue.perPageTotal = pageSize;
+      dataValue.totalPages = gridApi.value.paginationGetTotalPages();
 
       let displayed = [];
       if (props.content.pagination) {
@@ -287,8 +235,10 @@ export default {
         displayed = sortedFiltered
       }
 
-      setDisplayedData(displayed);
-      setTotalDisplayedRecords(displayed.length);
+      dataValue.displayedData = displayed;
+      dataValue.totalDisplayedRecords = displayed.length;
+
+      setData(dataValue);
     }
 
     const rowData = computed(() => {
@@ -299,8 +249,10 @@ export default {
     watch(
       rowData,
       (newVal) => {
-        setAllData(newVal);
-        setTotal(newVal.length);
+        const dataValue = {...data.value};
+        dataValue.allData = newVal;
+        dataValue.total = newVal.length;
+        setData(dataValue);
         scheduleVariableUpdate();
       },
       { immediate: true, deep: true }
