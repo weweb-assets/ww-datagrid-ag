@@ -323,22 +323,39 @@ export default {
     },
     useDynamicStyleHeader: {
       type: "OnOff",
-      label: "Use dynamic style?",
+      label: "Use Dynamic Styling",
       responsive: true,
       bindable: true,
       states: true,
       classes: true,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Toggle dynamic per-column header styles computed from formulas.\nPossible values: `true`, `false`",
+      },
+      /* wwEditor:end */
     },
     dynamicHeaderBackgroundColor: {
       type: "Formula",
       label: "Background Color",
       options: {
-        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
       },
       responsive: true,
       states: true,
       classes: true,
       hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic background color using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(name = 'Total', '#f1f5f9', #bababa)`",
+      },
+      /* wwEditor:end */
     },
     headerTextColor: {
       type: "Color",
@@ -351,17 +368,28 @@ export default {
       states: true,
       classes: true,
     },
-    headerTextColor: {
+    dynamicHeaderTextColor: {
       type: "Formula",
       label: "Text Color",
       options: {
-        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
       },
       responsive: true,
       bindable: true,
       states: true,
       classes: true,
       hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic text color using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(id = 'status', '#1f2937', #4a4a4a)`",
+      },
+      /* wwEditor:end */
     },
     headerFontWeight: {
       label: "Font weight",
@@ -394,12 +422,23 @@ export default {
       label: "Font weight",
       type: "Formula",
       options: {
-        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
       },
       responsive: true,
       states: true,
       classes: true,
       hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font weight using the column `name`, `id`, `type` or `dataType`.\nPossible values: `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`\nExample: `IF(id = 'priority', 700, 400)`",
+      },
+      /* wwEditor:end */
     },
     headerFontSize: {
       label: "Font Size",
@@ -426,12 +465,23 @@ export default {
       label: "Font Size",
       type: "Formula",
       options: {
-        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
       },
       responsive: true,
       states: true,
       classes: true,
       hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font size using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(name = 'Total', '16px', '14px')`",
+      },
+      /* wwEditor:end */
     },
     textColor: {
       label: "Text Color",
@@ -467,9 +517,20 @@ export default {
       states: true,
       classes: true,
       options: {
-        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
       },
       hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font family using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(type = 'number', 'Inter', 'Georgia')`",
+      },
+      /* wwEditor:end */
     },
     headerHeightMode: {
       type: "TextSelect",
