@@ -647,11 +647,15 @@ export default {
     },
     getHeaderStyle(params) {
       const colDef = params.column?.getColDef();
+      const col = this.content.columns.find(
+        (c) => c.field === colDef?.field || (c.actionName && c.actionName === colDef?.colId)
+      );
       const id = params.column?.getColId();
       const context = {
         id,
         name: colDef?.headerName || id,
-        type: colDef?.cellDataType,
+        dataType: colDef?.cellDataType,
+        type: col?.cellDataType === 'dateString' ? 'date' : (col?.cellDataType || 'auto')
       };
       const backgroundColor = this.resolveMappingFormula?.(
         this.content.dynamicHeaderBackgroundColor,

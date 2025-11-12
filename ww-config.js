@@ -333,7 +333,7 @@ export default {
       type: "Formula",
       label: "Background Color",
       options: {
-        template: { name: "Header name", id: "Header id", type: "type" },
+        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
       },
       responsive: true,
       states: true,
@@ -355,7 +355,7 @@ export default {
       type: "Formula",
       label: "Text Color",
       options: {
-        template: { name: "Header name", id: "Header id", type: "type" },
+        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
       },
       responsive: true,
       bindable: true,
@@ -394,7 +394,7 @@ export default {
       label: "Font weight",
       type: "Formula",
       options: {
-        template: { name: "Header name", id: "Header id", type: "type" },
+        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
       },
       responsive: true,
       states: true,
@@ -426,7 +426,7 @@ export default {
       label: "Font Size",
       type: "Formula",
       options: {
-        template: { name: "Header name", id: "Header id", type: "type" },
+        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
       },
       responsive: true,
       states: true,
@@ -467,7 +467,7 @@ export default {
       states: true,
       classes: true,
       options: {
-        template: { name: "Header name", id: "Header id", type: "type" },
+        template: { name: "Header name", id: "Header id", type: "auto", dataType: 'text' },
       },
       hidden: (content) => !content.useDynamicStyleHeader,
     },
