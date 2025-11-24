@@ -380,7 +380,6 @@ export default {
         },
       },
       responsive: true,
-      bindable: true,
       states: true,
       classes: true,
       hidden: (content) => !content.useDynamicStyleHeader,
