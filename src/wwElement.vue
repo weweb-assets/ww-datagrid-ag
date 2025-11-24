@@ -131,7 +131,7 @@ export default {
         readonly: true,
       });
 
-    const {value: data, setValue: setData } =
+    const { value: data, setValue: setData } =
       wwLib.wwVariable.useComponentVariable({
         uid: props.uid,
         name: "data",
@@ -206,7 +206,7 @@ export default {
 
       const dataValue = {
         allData: data.value.allData,
-        total: data.value.total
+        total: data.value.total,
       };
 
       const sortedFiltered = [];
@@ -216,12 +216,11 @@ export default {
       dataValue.sortedFilteredData = sortedFiltered;
       dataValue.totalSortedFilteredData = sortedFiltered.length;
 
-      const pageSize = gridApi.value.paginationGetPageSize();
-      dataValue.perPageTotal = pageSize;
-      dataValue.totalPages = gridApi.value.paginationGetTotalPages();
-
       let displayed = [];
       if (props.content.pagination) {
+        const pageSize = gridApi.value.paginationGetPageSize();
+        dataValue.perPageTotal = pageSize;
+        dataValue.totalPages = gridApi.value.paginationGetTotalPages();
         const page = gridApi.value.paginationGetCurrentPage();
         const totalDisplayed = gridApi.value.getDisplayedRowCount();
         const start = page * pageSize;
@@ -232,7 +231,7 @@ export default {
           displayed.push(node.data);
         }
       } else {
-        displayed = sortedFiltered
+        displayed = sortedFiltered;
       }
 
       dataValue.displayedData = displayed;
@@ -249,7 +248,7 @@ export default {
     watch(
       rowData,
       (newVal) => {
-        const dataValue = {...data.value};
+        const dataValue = { ...data.value };
         dataValue.allData = newVal;
         dataValue.total = newVal.length;
         setData(dataValue);
@@ -365,6 +364,13 @@ export default {
     const onPaginationChanged = (event) => {
       scheduleVariableUpdate();
     };
+
+    watch(
+      () => props.content.pagination,
+      () => {
+        scheduleVariableUpdate();
+      }
+    );
 
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
