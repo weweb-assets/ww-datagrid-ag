@@ -36,6 +36,7 @@
       @row-drag-end="onRowDragged"
       @row-drag-enter="onRowDragEnter"
       @column-moved="onColumnMoved"
+      @pagination-changed="onPaginationChanged"
     >
     </ag-grid-vue>
   </div>
@@ -130,6 +131,24 @@ export default {
         readonly: true,
       });
 
+    const { value: data, setValue: setData } =
+      wwLib.wwVariable.useComponentVariable({
+        uid: props.uid,
+        name: "data",
+        type: "object",
+        defaultValue: {
+          allData: [],
+          total: 0,
+          sortedFilteredData: [],
+          totalSortedFilteredData: 0,
+          perPageTotal: 0,
+          totalPages: 0,
+          displayedData: [],
+          totalDisplayedRecords: 0,
+        },
+        readonly: true,
+      });
+
     const onGridReady = (params) => {
       gridApi.value = params.api;
       const columns = params.api.getAllGridColumns();
@@ -171,6 +190,72 @@ export default {
         });
       }
     });
+
+    // Wrapper to not compute variables too often
+    let rafId = null;
+    const scheduleVariableUpdate = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        updateVariables();
+      });
+    };
+
+    function updateVariables() {
+      if (!gridApi.value) return;
+
+      const dataValue = {
+        allData: data.value.allData,
+        total: data.value.total,
+      };
+
+      const sortedFiltered = [];
+      gridApi.value.forEachNodeAfterFilterAndSort((node) => {
+        sortedFiltered.push(node.data);
+      });
+      dataValue.sortedFilteredData = sortedFiltered;
+      dataValue.totalSortedFilteredData = sortedFiltered.length;
+
+      let displayed = [];
+      if (props.content.pagination) {
+        const pageSize = gridApi.value.paginationGetPageSize();
+        dataValue.perPageTotal = pageSize;
+        dataValue.totalPages = gridApi.value.paginationGetTotalPages();
+        const page = gridApi.value.paginationGetCurrentPage();
+        const totalDisplayed = gridApi.value.getDisplayedRowCount();
+        const start = page * pageSize;
+        const end = Math.min(start + pageSize, totalDisplayed);
+
+        for (let i = start; i < end; i++) {
+          const node = gridApi.value.getDisplayedRowAtIndex(i);
+          displayed.push(node.data);
+        }
+      } else {
+        displayed = sortedFiltered;
+      }
+
+      dataValue.displayedData = displayed;
+      dataValue.totalDisplayedRecords = displayed.length;
+
+      setData(dataValue);
+    }
+
+    const rowData = computed(() => {
+      const data = wwLib.wwUtils.getDataFromCollection(props.content.rowData);
+      return Array.isArray(data) ? data ?? [] : [];
+    });
+
+    watch(
+      rowData,
+      (newVal) => {
+        const dataValue = { ...data.value };
+        dataValue.allData = newVal;
+        dataValue.total = newVal.length;
+        setData(dataValue);
+        scheduleVariableUpdate();
+      },
+      { immediate: true, deep: true }
+    );
 
     const initialState = computed(() => {
       const state = {
@@ -242,6 +327,7 @@ export default {
           name: "filterChanged",
           event: filterModel,
         });
+        scheduleVariableUpdate();
       }
     };
 
@@ -257,6 +343,7 @@ export default {
           name: "sortChanged",
           event: state.sort?.sortModel || [],
         });
+        scheduleVariableUpdate();
       }
     };
 
@@ -273,6 +360,17 @@ export default {
         },
       });
     };
+
+    const onPaginationChanged = (event) => {
+      scheduleVariableUpdate();
+    };
+
+    watch(
+      () => props.content.pagination,
+      () => {
+        scheduleVariableUpdate();
+      }
+    );
 
     /* wwEditor:start */
     const { createElement } = wwLib.useCreateElement();
@@ -292,14 +390,9 @@ export default {
       }
     );
 
-    const rowData = computed(() => {
-      const data = wwLib.wwUtils.getDataFromCollection(props.content.rowData);
-      return Array.isArray(data) ? data ?? [] : [];
-    });
-
     function refreshData() {
       nextTick(() => {
-        gridApi.value?.refreshCells()
+        gridApi.value?.refreshCells();
       });
     }
 
@@ -311,6 +404,7 @@ export default {
       gridApi,
       onFilterChanged,
       onSortChanged,
+      onPaginationChanged,
       localeText: computed(() => {
         switch (props.content.lang) {
           case "fr":
