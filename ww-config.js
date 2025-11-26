@@ -37,6 +37,9 @@ export default {
           "rowAlternateColor",
           "rowHoverColor",
           "rowVerticalPaddingScale",
+          "rowHeightMode",
+          "rowHeight",
+          "autoHeightWarning",
         ],
       },
       {
@@ -54,6 +57,8 @@ export default {
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
+          "cellVerticalAlignmentMode",
+          "cellVerticalAlignment",
         ],
       },
       {
@@ -638,6 +643,52 @@ export default {
       states: true,
       classes: true,
     },
+    rowHeightMode: {
+      type: "TextSelect",
+      label: "Height Mode",
+      options: {
+        options: [
+          { value: "fixed", label: "Fixed", default: true },
+          { value: "auto", label: "Auto" },
+        ],
+      },
+    },
+    rowHeight: {
+      label: { en: "Height (px)" },
+      type: "Number",
+      section: "style",
+      options: {
+        noRange: true,
+        unitChoices: [
+          { value: "px", label: "px", default: true },
+          { value: "em", label: "em", digits: 3, step: 0.1 },
+          { value: "rem", label: "rem", digits: 3, step: 0.1 },
+        ],
+      },
+      bindable: true,
+      classes: true,
+      responsive: true,
+      states: true,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "string",
+        tooltip: "Height of each row in px (e.g., 40)",
+      },
+      hidden: (content) => content.rowHeightMode === "auto",
+      /* wwEditor:end */
+    },
+    /* wwEditor:start */
+    autoHeightWarning: {
+      type: "InfoBox",
+      options: {
+        variant: "warning",
+        content:
+          "Configure columns to use for auto height. Performance is impacted whith large datasets.",
+      },
+      editorOnly: true,
+      hidden: (content) => content.rowHeightMode !== "auto",
+    },
+    /* wwEditor:end */
     menuTextColor: {
       label: "Text color",
       type: "Color",
@@ -955,6 +1006,42 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
+    cellVerticalAlignmentMode: {
+      label: "Vertical Alignment Mode",
+      type: "TextSelect",
+      options: {
+        options: [
+          { value: "inherit", label: "Same as column", default: true },
+          { value: "custom", label: "Custom" },
+        ],
+      },
+    },
+    cellVerticalAlignment: {
+      type: "TextRadioGroup",
+      label: "Vertical Alignment",
+      options: {
+        choices: [
+          {
+            value: "top",
+            title: "Top",
+            default: true,
+          },
+          { value: "middle", title: "Middle", icon: "align-center" },
+          { value: "bottom", title: "Bottom", icon: "align-right" },
+        ],
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      section: "style",
+      bindingValidation: {
+        type: "string",
+        enum: ["top", "middle", "bottom"],
+        tooltip: "Vertical Cell alignment: top, middle, or bottom",
+      },
+      hidden: (content) => content.cellVerticalAlignmentMode !== "custom",
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1158,6 +1245,51 @@ export default {
                   tooltip: "Cell alignment: left, center, or right",
                 },
               },
+              autoRowHeight: {
+                label: "Auto Row Height",
+                type: "OnOff",
+                hidden: content.rowHeightMode !== "auto",
+                propertyHelp: {
+                  tooltip:
+                    "The row height will adjust to fit the content of this column. This only works if the grid's row height mode is set to auto.",
+                },
+                bindable: true,
+              },
+              autoTextWrap: {
+                type: "OnOff",
+                label: "Auto Text Wrap",
+                responsive: true,
+                bindable: true,
+                states: true,
+                classes: true,
+                hidden: array?.item?.autoRowHeight,
+              },
+              cellVerticalAlignment: {
+                type: "TextRadioGroup",
+                label: "Cell Vertical Alignment",
+                options: {
+                  choices: [
+                    {
+                      value: "top",
+                      title: "Top",
+                      default: array?.item?.autoTextWrap,
+                      icon: 'align-x-start-vertical',
+                    },
+                    { value: "middle", title: "Middle", icon: "align-x-center-vertical",  default: !array?.item?.autoTextWrap},
+                    { value: "bottom", title: "Bottom", icon: "align-x-end-vertical" },
+                  ],
+                },
+                responsive: true,
+                states: true,
+                classes: true,
+                bindable: true,
+                section: "style",
+                bindingValidation: {
+                  type: "string",
+                  enum: ["top", "middle", "bottom"],
+                  tooltip: "Vertical Cell alignment: top, middle, or bottom",
+                },
+              },
               pinned: {
                 label: "Pinned",
                 type: "TextRadioGroup",
@@ -1239,7 +1371,6 @@ export default {
               "actionLabel",
               "imageWidth",
               "imageHeight",
-              ,
               "useCustomLabel",
               "displayLabelFormula",
               {
@@ -1251,6 +1382,17 @@ export default {
                   "width",
                   "minWidth",
                   "maxWidth",
+                ],
+              },
+              "autoRowHeight",
+              {
+                label: "Alignment",
+                isCollapsible: true,
+                properties: [
+                  "headerAlignment",
+                  "cellAlignment",
+                  "autoTextWrap",
+                  "cellVerticalAlignment",
                 ],
               },
               {
