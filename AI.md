@@ -32,17 +32,34 @@ A highly customizable data grid/table component that supports features like sort
 - `headerFontFamily`: `string` - Font family for header text.
 - `headerHeightMode`: `undefined|auto` - Set to auto to have auto height on the header
 - `headerHeight`: `string` - If headerHeightMode is not auto, the header height (default to the 48px of the template)
+
 - `useDynamicStyleHeader`: `boolean` - Enable all dynamic style for header. Then you can define one or several of the dynamic header properties, depending which one you want to overwrite.
+- `useDynamicStyleRow`: `boolean` - Enable all dynamic style for rows. Then you can define one or several of the dynamic rows properties, depending which one you want to overwrite.
+- `useDynamicStyleCell`: `boolean` - Enable all dynamic style for cells. Then you can define one or several of the dynamic cells properties, depending which one you want to overwrite.
+
 - `dynamicHeaderBackgroundColor`: `Formula` - Compute a dynamic background color using the column information. Column information will be provided through an object `context.mapping?.['name' | 'id' | 'type' | 'dataType']`. You can return a nullable value to fallback to the default style. `useDynamicStyleHeader` should be true to use this. Example: `wwFormulas.if(context.mapping?.['name'] == 'Total', '#f1f5f9', null)`.
 - `dynamicHeaderTextColor`: `Formula` - Compute a dynamic text color using the column information. Column information will be provided through an object `context.mapping?.['name' | 'id' | 'type' | 'dataType']`. You can return a nullable value to fallback to the default style. `useDynamicStyleHeader` should be true to use this. Example: `wwFormulas.if(context.mapping?.['id'] == 'status', '#1f2937', null)`
 - `dynamicHeaderFontWeight`: `Formula` - Compute a dynamic font weight using the column information. Column information will be provided through an object `context.mapping?.['name' | 'id' | 'type' | 'dataType']`. You can return a nullable value to fallback to the default style. `useDynamicStyleHeader` should be true to use this. Possible values: `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`\nExample: `wwFormulas.if(context.mapping?.['id'] == 'priority', 700, null)`
 - `dynamicHeaderFontSize`: `Formula` - Compute a dynamic font size using the column information. Column information will be provided through an object `context.mapping?.['name' | 'id' | 'type' | 'dataType']`. You can return a nullable value to fallback to the default style. `useDynamicStyleHeader` should be true to use this. Example: `wwFormulas.if(context.mapping?.['name'] == 'Total', '16px', null)`
 - `dynamicHeaderFontFamily`: `Formula` - Compute a dynamic font family using the column information. Column information will be provided through an object `context.mapping?.['name' | 'id' | 'type' | 'dataType']`. You can return a nullable value to fallback to the default style. `useDynamicStyleHeader` should be true to use this. Example: `wwFormulas.if(context.mapping?.['dataType'] == 'number', 'Inter', null)`",
+
+
 - `borderColor`: `string | null` - Color of grid borders.
 - `wrapperBorderRadius`: `string | null` - Border radius of the wrapper
+
 - `cellColor`: `string | null` - Text color of grid cells.
 - `cellFontFamily`: `string` - Font family for cell text.
 - `cellFontSize`: `string` - Font size for cell text.
+
+- `dynamicRowBackgroundColor`: `Formula` - Compute a dynamic background color using the row information. Row information will be provided through an object `context.mapping?.['data' | 'index']`. You can return a nullable value to fallback to the default style. `useDynamicStyleRow` should be true to use this. Example: `wwFormulas.if(context.mapping?.data?.['Status'] == 'complete', '#f1f5f9', null)`.
+
+
+- `dynamicCellBackgroundColor`: `Formula` - Compute a dynamic background color using the cell information. Cell information will be provided through an object `context.mapping?.['data' | 'index' | 'column']`, with column beeing an object with `{ id, type, dataType }` properties. You can return a nullable value to fallback to the default style. `useDynamicStyleCell` should be true to use this. Example: `wwFormulas.if(context.mapping?.column?.['name'] == 'Total', '#f1f5f9', null)`.
+- `dynamicCellColor`: `Formula` - Compute a dynamic background color using the cell information. Cell information will be provided through an object `context.mapping?.['data' | 'index' | 'column']`, with column beeing an object with `{ id, type, dataType }` properties. You can return a nullable value to fallback to the default style. `useDynamicStyleCell` should be true to use this. Example: `wwFormulas.if(context.mapping?.column?.['name'] == 'Total', '#f1f5f9', null)`.
+- `dynamicCellFontFamily`: `Formula` - Compute a dynamic background color using the cell information. Cell information will be provided through an object `context.mapping?.['data' | 'index' | 'column']`, with column beeing an object with `{ id, type, dataType }` properties. You can return a nullable value to fallback to the default style. `useDynamicStyleCell` should be true to use this. Example: `wwFormulas.if(context.mapping?.column?.['name'] == 'Total', 'Inter', null)`.
+- `dynamicCellFontSize`: `Formula` - Compute a dynamic background color using the cell information. Cell information will be provided through an object `context.mapping?.['data' | 'index' | 'column']`, with column beeing an object with `{ id, type, dataType }` properties. You can return a nullable value to fallback to the default style. `useDynamicStyleCell` should be true to use this. Example: `wwFormulas.if(context.mapping?.column?.['name'] == 'Total', '18px', null)`.
+
+
 - `rowBackgroundColor`: `string | null` - Background color for rows.
 - `rowAlternateColor`: `string | null` - Background color for alternate rows. Be sure it works well with cell default text color, as the color is common
 - `rowHoverColor`: `string | null` - Background color when hovering over rows. Must be a semi transparent color, at it will be an overlay on top

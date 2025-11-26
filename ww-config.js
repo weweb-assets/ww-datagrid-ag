@@ -52,6 +52,15 @@ export default {
         ],
       },
       {
+        label: "Row Dynamic style",
+        isCollapsible: true,
+        properties: [
+          "useDynamicStyleRow",
+          "warningDynamicStyleRow",
+          "dynamicRowBackgroundColor",
+        ],
+      },
+      {
         label: "Column",
         isCollapsible: true,
         properties: ["columnHoverHighlight", "columnHoverColor"],
@@ -66,6 +75,18 @@ export default {
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
+        ],
+      },
+      {
+        label: "Cell Dynamic style",
+        isCollapsible: true,
+        properties: [
+          "useDynamicStyleCell",
+          "warningDynamicCell",
+          "dynamicCellBackgroundColor",
+          "dynamicCellColor",
+          "dynamicCellFontFamily",
+          "dynamicCellFontSize",
         ],
       },
       {
@@ -271,7 +292,7 @@ export default {
     {
       label: "Force Datagrid refresh",
       action: "refreshData",
-    }
+    },
   ],
   properties: {
     layout: {
@@ -577,6 +598,29 @@ export default {
       states: true,
       classes: true,
     },
+    useDynamicStyleCell: {
+      type: "OnOff",
+      label: "Use Dynamic Styling",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Toggle dynamic per-cell styles computed from formulas.\nPossible values: `true`, `false`",
+      },
+    },
+    warningDynamicCell: {
+      type: "InfoBox",
+      options: {
+        variant: "warning",
+        content:
+          "Using dynamic cell styles may impact performance, especially with a large number of rows.",
+      },
+      editorOnly: true,
+      hidden: (content) => !content.useDynamicStyleCell,
+    },
     cellColor: {
       type: "Color",
       label: "Text Color",
@@ -587,6 +631,56 @@ export default {
       bindable: true,
       states: true,
       classes: true,
+    },
+    dynamicCellBackgroundColor: {
+      type: "Formula",
+      label: "Background Color",
+      options: (content) => ({
+        template: {
+          data: content["rowData"]?.[0] || {},
+          index: 0,
+          column: {
+            id: "column id",
+            type: "auto",
+            dataType: "text",
+          },
+        },
+      }),
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleCell,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic background color per cell using the row data.\nExample: `IF(data.status = 'Completed', '#d1fae5', IF(data.status = 'In Progress', '#fef3c7', '#fee2e2'))`",
+      },
+      /* wwEditor:end */
+    },
+    dynamicCellColor: {
+      type: "Formula",
+      label: "Text Color",
+      options: (content) => ({
+        template: {
+          data: content["rowData"]?.[0] || {},
+          index: 0,
+          column: {
+            id: "column id",
+            type: "auto",
+            dataType: "text",
+          },
+        },
+      }),
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleCell,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic text color per cell using the row data.\nExample: `IF(data.status = 'Completed', '#065f46', IF(data.status = 'In Progress', '#92400e', '#b91c1c'))`",
+      },
+      /* wwEditor:end */
     },
     cellFontFamily: {
       label: "Font family",
@@ -600,6 +694,31 @@ export default {
         type: "string",
         cssSupports: "font-family",
       },
+    },
+    dynamicCellFontFamily: {
+      label: "Font family",
+      type: "Formula",
+      responsive: true,
+      states: true,
+      classes: true,
+      options: (content) => ({
+        template: {
+          data: content["rowData"]?.[0] || {},
+          index: 0,
+          column: {
+            id: "column id",
+            type: "auto",
+            dataType: "text",
+          },
+        },
+      }),
+      hidden: (content) => !content.useDynamicStyleCell,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font family per cell using the row data.\nExample: `IF(column.dataType = 'number', 'Inter', 'Georgia')`",
+      },
+      /* wwEditor:end */
     },
     cellFontSize: {
       type: "Length",
@@ -621,6 +740,31 @@ export default {
         type: "string",
         cssSupports: "font-size",
       },
+    },
+    dynamicCellFontSize: {
+      label: "Font Size",
+      type: "Formula",
+      options: (content) => ({
+        template: {
+          data: content["rowData"]?.[0] || {},
+          index: 0,
+          column: {
+            id: "column id",
+            type: "auto",
+            dataType: "text",
+          },
+        },
+      }),
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleCell,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font size per cell using the row data.\nExample: `IF(column.dataType = 'number', '16px', '14px')`",
+      },
+      /* wwEditor:end */
     },
     cellSelectionBorderColor: {
       type: "Color",
@@ -661,6 +805,30 @@ export default {
       },
       hidden: (content) => !content.columnHoverHighlight,
     },
+    useDynamicStyleRow: {
+      type: "OnOff",
+      label: "Use Dynamic Styling",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Toggle dynamic per-row styles computed from formulas.\nPossible values: `true`, `false`",
+      },
+      /* wwEditor:end */
+    },
+    warningDynamicStyleRow: {
+      type: "InfoBox",
+      options: {
+        variant: "warning",
+        content:
+          "Using dynamic row styles may impact performance, especially with a large number of rows.",
+      },
+      editorOnly: true,
+      hidden: (content) => !content.useDynamicStyleRow,
+    },
     rowBackgroundColor: {
       type: "Color",
       label: "Background Color",
@@ -671,6 +839,23 @@ export default {
       bindable: true,
       states: true,
       classes: true,
+    },
+    dynamicRowBackgroundColor: {
+      type: "Formula",
+      label: "Background Color",
+      options: (content) => ({
+        template: { data: content["rowData"]?.[0] || {}, index: 0 },
+      }),
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleRow,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic background color per row using the row data.\nExample: `IF(data.status = 'Completed', '#d1fae5', IF(data.status = 'In Progress', '#fef3c7', '#fee2e2'))`",
+      },
+      /* wwEditor:end */
     },
     rowAlternateColor: {
       type: "Color",
