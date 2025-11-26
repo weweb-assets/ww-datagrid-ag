@@ -26,6 +26,7 @@
       enableCellTextSelection
       ensureDomOrder
       :row-drag-managed="true"
+      :get-row-style="content.useDynamicStyleRow ? getRowStyle : null"
       @grid-ready="onGridReady"
       @row-selected="onRowSelected"
       @selection-changed="onSelectionChanged"
@@ -406,8 +407,32 @@ export default {
         });
       }
     );
+    watch(
+      () => [
+        props.content.dynamicRowBackgroundColor,
+        props.content.useDynamicStyleRow,
+      ],
+      () => {
+        nextTick(() => {
+          gridApi.value?.redrawRows();
+        });
+      }
+    );
+    watch(
+      () => [
+        props.content.dynamicCellColor,
+        props.content.useDynamicStyleCell,
+        props.content.dynamicCellFontFamily,
+        props.content.dynamicCellFontSize,
+      ],
+      () => {
+        nextTick(() => {
+          gridApi.value?.refreshCells();
+        });
+      }
+    );
     /* wwEditor:end */
-    
+
     function refreshData() {
       nextTick(() => {
         gridApi.value?.refreshCells();
@@ -472,6 +497,13 @@ export default {
       } else {
         definition.headerStyle = {};
       }
+      if (this.content.useDynamicStyleCell) {
+        definition.cellStyle = this.getCellStyle;
+      } else {
+        definition.cellStyle = {};
+      }
+
+      console.log("default col def", definition);
       return definition;
     },
     columnDefs() {
@@ -751,14 +783,19 @@ export default {
     getHeaderStyle(params) {
       const colDef = params.column?.getColDef();
       const col = this.content.columns.find(
-        (c) => c.field === colDef?.field || (c.actionName && c.actionName === colDef?.colId)
+        (c) =>
+          c.field === colDef?.field ||
+          (c.actionName && c.actionName === colDef?.colId)
       );
       const id = params.column?.getColId();
       const context = {
         id,
         name: colDef?.headerName || id,
         dataType: colDef?.cellDataType,
-        type: col?.cellDataType === 'dateString' ? 'date' : (col?.cellDataType || 'auto')
+        type:
+          col?.cellDataType === "dateString"
+            ? "date"
+            : col?.cellDataType || "auto",
       };
       const backgroundColor = this.resolveMappingFormula?.(
         this.content.dynamicHeaderBackgroundColor,
@@ -786,6 +823,61 @@ export default {
         fontWeight,
         fontSize,
         fontFamily,
+      };
+    },
+    getRowStyle(params) {
+      const rowData = params.data;
+      const backgroundColor = this.resolveMappingFormula?.(
+        this.content.dynamicRowBackgroundColor,
+        { data: rowData, index: params.node.rowIndex }
+      );
+      return {
+        backgroundColor,
+      };
+    },
+    getCellStyle(params) {
+      const colDef = params.column?.getColDef();
+      const col = this.content.columns.find(
+        (c) =>
+          c.field === colDef?.field ||
+          (c.actionName && c.actionName === colDef?.colId)
+      );
+      const id = params.column?.getColId();
+      const rowData = params.data;
+      const context = {
+        column: {
+          id,
+          name: colDef?.headerName || id,
+          dataType: colDef?.cellDataType,
+          type:
+            col?.cellDataType === "dateString"
+              ? "date"
+              : col?.cellDataType || "auto",
+        },
+        data: rowData,
+        index: params.node.rowIndex,
+      };
+      const backgroundColor = this.resolveMappingFormula?.(
+        this.content.dynamicCellBackgroundColor,
+        context
+      );
+      const color = this.resolveMappingFormula?.(
+        this.content.dynamicCellColor,
+        context
+      );
+      const fontFamily = this.resolveMappingFormula?.(
+        this.content.dynamicCellFontFamily,
+        context
+      );
+      const fontSize = this.resolveMappingFormula?.(
+        this.content.dynamicCellFontSize,
+        context
+      );
+      return {
+        color,
+        fontFamily,
+        fontSize,
+        backgroundColor,
       };
     },
     /* wwEditor:start */
