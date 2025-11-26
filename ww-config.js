@@ -30,6 +30,18 @@ export default {
         ],
       },
       {
+        label: "Header Dynamic style",
+        isCollapsible: true,
+        properties: [
+          "useDynamicStyleHeader",
+          "dynamicHeaderBackgroundColor",
+          "dynamicHeaderTextColor",
+          "dynamicHeaderFontWeight",
+          "dynamicHeaderFontSize",
+          "dynamicHeaderFontFamily",
+        ],
+      },
+      {
         label: "Row",
         isCollapsible: true,
         properties: [
@@ -313,6 +325,42 @@ export default {
       states: true,
       classes: true,
     },
+    useDynamicStyleHeader: {
+      type: "OnOff",
+      label: "Use Dynamic Styling",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Toggle dynamic per-column header styles computed from formulas.\nPossible values: `true`, `false`",
+      },
+      /* wwEditor:end */
+    },
+    dynamicHeaderBackgroundColor: {
+      type: "Formula",
+      label: "Background Color",
+      options: {
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic background color using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(name = 'Total', '#f1f5f9', #bababa)`",
+      },
+      /* wwEditor:end */
+    },
     headerTextColor: {
       type: "Color",
       label: "Text Color",
@@ -324,10 +372,31 @@ export default {
       states: true,
       classes: true,
     },
+    dynamicHeaderTextColor: {
+      type: "Formula",
+      label: "Text Color",
+      options: {
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic text color using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(id = 'status', '#1f2937', #4a4a4a)`",
+      },
+      /* wwEditor:end */
+    },
     headerFontWeight: {
       label: "Font weight",
       type: "TextSelect",
-      category: "text",
       options: {
         options: [
           { value: null, label: "Default", default: true },
@@ -352,6 +421,28 @@ export default {
         cssSupports: "font-weight",
       },
     },
+    dynamicHeaderFontWeight: {
+      label: "Font weight",
+      type: "Formula",
+      options: {
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font weight using the column `name`, `id`, `type` or `dataType`.\nPossible values: `100`, `200`, `300`, `400`, `500`, `600`, `700`, `800`, `900`\nExample: `IF(id = 'priority', 700, 400)`",
+      },
+      /* wwEditor:end */
+    },
     headerFontSize: {
       label: "Font Size",
       type: "Length",
@@ -373,10 +464,31 @@ export default {
         cssSupports: "font-size",
       },
     },
+    dynamicHeaderFontSize: {
+      label: "Font Size",
+      type: "Formula",
+      options: {
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font size using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(name = 'Total', '16px', '14px')`",
+      },
+      /* wwEditor:end */
+    },
     textColor: {
       label: "Text Color",
       type: "Color",
-      category: "text",
       options: { nullable: true },
       bindable: true,
       bindingValidation: {
@@ -391,7 +503,6 @@ export default {
     headerFontFamily: {
       label: "Font family",
       type: "FontFamily",
-      category: "text",
       responsive: true,
       states: true,
       classes: true,
@@ -401,6 +512,28 @@ export default {
         type: "string",
         cssSupports: "font-family",
       },
+    },
+    dynamicHeaderFontFamily: {
+      label: "Font family",
+      type: "Formula",
+      responsive: true,
+      states: true,
+      classes: true,
+      options: {
+        template: {
+          name: "Header name",
+          id: "Header id",
+          type: "auto",
+          dataType: "text",
+        },
+      },
+      hidden: (content) => !content.useDynamicStyleHeader,
+      /* wwEditor:start */
+      propertyHelp: {
+        tooltip:
+          "Compute a dynamic font family using the column `name`, `id`, `type` or `dataType`.\nExample: `IF(type = 'number', 'Inter', 'Georgia')`",
+      },
+      /* wwEditor:end */
     },
     headerHeightMode: {
       type: "TextSelect",
@@ -458,7 +591,6 @@ export default {
     cellFontFamily: {
       label: "Font family",
       type: "FontFamily",
-      category: "text",
       responsive: true,
       states: true,
       classes: true,
@@ -641,7 +773,6 @@ export default {
     menuTextColor: {
       label: "Text color",
       type: "Color",
-      category: "text",
       options: { nullable: true },
       bindable: true,
       bindingValidation: {
@@ -656,7 +787,6 @@ export default {
     menuBackgroundColor: {
       label: "Background color",
       type: "Color",
-      category: "background",
       options: { nullable: true },
       bindable: true,
       bindingValidation: {
@@ -671,7 +801,6 @@ export default {
     actionColor: {
       label: "Text color",
       type: "Color",
-      category: "text",
       options: { nullable: true },
       bindable: true,
       bindingValidation: {
@@ -686,7 +815,6 @@ export default {
     actionBackgroundColor: {
       label: "Background color",
       type: "Color",
-      category: "background",
       options: { nullable: true },
       bindable: true,
       bindingValidation: {
@@ -747,7 +875,6 @@ export default {
     actionFont: {
       label: "Typography",
       type: "Typography",
-      category: "text",
       options: (content, sidepanelContent, boundProperties) => ({
         initialValue: {
           fontSize: content["actionFontSize"],
@@ -773,7 +900,6 @@ export default {
     actionFontSize: {
       label: "Size",
       type: "Length",
-      category: "text",
       options: {
         unitChoices: [
           { value: "px", label: "px", min: 1, max: 100, default: true },
@@ -797,7 +923,6 @@ export default {
     actionFontFamily: {
       label: "Font family",
       type: "FontFamily",
-      category: "text",
       responsive: true,
       states: true,
       classes: true,
@@ -813,7 +938,6 @@ export default {
     actionFontWeight: {
       label: "Font weight",
       type: "TextSelect",
-      category: "text",
       options: {
         options: [
           { value: null, label: "Default", default: true },
@@ -843,7 +967,6 @@ export default {
     actionFontStyle: {
       label: "Font Style",
       type: "TextRadioGroup",
-      category: "text",
       options: {
         choices: [
           {
@@ -870,7 +993,6 @@ export default {
     actionLineHeight: {
       label: "Line height",
       type: "Length",
-      category: "text",
       options: {
         unitChoices: [
           { value: "normal", label: "auto", default: true },
