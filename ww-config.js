@@ -1131,6 +1131,7 @@ export default {
                     { value: "number", label: "Number" },
                     { value: "boolean", label: "Boolean" },
                     { value: "dateString", label: "Date" },
+                    { value: "time", label: "Time" },
                     { value: "image", label: "Image" },
                     { value: "action", label: "Action" },
                     { value: "custom", label: "Custom" },
@@ -1157,6 +1158,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image" ||
+                  array?.item?.cellDataType === "time" ||
                   array?.item?.cellDataType === "custom",
               },
               displayLabelFormula: {
@@ -1171,6 +1173,7 @@ export default {
                 hidden:
                   array?.item?.cellDataType === "action" ||
                   array?.item?.cellDataType === "image" ||
+                  array?.item?.cellDataType === "time" ||
                   !array?.item?.useCustomLabel ||
                   array?.item?.cellDataType === "custom",
               },
@@ -1351,6 +1354,19 @@ export default {
                 },
                 hidden: array?.item?.cellDataType !== "image",
               },
+              timeFormat: {
+                label: "Time Format",
+                type: "TextSelect",
+                options: {
+                  options: [
+                    { value: "24", label: "24 Hour (HH:MM)", default: true },
+                    { value: "12", label: "12 Hour (HH:MM AM/PM)" },
+                  ],
+                },
+                defaultValue: "24",
+                hidden: array?.item?.cellDataType !== "time",
+                bindable: true,
+              },
             },
             propertiesOrder: [
               "headerName",
@@ -1361,6 +1377,7 @@ export default {
               "actionLabel",
               "imageWidth",
               "imageHeight",
+              "timeFormat",
               ,
               "useCustomLabel",
               "displayLabelFormula",

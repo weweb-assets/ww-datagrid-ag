@@ -77,7 +77,7 @@ A highly customizable data grid/table component that supports features like sort
 - `localeText`: only needed when lang is set to custom. Must be an object provided to aggrid 
 - `columns`: `Array<{
     headerName: string,
-    cellDataType: 'text' | 'number' | 'boolean' | 'dateString',
+    cellDataType: 'text' | 'number' | 'boolean' | 'dateString' | 'time',
     field: string,
     useCustomLabel: boolean, // Default: false, if true, displayLabelFormula is used to format the label
     displayLabelFormula: Formula, // Only if useCustomLabel is true
@@ -90,6 +90,21 @@ A highly customizable data grid/table component that supports features like sort
     flex: number,
     filter: boolean,
     sortable: boolean,
+    editable: boolean,
+    pinned: undefined | 'left' | 'right'
+  } | {
+    headerName: string,
+    cellDataType:'time',
+    field: string,
+    timeFormat: '24' | '12', // Default: '24' - Display format for time (24-hour or 12-hour with AM/PM)
+    widthAlgo: 'flex' | 'fixed', // Default: 'fixed'
+    width: string, // Only if widthAlgo is 'fixed'
+    flex: number, // Only if widthAlgo is 'flex'
+    minWidth: string,
+    maxWidth: string,
+    filter: boolean,
+    sortable: boolean,
+    editable: boolean, // When true, double-click opens time picker
     pinned: undefined | 'left' | 'right'
   } | {
     headerName: string,

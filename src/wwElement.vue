@@ -68,6 +68,8 @@ import {
 import ActionCellRenderer from "./components/ActionCellRenderer.vue";
 import ImageCellRenderer from "./components/ImageCellRenderer.vue";
 import WewebCellRenderer from "./components/WewebCellRenderer.vue";
+import TimeCellRenderer from "./components/TimeCellRenderer.vue";
+import TimeCellEditor from "./components/TimeCellEditor.vue";
 
 // TODO: maybe register less modules
 // TODO: maybe register modules per grid instead of globally
@@ -79,6 +81,8 @@ export default {
     ActionCellRenderer,
     ImageCellRenderer,
     WewebCellRenderer,
+    TimeCellRenderer,
+    TimeCellEditor,
   },
   props: {
     content: {
@@ -414,6 +418,13 @@ export default {
       });
     }
 
+    watch(
+      () => props.content.timeFormat,
+      () => {
+        refreshData();
+      }
+    );
+
     return {
       resolveMappingFormula,
       onGridReady,
@@ -540,6 +551,41 @@ export default {
                 width: col?.imageWidth,
                 height: col?.imageHeight,
               },
+            };
+          }
+          case "time": {
+            const timeFormatSetting = col?.timeFormat || "24";
+            return {
+              ...commonProperties,
+              headerName: col?.headerName,
+              field: col?.field,
+              cellRenderer: "TimeCellRenderer",
+              cellRendererParams: {
+                timeFormat: timeFormatSetting,
+              },
+              cellEditor: "TimeCellEditor",
+              cellDataType: false, // Disable AG Grid's built-in type handling
+              valueFormatter: (params) => {
+                if (!params.value) return '';
+                const date = new Date(params.value);
+                if (isNaN(date.getTime())) return '';
+
+                const hours = date.getHours();
+                const minutes = date.getMinutes();
+                const minutesStr = minutes.toString().padStart(2, '0');
+
+                if (timeFormatSetting === '12') {
+                  const period = hours >= 12 ? 'PM' : 'AM';
+                  const displayHours = hours % 12 || 12;
+                  return `${displayHours}:${minutesStr} ${period}`;
+                } else {
+                  const hoursStr = hours.toString().padStart(2, '0');
+                  return `${hoursStr}:${minutesStr}`;
+                }
+              },
+              editable: col?.editable,
+              sortable: col?.sortable,
+              filter: col?.filter,
             };
           }
           default: {
