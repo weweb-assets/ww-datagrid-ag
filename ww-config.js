@@ -142,6 +142,7 @@ export default {
       event: { actionName: "", row: null, id: 0, index: 0, displayIndex: 0 },
       getTestEvent: "getOnActionTestEvent",
       default: true,
+        description: "Run when a row action is triggered.",
     },
     {
       name: "cellValueChanged",
@@ -153,6 +154,7 @@ export default {
         row: null,
       },
       getTestEvent: "getOnCellValueChangedTestEvent",
+        description: "Run when a cell value changes.",
     },
     {
       name: "rowSelected",
@@ -161,6 +163,7 @@ export default {
         row: null,
       },
       getTestEvent: "getSelectionTestEvent",
+        description: "Run when a row is selected.",
     },
     {
       name: "rowDeselected",
@@ -169,14 +172,17 @@ export default {
         row: null,
       },
       getTestEvent: "getSelectionTestEvent",
+        description: "Run when a row is deselected.",
     },
     {
       name: "filterChanged",
       label: { en: "On Filter Changed" },
+        description: "Run when filters change.",
     },
     {
       name: "sortChanged",
       label: { en: "On Sort Changed" },
+        description: "Run when sort order changes.",
     },
     {
       name: "rowClicked",
@@ -188,6 +194,7 @@ export default {
         displayIndex: 0,
       },
       getTestEvent: "getRowClickedTestEvent",
+        description: "Run when a row is clicked.",
     },
     {
       name: "rowDragStart",
@@ -197,6 +204,7 @@ export default {
         id: 0,
       },
       getTestEvent: "getRowDragStartTestEvent",
+        description: "Run when row dragging starts.",
     },
     {
       name: "rowDragged",
@@ -208,6 +216,7 @@ export default {
         rows: [],
       },
       getTestEvent: "getRowDraggedTestEvent",
+        description: "Run while a row is being dragged.",
     },
     {
       name: "columnMoved",
@@ -218,6 +227,7 @@ export default {
         columnsOrder: [],
       },
       getTestEvent: "getColumnMovedTestEvent",
+        description: "Run when a column is moved.",
     },
   ],
   actions: [
