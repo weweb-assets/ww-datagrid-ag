@@ -559,6 +559,14 @@ export default {
                 );
               };
             }
+            if (col?.wrapText) {
+              result.wrapText = true;
+              result.autoHeight = true;
+              if (col?.editable) {
+                result.cellEditor = 'agLargeTextCellEditor';
+                result.cellEditorPopup = false;
+              }
+            }
             return result;
           }
         }
@@ -899,9 +907,11 @@ export default {
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
-  :deep(.ag-cell-wrapper),
-  :deep(.ag-cell-value) {
-    height: 100%;
+  :deep(.ag-cell:not(.ag-cell-auto-height)) {
+    .ag-cell-wrapper,
+    .ag-cell-value {
+      height: 100%;
+    }
   }
   :deep(.ag-header-cell) {
     &.-center .ag-header-cell-label {
