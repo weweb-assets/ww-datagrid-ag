@@ -47,13 +47,18 @@ A highly customizable data grid/table component that supports features like sort
 - `rowAlternateColor`: `string | null` - Background color for alternate rows. Be sure it works well with cell default text color, as the color is common
 - `rowHoverColor`: `string | null` - Background color when hovering over rows. Must be a semi transparent color, at it will be an overlay on top
 - `rowVerticalPaddingScale`: `Number | null` - A number for scaling the vertical padding of cells. Use 2 to multiply it by 2 or a number between 0 and 1 to make it smaller.
-- `columnHoverHighlight`: `string | null` - Does column highlight on hover is active 
+- `cellAlignmentMode`: `'default' | 'custom'` - When set to `custom`, uses the global `cellAlignment` for all cells. When `default`, per-column `cellAlignment` is used instead.
+- `cellAlignment`: `'left' | 'center' | 'right'` - Global cell horizontal alignment. Only used when `cellAlignmentMode` is `custom`.
+- `cellVerticalAlignment`: `'top' | 'center' | 'bottom'` - Vertical alignment for all cells including boolean/checkbox cells. Default: `"center"`.
+- `columnHoverHighlight`: `string | null` - Does column highlight on hover is active
 - `columnHoverColor`: `string | null` - If active, column hover highlight. Must be a semi transparent color, at it will be an overlay on top
 - `selectedRowBackgroundColor`: `string | null` - Background color for selected rows. Must be a semi transparent color, at it will be an overlay on top
 - `menuTextColor`: `string | null` - Text color for the filter menu
 - `menuBackgroundColor`: `string | null` - Background color for the filter menu
 - `selectionCheckboxColor`: `string | null` - Override the theme background color for selection checkboxes
 - `cellSelectionBorderColor`: `string | null` - Override the theme boder color for cell selection
+- `focusShadow`: `string | null` - Override the focus shadow style for cells
+- `checkboxUncheckedBorderColor`: `string | null` - Override the border color for unchecked checkboxes
 - `actionColor`: `string | null` - Text color for action buttons.
 - `actionBackgroundColor`: `string | null` - Background color for action buttons.
 - `actionPadding`: `string` - Padding for action buttons.
@@ -64,12 +69,18 @@ A highly customizable data grid/table component that supports features like sort
 - `actionFontWeight`: `string`: Font weight of the button in action column
 - `actionFontStyle`: `string`: Font style of the button in action column
 - `actionLineHeight`: `string`: Line height of the button in action column
-- `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`. Must be a semi transparent color, at it will be an overlay on top
+- `movableColumns`: `boolean` - Allow columns to be reordered by drag and drop. Default: `false`.
+- `resizableColumns`: `boolean` - Allow columns to be resized. Default: `false`.
+- `rowReorder`: `boolean` - Enable row reordering by drag and drop. Default: `false`.
+- `rowSelection`: `'none' | 'single' | 'multiple'` - Type of row selection. Default: `"none"`.
 - `enableClickSelection`: `Boolean` - True to enable selection on row click
 - `disableCheckboxes`: `Boolean` - True to hide checkbox for selection
 - `selectAll`: `'all' | 'currentPage' | 'filtered'` - Behavior of select all button
 - `pagination`: `boolean` - Enable/disable pagination. Default: `false`.
 - `paginationPageSize`: `number` - Number of rows per page. Default: `10`.
+- `hasPaginationSelector`: `'none' | 'multiple'` - Whether to show a page size selector. When `multiple`, uses `paginationPageSizeSelector`.
+- `paginationPageSizeSelector`: `Array<number>` - Available page size options (e.g. `[10, 25, 50, 100]`). Only used when `hasPaginationSelector` is `multiple`.
+- `actionFont`: `Font | null` - WeWeb font object for action buttons. When set, overrides individual action font properties (actionFontSize, actionFontFamily, etc.).
 - `initialFilters`: `{id: { filterType, type, filter } }` (Optional): An aggrid object describing the initial filtering. Here is an example: `{ id1: { filterType: "number", type: "greaterThan", filter: 50}}`
 - `initialSort`: `Array<{colId: id, sort: 'asc' |'dsc'}>` (Optional): Description of the initial sort column. Here is an example: `[{colId: "ID", sort: "asc"}]`
 - `initialColumnsOrder`: `Array<ColId>` (Optional): List of the column order, if different from columns definition ones
@@ -86,11 +97,15 @@ A highly customizable data grid/table component that supports features like sort
     flex: number, // Only if widthAlgo is 'flex'
     minWidth: string,
     maxWidth: string,
-    width: string,
-    flex: number,
     filter: boolean,
     sortable: boolean,
-    pinned: undefined | 'left' | 'right'
+    editable: boolean, // Makes cells editable. Not available for action/image/custom types
+    wrapText: boolean, // Enables text wrapping with auto row height. Not available for action/image/custom types
+    wrapTextMaxHeight: string, // Optional max height (e.g. "100px"). When set, cell caps at this height and becomes scrollable. Only used when wrapText is true
+    hide: boolean, // Hide this column
+    pinned: undefined | 'left' | 'right',
+    cellAlignment: 'left' | 'center' | 'right', // Per-column horizontal alignment (used when cellAlignmentMode is 'default')
+    headerAlignment: 'left' | 'center' | 'right', // Per-column header alignment
   } | {
     headerName: string,
     cellDataType:'image',
@@ -100,32 +115,50 @@ A highly customizable data grid/table component that supports features like sort
     flex: number, // Only if widthAlgo is 'flex'
     minWidth: string,
     maxWidth: string,
-    width: string,
-    flex: number,
     imageWidth: string,
     imageHeight: string,
-    pinned: undefined | 'left' | 'right'
+    hide: boolean,
+    pinned: undefined | 'left' | 'right',
+    cellAlignment: 'left' | 'center' | 'right',
+    headerAlignment: 'left' | 'center' | 'right',
   } | {
     headerName: string,
     cellDataType:'action',
-    field: string,
     widthAlgo: 'flex' | 'fixed', // Default: 'fixed'
     width: string, // Only if widthAlgo is 'fixed'
     flex: number, // Only if widthAlgo is 'flex'
     minWidth: string,
     maxWidth: string,
-    width: string,
-    flex: number,
     actionName: string,
     actionLabel: string,
-    pinned: undefined | 'left' | 'right'
-  }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.`
+    hide: boolean,
+    pinned: undefined | 'left' | 'right',
+    cellAlignment: 'left' | 'center' | 'right',
+    headerAlignment: 'left' | 'center' | 'right',
+  } | {
+    headerName: string,
+    cellDataType:'custom',
+    field: string,
+    containerId: string, // Auto-generated WeWeb element ID for the custom cell renderer
+    widthAlgo: 'flex' | 'fixed',
+    width: string,
+    flex: number,
+    minWidth: string,
+    maxWidth: string,
+    filter: boolean,
+    sortable: boolean,
+    hide: boolean,
+    pinned: undefined | 'left' | 'right',
+    cellAlignment: 'left' | 'center' | 'right',
+    headerAlignment: 'left' | 'center' | 'right',
+  }>` - Column configurations. Each object describe a column of the grid, and some options may depends on the selected type of data. For each object, width can be undefined, if defined its must be a string in the shape of {value}px. Flex will be ignore if width is defined or equal to auto and must be an integer.
 
 ***Exposed Variables:***
 - selectedRows: ***READ ONLY*** Array of currently selected rows.
 - filters: ***READ ONLY*** Current filter state as an object containing active filters.
 - sort: ***READ ONLY*** Current sort state as an array of sort configurations.
-- columnsOrder: ***READ ONLY*** Current columns order state as an array of column id.
+- columnOrder: ***READ ONLY*** Current columns order state as an array of column id.
+- data: ***READ ONLY*** Object containing grid data states: `{ allData: Array, total: number, sortedFilteredData: Array, totalSortedFilteredData: number, perPageTotal: number, totalPages: number, displayedData: Array, totalDisplayedRecords: number }`.
 
 ***Events:***
 - action: Triggered when clicking on a action cell. Payload: { actionName: 'name of the column', row: { /* row data */}, id: 0, index: 0, displayIndex: 0 }
@@ -141,8 +174,11 @@ A highly customizable data grid/table component that supports features like sort
 
 ***Notes:***
 - idFormula always use javascript with context.mapping value "context.mapping..."
-**CRITICAL** : You have to perfectly style this datagrid according to the page.
+- **CRITICAL**: You have to perfectly style this datagrid according to the page.
 - Default theme is usually great, use other colors only if you need to be on brand
+- When `wrapText` is enabled with `editable`, the textarea editor (`agLargeTextCellEditor`) is only used for text-type columns (auto or `text`). Number, boolean, and date columns keep their default editors.
+- `cellVerticalAlignment` works for all cell types including boolean/checkbox cells.
+- When `wrapTextMaxHeight` is set, the cell caps at the specified height and shows a scrollbar for overflow content. Text starts at the top of the cell.
 
 ***Example:***
 <elements>
