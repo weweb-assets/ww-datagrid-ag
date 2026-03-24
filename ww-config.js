@@ -66,6 +66,7 @@ export default {
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
+          "cellVerticalAlignment",
         ],
       },
       {
@@ -1077,6 +1078,26 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
+    cellVerticalAlignment: {
+      label: { en: "Vertical Alignment" },
+      type: "TextSelect",
+      section: "style",
+      options: {
+        options: [
+          { value: "center", label: "Center", default: true },
+          { value: "top", label: "Top" },
+          { value: "bottom", label: "Bottom" },
+        ],
+      },
+      defaultValue: "center",
+      bindable: true,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "string",
+        tooltip: "Vertical alignment: top | center | bottom",
+      },
+      /* wwEditor:end */
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1334,6 +1355,15 @@ export default {
                   array?.item?.cellDataType === "custom",
                 bindable: true,
               },
+              wrapTextMaxHeight: {
+                label: "Max height",
+                type: "Length",
+                options: {
+                  noRange: true,
+                },
+                hidden: !array?.item?.wrapText,
+                bindable: true,
+              },
               actionName: {
                 label: "Action Name",
                 type: "Text",
@@ -1394,6 +1424,7 @@ export default {
                   "filter",
                   "sortable",
                   "wrapText",
+                  "wrapTextMaxHeight",
                 ],
               },
             ],

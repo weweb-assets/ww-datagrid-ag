@@ -462,10 +462,15 @@ export default {
         resizable: this.content.resizableColumns,
         autoHeaderHeight: this.content.headerHeightMode === "auto",
         wrapHeaderText: this.content.headerHeightMode === "auto",
-        cellClass:
-          this.content.cellAlignmentMode === "custom"
-            ? `-${this.content.cellAlignment || "left"} ||`
-            : null,
+        cellClass: (() => {
+          const classes = [];
+          if (this.content.cellAlignmentMode === "custom") {
+            classes.push(`-${this.content.cellAlignment || "left"}`);
+          }
+          const vAlign = this.content?.cellVerticalAlignment || "center";
+          classes.push(`-valign-${vAlign}`);
+          return classes.join(" ") || null;
+        })(),
       };
       if (this.content.useDynamicStyleHeader) {
         definition.headerStyle = this.getHeaderStyle;
@@ -498,7 +503,12 @@ export default {
           hide: !!col?.hide,
           headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
           ...(this.content.cellAlignmentMode !== "custom"
-            ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
+            ? {
+                cellClass: [
+                  col.cellAlignment ? `-${col.cellAlignment}` : null,
+                  `-valign-${this.content?.cellVerticalAlignment || "center"}`,
+                ].filter(Boolean).join(" ") || null,
+              }
             : {}),
         };
         switch (col?.cellDataType) {
@@ -562,7 +572,11 @@ export default {
             if (col?.wrapText) {
               result.wrapText = true;
               result.autoHeight = true;
-              if (col?.editable) {
+              if (col?.wrapTextMaxHeight) {
+                result.cellClass = (result.cellClass ? result.cellClass + ' ' : '') + '-wrap-max-height';
+                result.cellStyle = { '--wrap-max-height': col.wrapTextMaxHeight };
+              }
+              if (col?.editable && (!col?.cellDataType || col?.cellDataType === 'text')) {
                 result.cellEditor = 'agLargeTextCellEditor';
                 result.cellEditorPopup = false;
               }
@@ -912,6 +926,9 @@ export default {
     .ag-cell-value {
       height: 100%;
     }
+    .ag-cell-wrapper {
+      display: flex;
+    }
   }
   :deep(.ag-header-cell) {
     &.-center .ag-header-cell-label {
@@ -932,6 +949,7 @@ export default {
   :deep(.ag-cell) {
     .ag-cell-value {
       display: flex;
+      align-items: center;
     }
 
     &.-right {
@@ -948,6 +966,20 @@ export default {
       .ag-cell-value {
         justify-content: flex-start;
       }
+    }
+
+    &.-valign-top .ag-cell-wrapper,
+    &.-valign-top .ag-cell-value { align-items: flex-start; }
+    &.-valign-center .ag-cell-wrapper,
+    &.-valign-center .ag-cell-value { align-items: center; }
+    &.-valign-bottom .ag-cell-wrapper,
+    &.-valign-bottom .ag-cell-value { align-items: flex-end; }
+  }
+  :deep(.ag-cell.-wrap-max-height) {
+    .ag-cell-value {
+      max-height: var(--wrap-max-height);
+      overflow-y: auto;
+      align-items: flex-start;
     }
   }
   /* wwEditor:start */
