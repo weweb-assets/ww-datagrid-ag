@@ -63,6 +63,7 @@ export default {
           "cellColor",
           "cellFontFamily",
           "cellFontSize",
+          "cellLineHeight",
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
@@ -621,6 +622,28 @@ export default {
         markdown: "font-size",
         type: "string",
         cssSupports: "font-size",
+      },
+    },
+    // Line height is not available in ag-grid's themeQuartz template, so we apply it via CSS variable
+    cellLineHeight: {
+      type: "Length",
+      label: "Line Height",
+      options: {
+        unitChoices: [
+          { value: "px", label: "px", min: 1, max: 100, default: true },
+          { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+          { value: "normal", label: "normal" },
+        ],
+        noRange: true,
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      bindingValidation: {
+        markdown: "line-height",
+        type: "string",
+        cssSupports: "line-height",
       },
     },
     cellSelectionBorderColor: {

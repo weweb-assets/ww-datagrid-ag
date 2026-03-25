@@ -624,6 +624,7 @@ export default {
     },
     cssVars() {
       return {
+        "--ww-data-grid_cell-lineHeight": this.content.cellLineHeight,
         "--ww-data-grid_action-backgroundColor":
           this.content.actionBackgroundColor,
         "--ww-data-grid_action-color": this.content.actionColor,
@@ -926,8 +927,14 @@ export default {
     .ag-cell-value {
       height: 100%;
     }
-    .ag-cell-wrapper {
-      display: flex;
+    .ag-cell-value {
+      overflow-x: auto;
+    }
+  }
+  :deep(.ag-cell.ag-cell-auto-height) {
+    .ag-cell-wrapper,
+    .ag-cell-value {
+      min-height: 100%;
     }
   }
   :deep(.ag-header-cell) {
@@ -947,6 +954,11 @@ export default {
     }
   }
   :deep(.ag-cell) {
+    // Line height applied via CSS variable (not available in ag-grid theme template)
+    line-height: var(--ww-data-grid_cell-lineHeight, normal);
+    .ag-cell-wrapper {
+      display: flex;
+    }
     .ag-cell-value {
       display: flex;
       align-items: center;
