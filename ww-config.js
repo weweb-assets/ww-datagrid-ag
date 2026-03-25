@@ -64,6 +64,7 @@ export default {
           "cellFontFamily",
           "cellFontSize",
           "cellLineHeight",
+          "cellPadding",
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
@@ -645,6 +646,15 @@ export default {
         type: "string",
         cssSupports: "line-height",
       },
+    },
+    cellPadding: {
+      label: "Padding",
+      type: "Spacing",
+      defaultValue: "4px 16px",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
     },
     cellSelectionBorderColor: {
       type: "Color",

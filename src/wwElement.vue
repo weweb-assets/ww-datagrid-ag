@@ -625,6 +625,7 @@ export default {
     cssVars() {
       return {
         "--ww-data-grid_cell-lineHeight": this.content.cellLineHeight,
+        "--ww-data-grid_cell-padding": this.content.cellPadding,
         "--ww-data-grid_action-backgroundColor":
           this.content.actionBackgroundColor,
         "--ww-data-grid_action-color": this.content.actionColor,
@@ -954,8 +955,9 @@ export default {
     }
   }
   :deep(.ag-cell) {
-    // Line height applied via CSS variable (not available in ag-grid theme template)
+    // Line height and padding applied via CSS variables (not available in ag-grid theme template)
     line-height: var(--ww-data-grid_cell-lineHeight, normal);
+    padding: var(--ww-data-grid_cell-padding) !important;
     .ag-cell-wrapper {
       display: flex;
     }
@@ -980,12 +982,30 @@ export default {
       }
     }
 
+    .ag-boolean-cell {
+      display: flex;
+      align-items: inherit;
+      height: 100%;
+      .ag-checkbox {
+        margin: 0;
+      }
+      .ag-input-field {
+        align-items: inherit;
+      }
+    }
+
     &.-valign-top .ag-cell-wrapper,
-    &.-valign-top .ag-cell-value { align-items: flex-start; }
+    &.-valign-top .ag-cell-value,
+    &.-valign-top .ag-boolean-cell,
+    &.-valign-top .ag-input-field { align-items: flex-start; }
     &.-valign-center .ag-cell-wrapper,
-    &.-valign-center .ag-cell-value { align-items: center; }
+    &.-valign-center .ag-cell-value,
+    &.-valign-center .ag-boolean-cell,
+    &.-valign-center .ag-input-field { align-items: center; }
     &.-valign-bottom .ag-cell-wrapper,
-    &.-valign-bottom .ag-cell-value { align-items: flex-end; }
+    &.-valign-bottom .ag-cell-value,
+    &.-valign-bottom .ag-boolean-cell,
+    &.-valign-bottom .ag-input-field { align-items: flex-end; }
   }
   :deep(.ag-cell.-wrap-max-height) {
     .ag-cell-value {
