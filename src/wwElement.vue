@@ -257,6 +257,18 @@ export default {
       { immediate: true, deep: true }
     );
 
+    /* wwEditor:start */
+    // Fix: ag-grid only calls getRowId when rows are first added, so updating Unique Row Id
+    // was not taken into account unless the user rebound Data. Force re-ingest when idFormula changes.
+    watch(
+      () => props.content.idFormula,
+      () => {
+        if (!gridApi.value) return;
+        gridApi.value.setGridOption('rowData', rowData.value);
+      }
+    );
+    /* wwEditor:end */
+
     const initialState = computed(() => {
       const state = {
         partialColumnState: true,
