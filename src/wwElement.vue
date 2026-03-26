@@ -969,7 +969,7 @@ export default {
   :deep(.ag-cell) {
     // Line height and padding applied via CSS variables (not available in ag-grid theme template)
     line-height: var(--ww-data-grid_cell-lineHeight, normal);
-    padding: var(--ww-data-grid_cell-padding) !important;
+    padding: var(--ww-data-grid_cell-padding, 4px 16px) !important;
     .ag-cell-wrapper {
       display: flex;
     }
