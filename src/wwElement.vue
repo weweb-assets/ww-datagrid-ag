@@ -966,10 +966,12 @@ export default {
       justify-content: flex-start;
     }
   }
-  :deep(.ag-cell) {
-    // Line height and padding applied via CSS variables (not available in ag-grid theme template)
-    line-height: var(--ww-data-grid_cell-lineHeight, normal);
+  :deep(.ag-cell:not(.ag-cell-inline-editing)) {
     padding: var(--ww-data-grid_cell-padding, 4px 16px) !important;
+  }
+  :deep(.ag-cell) {
+    // Line height applied via CSS variable (not available in ag-grid theme template)
+    line-height: var(--ww-data-grid_cell-lineHeight, normal);
     .ag-cell-wrapper {
       display: flex;
     }
