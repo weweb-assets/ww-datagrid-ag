@@ -257,6 +257,18 @@ export default {
       { immediate: true, deep: true }
     );
 
+    /* wwEditor:start */
+    // Fix: ag-grid only calls getRowId when rows are first added, so updating Unique Row Id
+    // was not taken into account unless the user rebound Data. Force re-ingest when idFormula changes.
+    watch(
+      () => props.content.idFormula,
+      () => {
+        if (!gridApi.value) return;
+        gridApi.value.setGridOption('rowData', rowData.value);
+      }
+    );
+    /* wwEditor:end */
+
     const initialState = computed(() => {
       const state = {
         partialColumnState: true,
@@ -462,10 +474,15 @@ export default {
         resizable: this.content.resizableColumns,
         autoHeaderHeight: this.content.headerHeightMode === "auto",
         wrapHeaderText: this.content.headerHeightMode === "auto",
-        cellClass:
-          this.content.cellAlignmentMode === "custom"
-            ? `-${this.content.cellAlignment || "left"} ||`
-            : null,
+        cellClass: (() => {
+          const classes = [];
+          if (this.content.cellAlignmentMode === "custom") {
+            classes.push(`-${this.content.cellAlignment || "left"}`);
+          }
+          const vAlign = this.content?.cellVerticalAlignment || "center";
+          classes.push(`-valign-${vAlign}`);
+          return classes.join(" ") || null;
+        })(),
       };
       if (this.content.useDynamicStyleHeader) {
         definition.headerStyle = this.getHeaderStyle;
@@ -498,7 +515,12 @@ export default {
           hide: !!col?.hide,
           headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
           ...(this.content.cellAlignmentMode !== "custom"
-            ? { cellClass: col.cellAlignment ? `-${col.cellAlignment}` : null }
+            ? {
+                cellClass: [
+                  col.cellAlignment ? `-${col.cellAlignment}` : null,
+                  `-valign-${this.content?.cellVerticalAlignment || "center"}`,
+                ].filter(Boolean).join(" ") || null,
+              }
             : {}),
         };
         switch (col?.cellDataType) {
@@ -559,6 +581,18 @@ export default {
                 );
               };
             }
+            if (col?.wrapText) {
+              result.wrapText = true;
+              result.autoHeight = true;
+              if (col?.wrapTextMaxHeight) {
+                result.cellClass = (result.cellClass ? result.cellClass + ' ' : '') + '-wrap-max-height';
+                result.cellStyle = { '--wrap-max-height': col.wrapTextMaxHeight };
+              }
+              if (col?.editable && (!col?.cellDataType || col?.cellDataType === 'text')) {
+                result.cellEditor = 'agLargeTextCellEditor';
+                result.cellEditorPopup = false;
+              }
+            }
             return result;
           }
         }
@@ -602,6 +636,8 @@ export default {
     },
     cssVars() {
       return {
+        "--ww-data-grid_cell-lineHeight": this.content.cellLineHeight,
+        "--ww-data-grid_cell-padding": this.content.cellPadding,
         "--ww-data-grid_action-backgroundColor":
           this.content.actionBackgroundColor,
         "--ww-data-grid_action-color": this.content.actionColor,
@@ -899,9 +935,20 @@ export default {
 <style scoped lang="scss">
 .ww-datagrid {
   position: relative;
-  :deep(.ag-cell-wrapper),
-  :deep(.ag-cell-value) {
-    height: 100%;
+  :deep(.ag-cell:not(.ag-cell-auto-height)) {
+    .ag-cell-wrapper,
+    .ag-cell-value {
+      height: 100%;
+    }
+    .ag-cell-value {
+      overflow-x: auto;
+    }
+  }
+  :deep(.ag-cell.ag-cell-auto-height) {
+    .ag-cell-wrapper,
+    .ag-cell-value {
+      min-height: 100%;
+    }
   }
   :deep(.ag-header-cell) {
     &.-center .ag-header-cell-label {
@@ -919,9 +966,18 @@ export default {
       justify-content: flex-start;
     }
   }
+  :deep(.ag-cell:not(.ag-cell-inline-editing)) {
+    padding: var(--ww-data-grid_cell-padding, 4px 16px) !important;
+  }
   :deep(.ag-cell) {
+    // Line height applied via CSS variable (not available in ag-grid theme template)
+    line-height: var(--ww-data-grid_cell-lineHeight, normal);
+    .ag-cell-wrapper {
+      display: flex;
+    }
     .ag-cell-value {
       display: flex;
+      align-items: center;
     }
 
     &.-right {
@@ -938,6 +994,38 @@ export default {
       .ag-cell-value {
         justify-content: flex-start;
       }
+    }
+
+    .ag-boolean-cell {
+      display: flex;
+      align-items: inherit;
+      height: 100%;
+      .ag-checkbox {
+        margin: 0;
+      }
+      .ag-input-field {
+        align-items: inherit;
+      }
+    }
+
+    &.-valign-top .ag-cell-wrapper,
+    &.-valign-top .ag-cell-value,
+    &.-valign-top .ag-boolean-cell,
+    &.-valign-top .ag-input-field { align-items: flex-start; }
+    &.-valign-center .ag-cell-wrapper,
+    &.-valign-center .ag-cell-value,
+    &.-valign-center .ag-boolean-cell,
+    &.-valign-center .ag-input-field { align-items: center; }
+    &.-valign-bottom .ag-cell-wrapper,
+    &.-valign-bottom .ag-cell-value,
+    &.-valign-bottom .ag-boolean-cell,
+    &.-valign-bottom .ag-input-field { align-items: flex-end; }
+  }
+  :deep(.ag-cell.-wrap-max-height) {
+    .ag-cell-value {
+      max-height: var(--wrap-max-height);
+      overflow-y: auto;
+      align-items: flex-start;
     }
   }
   /* wwEditor:start */

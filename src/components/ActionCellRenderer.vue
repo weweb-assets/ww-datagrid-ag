@@ -36,8 +36,8 @@ export default {
 <style scoped lang="scss">
 .btn-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: inherit;
+    align-items: inherit;
     height: 100%;
 }
 .datagrid-btn {

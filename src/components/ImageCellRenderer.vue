@@ -20,7 +20,8 @@ export default {
 .image-cell {
     height: 100%;
     display: flex;
-    align-items: center;
+    justify-content: inherit;
+    align-items: inherit;
 }
 
 .image-cell img {

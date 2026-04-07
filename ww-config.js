@@ -63,9 +63,12 @@ export default {
           "cellColor",
           "cellFontFamily",
           "cellFontSize",
+          "cellLineHeight",
+          "cellPadding",
           "cellSelectionBorderColor",
           "cellAlignmentMode",
           "cellAlignment",
+          "cellVerticalAlignment",
         ],
       },
       {
@@ -622,6 +625,37 @@ export default {
         cssSupports: "font-size",
       },
     },
+    // Line height is not available in ag-grid's themeQuartz template, so we apply it via CSS variable
+    cellLineHeight: {
+      type: "Length",
+      label: "Line Height",
+      options: {
+        unitChoices: [
+          { value: "px", label: "px", min: 1, max: 100, default: true },
+          { value: "em", label: "em", min: 0, max: 10, digits: 3, step: 0.1 },
+          { value: "normal", label: "normal" },
+        ],
+        noRange: true,
+      },
+      responsive: true,
+      states: true,
+      classes: true,
+      bindable: true,
+      bindingValidation: {
+        markdown: "line-height",
+        type: "string",
+        cssSupports: "line-height",
+      },
+    },
+    cellPadding: {
+      label: "Padding",
+      type: "Spacing",
+      defaultValue: "4px 16px",
+      responsive: true,
+      bindable: true,
+      states: true,
+      classes: true,
+    },
     cellSelectionBorderColor: {
       type: "Color",
       label: "Selection Border Color",
@@ -1077,6 +1111,26 @@ export default {
       },
       hidden: (content) => content.cellAlignmentMode !== "custom",
     },
+    cellVerticalAlignment: {
+      label: { en: "Vertical Alignment" },
+      type: "TextSelect",
+      section: "style",
+      options: {
+        options: [
+          { value: "center", label: "Center", default: true },
+          { value: "top", label: "Top" },
+          { value: "bottom", label: "Bottom" },
+        ],
+      },
+      defaultValue: "center",
+      bindable: true,
+      /* wwEditor:start */
+      bindingValidation: {
+        type: "string",
+        tooltip: "Vertical alignment: top | center | bottom",
+      },
+      /* wwEditor:end */
+    },
     idFormula: {
       type: "Formula",
       label: "Unique Row Id",
@@ -1325,6 +1379,24 @@ export default {
                   array?.item?.cellDataType === "image",
                 bindable: true,
               },
+              wrapText: {
+                label: "Wrap Text",
+                type: "OnOff",
+                hidden:
+                  array?.item?.cellDataType === "action" ||
+                  array?.item?.cellDataType === "image" ||
+                  array?.item?.cellDataType === "custom",
+                bindable: true,
+              },
+              wrapTextMaxHeight: {
+                label: "Max height",
+                type: "Length",
+                options: {
+                  noRange: true,
+                },
+                hidden: !array?.item?.wrapText,
+                bindable: true,
+              },
               actionName: {
                 label: "Action Name",
                 type: "Text",
@@ -1384,6 +1456,8 @@ export default {
                   "editable",
                   "filter",
                   "sortable",
+                  "wrapText",
+                  "wrapTextMaxHeight",
                 ],
               },
             ],
