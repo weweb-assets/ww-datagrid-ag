@@ -28,7 +28,8 @@
             "Does not support tree/hierarchical data",
             "Does not support row grouping or pivoting",
             "Does not support server-side data loading"
-        ]
+        ],
+        "advanced": true
     },
     "properties": [
         {
