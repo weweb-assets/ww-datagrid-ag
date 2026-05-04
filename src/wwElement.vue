@@ -16,8 +16,8 @@
         forcedPaginationPageSize
           ? 0
           : paginationPageSizeSelector
-          ? paginationPageSizeSelector[0]
-          : content.paginationPageSize
+            ? paginationPageSizeSelector[0]
+            : content.paginationPageSize
       "
       :paginationPageSizeSelector="paginationPageSizeSelector"
       :suppressMovableColumns="!content.movableColumns"
@@ -242,7 +242,7 @@ export default {
 
     const rowData = computed(() => {
       const data = wwLib.wwUtils.getDataFromCollection(props.content.rowData);
-      return Array.isArray(data) ? data ?? [] : [];
+      return Array.isArray(data) ? (data ?? []) : [];
     });
 
     watch(
@@ -254,7 +254,7 @@ export default {
         setData(dataValue);
         scheduleVariableUpdate();
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     /* wwEditor:start */
@@ -264,8 +264,8 @@ export default {
       () => props.content.idFormula,
       () => {
         if (!gridApi.value) return;
-        gridApi.value.setGridOption('rowData', rowData.value);
-      }
+        gridApi.value.setGridOption("rowData", rowData.value);
+      },
     );
     /* wwEditor:end */
 
@@ -381,7 +381,7 @@ export default {
       () => props.content.pagination,
       () => {
         scheduleVariableUpdate();
-      }
+      },
     );
 
     /* wwEditor:start */
@@ -399,7 +399,7 @@ export default {
             forcedPaginationPageSize.value = false;
           });
         }
-      }
+      },
     );
 
     /* wwEditor:start */
@@ -416,10 +416,10 @@ export default {
         nextTick(() => {
           setTimeout(() => gridApi.value?.refreshHeader(), 100);
         });
-      }
+      },
     );
     /* wwEditor:end */
-    
+
     function refreshData() {
       nextTick(() => {
         gridApi.value?.refreshCells();
@@ -505,7 +505,7 @@ export default {
           !col?.width || col?.width === "auto" || col?.widthAlgo === "flex"
             ? null
             : wwLib.wwUtils.getLengthUnit(col?.width)?.[0];
-        const flex = col?.widthAlgo === "flex" ? col?.flex ?? 1 : null;
+        const flex = col?.widthAlgo === "flex" ? (col?.flex ?? 1) : null;
         const commonProperties = {
           minWidth,
           maxWidth,
@@ -513,13 +513,16 @@ export default {
           width,
           flex,
           hide: !!col?.hide,
-          headerClass: col.headerAlignment ? `-${col.headerAlignment}` : null,
+          headerClass: col?.headerAlignment ? `-${col?.headerAlignment}` : null,
           ...(this.content.cellAlignmentMode !== "custom"
             ? {
-                cellClass: [
-                  col.cellAlignment ? `-${col.cellAlignment}` : null,
-                  `-valign-${this.content?.cellVerticalAlignment || "center"}`,
-                ].filter(Boolean).join(" ") || null,
+                cellClass:
+                  [
+                    col?.cellAlignment ? `-${col?.cellAlignment}` : null,
+                    `-valign-${this.content?.cellVerticalAlignment || "center"}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || null,
               }
             : {}),
         };
@@ -577,7 +580,7 @@ export default {
               result.valueFormatter = (params) => {
                 return this.resolveMappingFormula(
                   col?.displayLabelFormula,
-                  params.value
+                  params.value,
                 );
               };
             }
@@ -585,11 +588,18 @@ export default {
               result.wrapText = true;
               result.autoHeight = true;
               if (col?.wrapTextMaxHeight) {
-                result.cellClass = (result.cellClass ? result.cellClass + ' ' : '') + '-wrap-max-height';
-                result.cellStyle = { '--wrap-max-height': col.wrapTextMaxHeight };
+                result.cellClass =
+                  (result.cellClass ? result.cellClass + " " : "") +
+                  "-wrap-max-height";
+                result.cellStyle = {
+                  "--wrap-max-height": col.wrapTextMaxHeight,
+                };
               }
-              if (col?.editable && (!col?.cellDataType || col?.cellDataType === 'text')) {
-                result.cellEditor = 'agLargeTextCellEditor';
+              if (
+                col?.editable &&
+                (!col?.cellDataType || col?.cellDataType === "text")
+              ) {
+                result.cellEditor = "agLargeTextCellEditor";
                 result.cellEditorPopup = false;
               }
             }
@@ -764,7 +774,7 @@ export default {
       if (!this.gridApi) return;
       if (this.content.rowSelection !== "multiple") {
         wwLib.logStore.warning(
-          "Select all will have no effect, as row selection is not set to multiple"
+          "Select all will have no effect, as row selection is not set to multiple",
         );
         return;
       }
@@ -787,34 +797,39 @@ export default {
     getHeaderStyle(params) {
       const colDef = params.column?.getColDef();
       const col = this.content.columns.find(
-        (c) => c.field === colDef?.field || (c.actionName && c.actionName === colDef?.colId)
+        (c) =>
+          c.field === colDef?.field ||
+          (c.actionName && c.actionName === colDef?.colId),
       );
       const id = params.column?.getColId();
       const context = {
         id,
         name: colDef?.headerName || id,
         dataType: colDef?.cellDataType,
-        type: col?.cellDataType === 'dateString' ? 'date' : (col?.cellDataType || 'auto')
+        type:
+          col?.cellDataType === "dateString"
+            ? "date"
+            : col?.cellDataType || "auto",
       };
       const backgroundColor = this.resolveMappingFormula?.(
         this.content.dynamicHeaderBackgroundColor,
-        context
+        context,
       );
       const color = this.resolveMappingFormula?.(
         this.content.dynamicHeaderTextColor,
-        context
+        context,
       );
       const fontWeight = this.resolveMappingFormula?.(
         this.content.dynamicHeaderFontWeight,
-        context
+        context,
       );
       const fontSize = this.resolveMappingFormula?.(
         this.content.dynamicHeaderFontSize,
-        context
+        context,
       );
       const fontFamily = this.resolveMappingFormula?.(
         this.content.dynamicHeaderFontFamily,
-        context
+        context,
       );
       return {
         backgroundColor,
@@ -914,7 +929,7 @@ export default {
 
         // We assume there will only be one custom column each time
         const columnIndex = (this.rawContent.columns || []).findIndex(
-          (col) => col?.cellDataType === "custom" && !col?.containerId
+          (col) => col?.cellDataType === "custom" && !col?.containerId,
         );
         if (columnIndex === -1) return;
         const newColumns = [...this.rawContent.columns];
@@ -1011,15 +1026,21 @@ export default {
     &.-valign-top .ag-cell-wrapper,
     &.-valign-top .ag-cell-value,
     &.-valign-top .ag-boolean-cell,
-    &.-valign-top .ag-input-field { align-items: flex-start; }
+    &.-valign-top .ag-input-field {
+      align-items: flex-start;
+    }
     &.-valign-center .ag-cell-wrapper,
     &.-valign-center .ag-cell-value,
     &.-valign-center .ag-boolean-cell,
-    &.-valign-center .ag-input-field { align-items: center; }
+    &.-valign-center .ag-input-field {
+      align-items: center;
+    }
     &.-valign-bottom .ag-cell-wrapper,
     &.-valign-bottom .ag-cell-value,
     &.-valign-bottom .ag-boolean-cell,
-    &.-valign-bottom .ag-input-field { align-items: flex-end; }
+    &.-valign-bottom .ag-input-field {
+      align-items: flex-end;
+    }
   }
   :deep(.ag-cell.-wrap-max-height) {
     .ag-cell-value {
