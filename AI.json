@@ -202,6 +202,17 @@
             "type": "string"
         },
         {
+            "name": "cellPadding",
+            "description": "Padding inside every cell, as a CSS shorthand string (e.g. '4px 16px'). Applied globally to all cells.",
+            "type": "string",
+            "defaultValue": "4px 16px"
+        },
+        {
+            "name": "cellLineHeight",
+            "description": "Line height for cell text (e.g. '1.5', '20px', 'normal'). Applied globally to all cells.",
+            "type": "string"
+        },
+        {
             "name": "cellSelectionBorderColor",
             "description": "Override the theme border color for cell selection.",
             "type": "string"
@@ -226,6 +237,17 @@
                 "right"
             ],
             "responsive": true
+        },
+        {
+            "name": "cellVerticalAlignment",
+            "description": "Vertical alignment of cell content (including boolean/checkbox cells). Applied globally to all cells.",
+            "type": "string",
+            "options": [
+                "top",
+                "center",
+                "bottom"
+            ],
+            "defaultValue": "center"
         },
         {
             "name": "menuTextColor",
@@ -428,7 +450,7 @@
         },
         {
             "name": "columns",
-            "description": "Column configurations. Each object describes a column of the grid. useCustomLabel defaults to false, if true, displayLabelFormula is used to format the label. widthAlgo defaults to 'fixed'. width is only used if widthAlgo is 'fixed' and must be a string in the shape of {value}px. flex is only used if widthAlgo is 'flex' and must be an integer.",
+            "description": "Column configurations. Each object describes a column of the grid. useCustomLabel defaults to false, if true, displayLabelFormula is used to format the label. widthAlgo defaults to 'fixed'. width is only used if widthAlgo is 'fixed' and must be a string in the shape of {value}px. flex is only used if widthAlgo is 'flex' and must be an integer. To wrap long text and grow the row height, set wrapText: true; to cap that height and make the cell scrollable, also set wrapTextMaxHeight (e.g. '100px').",
             "type": [
                 {
                     "headerName": {
@@ -524,6 +546,17 @@
                         "type": "boolean",
                         "defaultValue": false,
                         "availableCondition": "cellDataType is not action or image"
+                    },
+                    "wrapText": {
+                        "type": "boolean",
+                        "defaultValue": false,
+                        "description": "Wrap long cell text onto multiple lines and let the row grow to fit (auto height).",
+                        "availableCondition": "cellDataType is not action, image, or custom"
+                    },
+                    "wrapTextMaxHeight": {
+                        "type": "string",
+                        "description": "Caps the cell height when wrapText is true, e.g. '100px'. Beyond this height the cell content becomes vertically scrollable. Leave empty for unbounded auto height.",
+                        "availableCondition": "wrapText is true"
                     },
                     "actionName": {
                         "type": "string",
@@ -755,7 +788,9 @@
         "Default theme is usually great, use other colors only if you need to be on brand.",
         "Row reorder does not work well with pagination enabled at the same time.",
         "The datagrid handles pagination entirely on the frontend. When binding a table view to the datagrid, that table view must NOT have a backend limit set — the datagrid needs all rows available. Never add a ww-paginator alongside a datagrid. Use the datagrid's built-in `pagination` and `paginationPageSize` properties instead.",
-        "The weweb datagrid does not support custom content in columns. If you see an existing cellDataType to 'custom', it's valid, but you will not be able to touch it. You don't support it for now."
+        "The weweb datagrid does not support custom content in columns. If you see an existing cellDataType to 'custom', it's valid, but you will not be able to touch it. You don't support it for now.",
+        "To set a max height on a column's cells, use the per-column wrapText and wrapTextMaxHeight fields: set wrapText: true (enables text wrapping + auto row height) and wrapTextMaxHeight to the cap (e.g. '100px') — the cell then scrolls vertically past that height. These fields only apply to text/number/boolean/dateString columns. cellPadding and cellLineHeight control padding and line height globally for every cell.",
+        "To style headers dynamically (per-column header background, text color, font), FIRST set useDynamicStyleHeader: true, THEN set one or more of dynamicHeaderBackgroundColor, dynamicHeaderTextColor, dynamicHeaderFontWeight, dynamicHeaderFontSize, dynamicHeaderFontFamily as formulas. Each formula receives the column through context.mapping with keys: id, name (the header name), type, dataType. Return a value to style that header, or null to fall back to the static header style. The dynamicHeader* formulas are ignored unless useDynamicStyleHeader is true."
     ],
     "examples": [
         {
@@ -769,6 +804,10 @@
         {
             "description": "A grid with multiple action buttons using the action event",
             "example": "Add two action-type columns: one with actionName 'view' and actionLabel 'View', another with actionName 'delete' and actionLabel 'Delete'. In the workflow triggered by the 'action' event, use a conditional branch checking event.actionName to handle each action differently."
+        },
+        {
+            "description": "A table whose Description column wraps long text and caps its height (scrollable past 120px), with dynamic header background colors. useDynamicStyleHeader MUST be true for the dynamicHeader* formulas to apply; the formula reads the column via context.mapping (keys id, name, type, dataType).",
+            "example": "{\"uid\":0,\"tag\":\"ww-datagrid-ag\",\"content\":{\"default\":{\"height\":\"400px\",\"useDynamicStyleHeader\":true,\"dynamicHeaderBackgroundColor\":{\"__wwtype\":\"js\",\"code\":\"return context.mapping?.['name'] === 'Status' ? '#fee2e2' : '#f8fafc'\"},\"columns\":[{\"field\":\"title\",\"headerName\":\"Title\",\"widthAlgo\":\"flex\",\"minWidth\":\"120px\",\"sortable\":true,\"filter\":true},{\"field\":\"description\",\"headerName\":\"Description\",\"widthAlgo\":\"flex\",\"minWidth\":\"240px\",\"wrapText\":true,\"wrapTextMaxHeight\":\"120px\"},{\"field\":\"status\",\"headerName\":\"Status\",\"width\":\"120px\",\"sortable\":true}],\"rowData\":{\"defaultValue\":[],\"__wwtype\":\"js\",\"code\":\"return variables['your-collection-id']\"},\"idFormula\":{\"__wwtype\":\"js\",\"code\":\"return context.mapping?.['id']\"},\"pagination\":false,\"resizableColumns\":true}}}"
         }
     ],
     "dependencies": []
